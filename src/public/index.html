@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0f172a"/>
+  <meta name="apple-mobile-web-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <title>GembaRounds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f0f4ff;
+      --surface: #ffffff;
+      --surface-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --text: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-light: #eef2ff;
+      --primary-dark: #4f46e5;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --info: #3b82f6;
+      --info-light: #eff6ff;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+      --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #312e81 100%);
+      --gradient-sidebar: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(99,102,241,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 24px rgba(99,102,241,0.12), 0 4px 8px rgba(0,0,0,0.06);
+      --shadow-glow: 0 0 20px rgba(99,102,241,0.15);
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+      --nav-height: 68px;
+      --bottom-nav: 76px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(99,102,241,0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139,92,246,0.03) 0%, transparent 50%);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    /* Icons helper */
+    .mi { font-family: 'Material Icons Round'; font-size: 20px; vertical-align: middle; line-height: 1; }
+    .mi-sm { font-size: 16px; }
+    .mi-lg { font-size: 24px; }
+
+    /* ===== TOP NAV ===== */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-height);
+      background: var(--gradient-dark);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      transition: var(--transition);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .topnav-brand {
+      display: flex; align-items: center; gap: 0.7rem;
+      font-weight: 800; font-size: 1.3rem; color: white;
+      letter-spacing: -0.02em;
+    }
+    .topnav-brand .logo-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 20px;
+      box-shadow: 0 4px 12px rgba(129,140,248,0.4);
+    }
+    .topnav-actions { display: flex; align-items: center; gap: 0.5rem; }
+    .topnav-user {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 0.85rem; border-radius: 100px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.85);
+      cursor: pointer; transition: var(--transition);
+    }
+    .topnav-user:hover { background: rgba(255,255,255,0.2); }
+    .topnav-user .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #818cf8, #f472b6);
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700;
+      box-shadow: 0 2px 8px rgba(129,140,248,0.3);
+    }
+
+    /* ===== DESKTOP SIDE NAV ===== */
+    .sidenav {
+      display: none;
+      position: fixed; top: var(--nav-height); left: 0; bottom: 0;
+      width: 240px; background: var(--gradient-sidebar);
+      padding: 1.25rem 0.75rem; z-index: 90;
+      overflow-y: auto;
+    }
+    .sidenav-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 0.9rem; border-radius: var(--radius-sm);
+      font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.6);
+      cursor: pointer; transition: var(--transition); border: none; background: none;
+      width: 100%; text-align: left;
+    }
+    .sidenav-item:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); }
+    .sidenav-item.active {
+      background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2));
+      color: white; font-weight: 600;
+      box-shadow: 0 0 12px rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.3);
+    }
+    .sidenav-section {
+      font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: rgba(255,255,255,0.3);
+      padding: 1rem 0.9rem 0.4rem; margin-top: 0.5rem;
+    }
+
+    /* ===== BOTTOM NAV (mobile) ===== */
+    .bottomnav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      height: var(--bottom-nav);
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    }
+    .bottomnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-size: 0.62rem; font-weight: 600; color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 0.5rem 0.7rem; border: none; background: none;
+      transition: var(--transition); position: relative; min-width: 56px;
+      letter-spacing: 0.02em;
+    }
+    .bottomnav-item .mi { font-size: 24px; }
+    .bottomnav-item.active { color: #818cf8; }
+    .bottomnav-item.active .mi {
+      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
+      border-radius: 12px; padding: 4px 12px;
+    }
+    .bottomnav-badge {
+      position: absolute; top: 2px; right: 8px;
+      width: 8px; height: 8px; background: var(--danger); border-radius: 50%;
+      box-shadow: 0 0 6px rgba(239,68,68,0.5);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-wrapper {
+      padding-top: var(--nav-height);
+      padding-bottom: calc(var(--bottom-nav) + 1rem);
+      min-height: 100vh;
+    }
+    .main-content {
+      padding: 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      padding: 1.35rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    .card-hover:hover { box-shadow: var(--shadow-lg); border-color: transparent; transform: translateY(-1px); }
+    .card-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .card-title {
+      font-size: 1rem; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .card-subtitle { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
+    .card-accent-left { border-left: 4px solid transparent; border-image: var(--gradient-primary) 1; }
+    .card-accent-success { border-left: 4px solid transparent; border-image: var(--gradient-success) 1; }
+    .card-accent-danger { border-left: 4px solid transparent; border-image: var(--gradient-danger) 1; }
+    .card-accent-purple { border-left: 4px solid transparent; border-image: linear-gradient(180deg, #8b5cf6, #c084fc) 1; }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header { margin-bottom: 1.25rem; }
+    .page-title {
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.2;
+      background: linear-gradient(135deg, #0f172a, #4f46e5);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      font-family: inherit; font-size: 0.85rem; font-weight: 600;
+      padding: 0.55rem 1.1rem; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; transition: var(--transition);
+      white-space: nowrap; line-height: 1.4;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--gradient-primary); color: white; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+    .btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.4); transform: translateY(-1px); }
+    .btn-success { background: var(--gradient-success); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+    .btn-success:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.4); transform: translateY(-1px); }
+    .btn-danger { background: var(--gradient-danger); color: white; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+    .btn-danger:hover { box-shadow: 0 6px 20px rgba(239,68,68,0.4); transform: translateY(-1px); }
+    .btn-warning { background: var(--gradient-warning); color: white; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+    .btn-warning:hover { box-shadow: 0 6px 20px rgba(245,158,11,0.4); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface-hover); color: var(--text); }
+    .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.78rem; border-radius: var(--radius-xs); }
+    .btn-lg { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
+    .btn-icon {
+      width: 36px; height: 36px; padding: 0; border-radius: var(--radius-sm);
+      background: var(--surface-hover); border: 1px solid var(--border); color: var(--text-secondary);
+    }
+    .btn-icon:hover { background: var(--border); }
+    .btn-block { width: 100%; }
+
+    /* ===== FORMS ===== */
+    .form-group { margin-bottom: 0.85rem; }
+    .form-label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 0.3rem;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 0.65rem 0.9rem;
+      font-family: inherit; font-size: 0.9rem;
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      transition: var(--transition); outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary); background: white;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12), 0 2px 8px rgba(99,102,241,0.08);
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--text-muted); font-weight: 400;
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+    .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid rgba(255,255,255,0.8);
+      padding: 1.1rem 0.8rem; border-radius: var(--radius); text-align: center;
+      transition: var(--transition); cursor: default;
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient-primary); opacity: 0;
+      transition: var(--transition);
+    }
+    .stat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .stat-card:hover::before { opacity: 1; }
+    .stat-card.clickable { cursor: pointer; }
+    .stat-card.clickable.selected { border-color: var(--primary); box-shadow: var(--shadow-glow); }
+    .stat-card.clickable.selected::before { opacity: 1; }
+    .stat-value {
+      font-size: 1.85rem; font-weight: 800; color: var(--text);
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.4rem;
+    }
+
+    /* ===== TAGS ===== */
+    .tag {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      padding: 0.15rem 0.55rem; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.01em;
+    }
+    .tag-primary { background: var(--primary-light); color: var(--primary); }
+    .tag-success { background: var(--success-light); color: var(--success); }
+    .tag-danger { background: var(--danger-light); color: var(--danger); }
+    .tag-warning { background: var(--warning-light); color: var(--warning); }
+    .tag-info { background: var(--info-light); color: var(--info); }
+    .tag-purple { background: var(--purple-light); color: var(--purple); }
+    .tag-neutral { background: var(--surface-hover); color: var(--text-secondary); }
+    .tag-dark { background: linear-gradient(135deg, #1e293b, #334155); color: white; }
+
+    /* ===== TOGGLE (Positive / Negative) ===== */
+    .toggle-group {
+      display: flex; gap: 0; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 1rem;
+    }
+    .toggle-btn {
+      flex: 1; padding: 0.65rem; font-family: inherit; font-size: 0.85rem;
+      font-weight: 600; border: none; cursor: pointer;
+      background: var(--surface); color: var(--text-secondary);
+      transition: var(--transition); display: flex; align-items: center;
+      justify-content: center; gap: 0.4rem;
+    }
+    .toggle-btn.active-pos { background: var(--gradient-success); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.25); }
+    .toggle-btn.active-neg { background: var(--gradient-danger); color: white; box-shadow: 0 4px 12px rgba(239,68,68,0.25); }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge {
+      padding: 0.2rem 0.6rem; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .status-scheduled { background: var(--info-light); color: var(--info); }
+    .status-in-progress { background: var(--warning-light); color: #b45309; }
+    .status-completed { background: var(--success-light); color: #047857; }
+
+    /* ===== OBSERVATION ITEMS ===== */
+    .obs-item {
+      padding: 1rem; margin-bottom: 0.6rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .obs-item:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .obs-item.type-positive { border-left: 3px solid var(--success); }
+    .obs-item.type-negative { border-left: 3px solid var(--danger); }
+    .obs-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.4rem; }
+    .obs-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .obs-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+    .obs-meta-row {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      margin-top: 0.5rem; font-size: 0.78rem; color: var(--text-muted);
+    }
+    .obs-meta-row span { display: flex; align-items: center; gap: 0.2rem; }
+    .obs-time { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+    /* ===== WALK CARDS ===== */
+    .walk-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 1rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); margin-bottom: 0.5rem;
+      transition: var(--transition); gap: 0.75rem; flex-wrap: wrap;
+    }
+    .walk-item:hover { border-color: var(--primary); background: var(--primary-light); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .walk-info h4 { font-size: 0.9rem; font-weight: 600; margin: 0 0 0.15rem 0; }
+    .walk-info p { margin: 0; font-size: 0.78rem; color: var(--text-muted); }
+    .walk-actions { display: flex; gap: 0.4rem; align-items: center; flex-shrink: 0; }
+
+    /* ===== REVIEW SECTION ===== */
+    .review-box {
+      background: var(--success-light); border: 1px solid #a7f3d0;
+      border-radius: var(--radius-sm); padding: 0.85rem;
+      margin-top: 0.6rem; width: 100%;
+    }
+    .review-form-box {
+      background: var(--warning-light); border: 1px solid #fde68a;
+      border-radius: var(--radius-sm); padding: 1rem;
+      margin-top: 0.6rem; width: 100%;
+    }
+
+    /* ===== ATTACHMENT ZONE ===== */
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius-sm);
+      padding: 1rem; text-align: center; cursor: pointer;
+      margin-bottom: 0.85rem; transition: var(--transition);
+      position: relative; color: var(--text-muted); font-size: 0.85rem;
+    }
+    .upload-zone:hover { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 16px rgba(99,102,241,0.1); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-previews { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .upload-thumb {
+      position: relative; width: 80px; height: 80px;
+      border-radius: var(--radius-xs); overflow: hidden; border: 1px solid var(--border);
+    }
+    .upload-thumb img, .upload-thumb video { width: 100%; height: 100%; object-fit: cover; }
+    .upload-thumb .remove-btn {
+      position: absolute; top: 3px; right: 3px;
+      background: var(--danger); color: white; border: none; border-radius: 50%;
+      width: 18px; height: 18px; cursor: pointer; font-size: 11px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ===== VOICE BUTTON ===== */
+    .voice-btn {
+      background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: white; border: none;
+      padding: 0.55rem 1rem; border-radius: var(--radius-sm);
+      cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(139,92,246,0.3);
+    }
+    .voice-btn:hover { box-shadow: 0 6px 20px rgba(139,92,246,0.4); transform: translateY(-1px); }
+    .voice-btn.recording { background: var(--gradient-danger); animation: pulse 1s infinite; box-shadow: 0 4px 16px rgba(239,68,68,0.4); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; cursor: pointer;
+    }
+    .lightbox img, .lightbox video { max-width: 92vw; max-height: 92vh; border-radius: var(--radius); }
+
+    /* ===== NOTIFICATION ITEMS ===== */
+    .notif-item {
+      padding: 0.8rem 1rem; border-radius: var(--radius-sm);
+      margin-bottom: 0.5rem; border-left: 3px solid transparent;
+      font-size: 0.88rem;
+    }
+    .notif-critical { background: var(--danger-light); border-left-color: var(--danger); }
+    .notif-warning { background: var(--warning-light); border-left-color: var(--warning); }
+    .notif-info { background: var(--info-light); border-left-color: var(--info); }
+
+    /* ===== ACTION ITEMS ===== */
+    .action-item {
+      padding: 1rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); margin-bottom: 0.6rem;
+      transition: var(--transition);
+    }
+    .action-item:hover { box-shadow: var(--shadow); }
+    .action-open { border-left: 3px solid var(--danger); }
+    .action-in-progress { border-left: 3px solid var(--warning); }
+    .action-closed { border-left: 3px solid var(--success); }
+
+    /* ===== TABLES ===== */
+    .data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .data-table th {
+      background: var(--gradient-dark); color: white;
+      padding: 0.7rem 0.8rem; text-align: left;
+      font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .data-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+    .data-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+    .data-table td {
+      padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border-light);
+      font-size: 0.85rem;
+    }
+    .data-table tr:hover td { background: var(--surface-hover); }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-track { background: var(--border); border-radius: 100px; height: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 100px; transition: width 0.4s ease; background: var(--gradient-success); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);
+    }
+    .empty-state .mi { font-size: 48px; display: block; margin-bottom: 0.75rem; opacity: 0.3; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ===== AUTH PAGE ===== */
+    .auth-bg {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--gradient-dark);
+      padding: 1rem;
+      position: relative; overflow: hidden;
+    }
+    .auth-bg::before {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(99,102,241,0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(139,92,246,0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 80%, rgba(244,114,182,0.08) 0%, transparent 40%);
+      animation: authGlow 8s ease-in-out infinite alternate;
+    }
+    @keyframes authGlow {
+      from { transform: rotate(0deg) scale(1); }
+      to { transform: rotate(3deg) scale(1.05); }
+    }
+    .auth-card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px; border: 1px solid rgba(255,255,255,0.3);
+      padding: 2.5rem; width: 100%; max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(99,102,241,0.1);
+      position: relative; z-index: 1;
+    }
+    .auth-logo {
+      text-align: center; margin-bottom: 1.75rem;
+    }
+    .auth-logo .logo-circle {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: white; font-size: 28px; margin-bottom: 0.85rem;
+      box-shadow: 0 8px 24px rgba(129,140,248,0.35);
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .auth-logo h2 {
+      font-size: 1.6rem; font-weight: 800; color: var(--text);
+      letter-spacing: -0.03em;
+    }
+    .auth-logo p { font-size: 0.85rem; color: var(--text-secondary); }
+    .auth-error {
+      background: var(--danger-light); color: var(--danger);
+      padding: 0.5rem 0.75rem; border-radius: var(--radius-xs);
+      font-size: 0.85rem; text-align: center; margin-bottom: 0.85rem;
+    }
+    .auth-divider {
+      text-align: center; color: var(--text-muted); font-size: 0.8rem;
+      margin: 0.75rem 0; position: relative;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; position: absolute; top: 50%;
+      width: calc(50% - 1rem); height: 1px; background: var(--border);
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    /* ===== IoT MONITOR ===== */
+    .iot-machine {
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      padding: 0.75rem; background: var(--bg); transition: var(--transition);
+    }
+    .iot-machine:hover { border-color: var(--primary); }
+    .iot-machine-header {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .iot-metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem;
+      margin-top: 0.5rem; font-size: 0.78rem; color: var(--text-secondary);
+    }
+
+    /* ===== CHARTS ROW ===== */
+    .charts-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
+    }
+
+    /* ===== AREA TAGS GRID ===== */
+    .area-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 768px) {
+      .bottomnav { display: none; }
+      .sidenav { display: block; }
+      .main-wrapper { padding-left: 240px; }
+      .main-content { padding: 1.5rem 2rem; }
+      .page-title { font-size: 1.75rem; }
+    }
+    @media (max-width: 767px) {
+      .sidenav { display: none; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+      .charts-row { grid-template-columns: 1fr; }
+      .main-content { padding: 1rem; }
+      .topnav { padding: 0 1rem; }
+      .topnav-brand { font-size: 1.1rem; }
+      .stat-value { font-size: 1.4rem; }
+      .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .stat-card { padding: 0.75rem 0.5rem; }
+      .card { padding: 1rem; border-radius: var(--radius-sm); }
+      .page-title { font-size: 1.25rem; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .topnav-user span.user-name { display: none; }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in { animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .slide-up { animation: slideUp 0.4s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .hidden { display: none !important; }
+    /* Hover lift for interactive elements */
+    .lift { transition: var(--transition); }
+    .lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    const OBSERVATION_AREAS = [
+      'House Keeping (5S)', 'Safety', 'Discipline', 'Productivity',
+      'Wastes', 'Ambience', 'Environment Impact', 'Material Handling',
+      'Data Recording', 'Adherence to Standards', 'Machine Condition',
+      'Gauges and Fixture', 'Inventory', 'Review Meeting', 'Others'
+    ];
+    const CATEGORIES = ['Muda', 'Mura', 'Muri', 'Safety', 'Quality', 'Other'];
+    const FREQUENCIES = ['daily', 'weekly', 'bimonthly', 'monthly', 'adhoc'];
+
+    // Icon helper
+    const I = ({n, className}) => <span className={`mi ${className||''}`}>{n}</span>;
+
+    // Tag color map
+    const catTag = (cat) => {
+      const m = { Muda: 'tag-danger', Mura: 'tag-warning', Muri: 'tag-purple', Safety: 'tag-warning', Quality: 'tag-info', Other: 'tag-neutral' };
+      return m[cat] || 'tag-neutral';
+    };
+
+    // ============ AUTH ============
+    function AuthPage({ onLogin }) {
+      const [isLogin, setIsLogin] = useState(true);
+      const [form, setForm] = useState({ name: '', email: '', password: '', role: 'operator', department: '' });
+      const [error, setError] = useState('');
+
+      const handleSubmit = async () => {
+        setError('');
+        const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(form)
+          });
+          const data = await res.json();
+          if (res.ok) {
+            localStorage.setItem('gemba_token', data.token);
+            localStorage.setItem('gemba_user', JSON.stringify(data.user));
+            onLogin(data.user);
+          } else { setError(data.error || 'Authentication failed'); }
+        } catch { setError('Connection failed'); }
+      };
+
+      return (
+        <div className="auth-bg">
+          <div className="auth-card fade-in">
+            <div className="auth-logo">
+              <div className="logo-circle"><I n="directions_walk" /></div>
+              <h2>GembaRounds</h2>
+              <p>{isLogin ? 'Sign in to continue' : 'Create your account'}</p>
+            </div>
+
+            {error && <div className="auth-error">{error}</div>}
+
+            {!isLogin && (
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input className="form-input" type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your name" />
+              </div>
+            )}
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <input className="form-input" type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="email@company.com" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input className="form-input" type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Password"
+                onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
+            </div>
+            {!isLogin && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Role</label>
+                  <select className="form-select" value={form.role} onChange={e => setForm({...form, role: e.target.value})}>
+                    <option value="operator">Operator</option>
+                    <option value="manager">Manager</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Department</label>
+                  <input className="form-input" type="text" value={form.department} onChange={e => setForm({...form, department: e.target.value})} placeholder="Optional" />
+                </div>
+              </div>
+            )}
+            <button className="btn btn-primary btn-block btn-lg" onClick={handleSubmit} style={{ marginBottom: '0.5rem' }}>
+              {isLogin ? 'Sign In' : 'Create Account'}
+            </button>
+            <button className="btn btn-ghost btn-block" onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+              {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign In'}
+            </button>
+            <div className="auth-divider">or</div>
+            <button className="btn btn-ghost btn-block btn-sm" onClick={() => onLogin({ name: 'Guest', role: 'operator', _id: 'guest' })} style={{ color: 'var(--text-muted)' }}>
+              Continue as Guest
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ============ NAV ITEMS CONFIG ============
+    const NAV_ITEMS = [
+      { id: 'home', icon: 'home', label: 'Home' },
+      { id: 'walk', icon: 'directions_walk', label: 'Walk', managerOnly: true, needsWalk: true },
+      { id: 'reports', icon: 'bar_chart', label: 'Reports' },
+      { id: 'schedule', icon: 'calendar_month', label: 'Schedule', managerOnly: true },
+      { id: 'history', icon: 'search', label: 'History' },
+      { id: 'actions', icon: 'task_alt', label: 'Actions' },
+      { id: 'notifications', icon: 'notifications', label: 'Alerts' },
+    ];
+
+    // ============ MAIN APP ============
+    function App() {
+      const [currentView, setCurrentView] = useState('home');
+      const [currentWalkId, setCurrentWalkId] = useState(null);
+      const [user, setUser] = useState(null);
+
+      useEffect(() => {
+        const savedUser = localStorage.getItem('gemba_user');
+        if (savedUser) { try { setUser(JSON.parse(savedUser)); } catch {} }
+      }, []);
+
+      const handleLogin = (userData) => setUser(userData);
+      const handleLogout = () => {
+        localStorage.removeItem('gemba_token');
+        localStorage.removeItem('gemba_user');
+        setUser(null); setCurrentView('home');
+      };
+
+      if (!user) return <AuthPage onLogin={handleLogin} />;
+
+      const startNewWalk = async (walkData) => {
+        try {
+          const response = await fetch('/api/walks/start-walk', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...walkData, walker: walkData.walker || user.name })
+          });
+          const data = await response.json();
+          setCurrentWalkId(data.walkId);
+          setCurrentView('walk');
+        } catch { alert('Failed to start walk'); }
+      };
+
+      const isManager = user.role === 'manager' || user.role === 'admin';
+      const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+
+      const navItems = NAV_ITEMS.filter(n => {
+        if (n.managerOnly && !isManager) return false;
+        if (n.needsWalk && !currentWalkId) return false;
+        return true;
+      });
+
+      // Mobile bottom nav: show max 5 items
+      const bottomItems = navItems.slice(0, 5);
+
+      return (
+        <div>
+          {/* Top Nav */}
+          <nav className="topnav">
+            <div className="topnav-brand">
+              <div className="logo-icon"><I n="directions_walk" /></div>
+              GembaRounds
+            </div>
+            <div className="topnav-actions">
+              <div className="topnav-user" onClick={handleLogout} title="Click to logout">
+                <div className="avatar">{initials}</div>
+                <span className="user-name">{user.name}</span>
+                <I n="logout" className="mi-sm" />
+              </div>
+            </div>
+          </nav>
+
+          {/* Desktop Side Nav */}
+          <aside className="sidenav">
+            <div className="sidenav-section">Navigation</div>
+            {navItems.map(n => (
+              <button key={n.id}
+                className={`sidenav-item ${currentView === n.id ? 'active' : ''}`}
+                onClick={() => setCurrentView(n.id)}
+              >
+                <I n={n.icon} /> {n.label}
+              </button>
+            ))}
+          </aside>
+
+          {/* Mobile Bottom Nav */}
+          <nav className="bottomnav">
+            {bottomItems.map(n => (
+              <button key={n.id}
+                className={`bottomnav-item ${currentView === n.id ? 'active' : ''}`}
+                onClick={() => setCurrentView(n.id)}
+              >
+                <I n={n.icon} />
+                <span>{n.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          {/* Main Content */}
+          <div className="main-wrapper">
+            <main className="main-content fade-in" key={currentView}>
+              {currentView === 'home' && <HomePage onStartWalk={startNewWalk} isManager={isManager} user={user} />}
+              {currentView === 'walk' && <WalkInterface walkId={currentWalkId} />}
+              {currentView === 'reports' && <ReportsPage />}
+              {currentView === 'schedule' && <SchedulePage />}
+              {currentView === 'history' && <HistoryPage />}
+              {currentView === 'actions' && <ActionsPage />}
+              {currentView === 'notifications' && <NotificationsPage />}
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    // ============ HOME PAGE ============
+    function HomePage({ onStartWalk, isManager, user }) {
+      const [showForm, setShowForm] = useState(false);
+      const [walkData, setWalkData] = useState({ title: '', walker: '', description: '', frequency: 'adhoc' });
+
+      const handleStart = () => {
+        const title = walkData.title || 'Gemba Walk ' + new Date().toLocaleDateString();
+        onStartWalk({ ...walkData, title });
+      };
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Welcome, {user.name.split(' ')[0]}</h1>
+            <p className="page-subtitle">Go to Gemba. Connect, Appreciate, Check Standards, Improve.</p>
+          </div>
+
+          {/* Quick Start */}
+          <div className="card card-hover">
+            <div className="card-header">
+              <div>
+                <div className="card-title"><I n="play_circle" /> Start a Gemba Walk</div>
+                <div className="card-subtitle">Record observations, capture photos, track improvements</div>
+              </div>
+              {isManager && !showForm && (
+                <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+                  <I n="add" className="mi-sm" /> New Walk
+                </button>
+              )}
+            </div>
+            {!isManager && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Managers can start walks. Use the suggestion box below to share your observations.</p>}
+
+            {showForm && (
+              <div className="fade-in">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Walk Title</label>
+                    <input className="form-input" type="text" value={walkData.title} onChange={e => setWalkData({...walkData, title: e.target.value})} placeholder="e.g. Morning Shop Floor Walk" />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Walker Name</label>
+                    <input className="form-input" type="text" value={walkData.walker} onChange={e => setWalkData({...walkData, walker: e.target.value})} placeholder="Who is conducting?" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Frequency</label>
+                    <select className="form-select" value={walkData.frequency} onChange={e => setWalkData({...walkData, frequency: e.target.value})}>
+                      {FREQUENCIES.map(f => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Focus Area</label>
+                    <input className="form-input" type="text" value={walkData.description} onChange={e => setWalkData({...walkData, description: e.target.value})} placeholder="Optional focus" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button className="btn btn-success" onClick={handleStart}><I n="play_arrow" className="mi-sm" /> Begin Walk</button>
+                  <button className="btn btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* PSS Areas */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="grid_view" /> PSS Observation Areas</div>
+            <div className="area-tags">
+              {OBSERVATION_AREAS.map(area => <span key={area} className="tag tag-dark">{area}</span>)}
+            </div>
+          </div>
+
+          {/* How to use */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="lightbulb" /> How to Use</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
+              {[
+                { icon: 'play_circle', text: 'Start a Walk - Enter name, set frequency' },
+                { icon: 'visibility', text: 'Record Observations - Positive and negative' },
+                { icon: 'person', text: 'Tag People - Who you met, who should act' },
+                { icon: 'smart_toy', text: 'AI Categorize - Auto-detect waste category' },
+                { icon: 'check_circle', text: 'Complete Walk - Generate summary report' },
+                { icon: 'groups', text: 'Weekly Review - Discuss and sustain improvements' },
+              ].map((step, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                  <I n={step.icon} className="mi-lg" style={{ color: 'var(--primary)' }} />
+                  <span style={{ fontSize: '0.85rem' }}>{step.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <EmployeeSuggestionBox />
+          <KaizenLeaderboard />
+        </div>
+      );
+    }
+
+    // ============ WALK INTERFACE ============
+    function WalkInterface({ walkId }) {
+      const [observations, setObservations] = useState([]);
+      const [walkInfo, setWalkInfo] = useState(null);
+      const [newObs, setNewObs] = useState({
+        title: '', description: '', category: '', observationArea: '',
+        observationType: 'negative', location: '', personTagged: '', personMet: ''
+      });
+      const [aiSuggestion, setAiSuggestion] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [attachments, setAttachments] = useState([]);
+      const [uploading, setUploading] = useState(false);
+      const [isRecording, setIsRecording] = useState(false);
+      const [lightboxSrc, setLightboxSrc] = useState(null);
+
+      useEffect(() => { fetchWalkData(); }, [walkId]);
+
+      const fetchWalkData = async () => {
+        try {
+          const response = await fetch(`/api/walks/walk-reports/${walkId}`);
+          const data = await response.json();
+          if (data.walk) { setWalkInfo(data.walk); setObservations(data.walk.observations || []); }
+        } catch {}
+      };
+
+      const analyzeWithAI = async () => {
+        if (!newObs.description.trim()) { alert('Please enter a description first'); return; }
+        try {
+          const response = await fetch('/api/ai/analyze', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description: newObs.description })
+          });
+          const data = await response.json();
+          setAiSuggestion(data);
+          setNewObs(prev => ({ ...prev, category: data.category, observationArea: data.observationArea, observationType: data.observationType }));
+        } catch {}
+      };
+
+      const handleFileUpload = async (e) => {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        setUploading(true);
+        try {
+          const formData = new FormData();
+          files.forEach(f => formData.append('files', f));
+          const response = await fetch('/api/uploads/files', { method: 'POST', body: formData });
+          const data = await response.json();
+          if (data.files) setAttachments(prev => [...prev, ...data.files]);
+        } catch { alert('Upload failed'); }
+        finally { setUploading(false); e.target.value = ''; }
+      };
+
+      const removeAttachment = (idx) => setAttachments(prev => prev.filter((_, i) => i !== idx));
+
+      const toggleVoice = () => {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+          alert('Voice not supported. Use Chrome or Edge.'); return;
+        }
+        if (isRecording) { if (window._gembaRecognition) window._gembaRecognition.stop(); setIsRecording(false); return; }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-IN';
+        let finalTranscript = newObs.description;
+        recognition.onresult = (event) => {
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) finalTranscript += ' ' + event.results[i][0].transcript;
+            else interim += event.results[i][0].transcript;
+          }
+          setNewObs(prev => ({ ...prev, description: finalTranscript.trim() + (interim ? ' ' + interim : '') }));
+        };
+        recognition.onerror = () => setIsRecording(false);
+        recognition.onend = () => setIsRecording(false);
+        recognition.start();
+        window._gembaRecognition = recognition;
+        setIsRecording(true);
+      };
+
+      const submitObservation = async () => {
+        if (!newObs.title || !newObs.category || !newObs.observationArea) {
+          alert('Please fill title, category, and area'); return;
+        }
+        setLoading(true);
+        try {
+          const response = await fetch('/api/walks/submit-observation', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walkId, ...newObs, attachments })
+          });
+          if (response.ok) {
+            setNewObs({ title: '', description: '', category: '', observationArea: '', observationType: 'negative', location: '', personTagged: '', personMet: '' });
+            setAiSuggestion(null); setAttachments([]); fetchWalkData();
+          }
+        } catch { alert('Failed to submit'); }
+        finally { setLoading(false); }
+      };
+
+      const completeWalk = async () => {
+        try { await fetch(`/api/walks/complete/${walkId}`, { method: 'POST' }); fetchWalkData(); }
+        catch { alert('Failed to complete walk'); }
+      };
+
+      const posCount = observations.filter(o => o.observationType === 'positive').length;
+      const negCount = observations.filter(o => o.observationType === 'negative').length;
+
+      return (
+        <div>
+          {lightboxSrc && (
+            <div className="lightbox" onClick={() => setLightboxSrc(null)}>
+              {lightboxSrc.type === 'video'
+                ? <video src={lightboxSrc.url} controls autoPlay />
+                : <img src={lightboxSrc.url} alt="Observation" />}
+            </div>
+          )}
+
+          {/* Walk Header */}
+          <div className="card">
+            <div className="card-header">
+              <div>
+                <div className="card-title"><I n="directions_walk" /> {walkInfo?.title || 'Gemba Walk'}</div>
+                <div className="card-subtitle">
+                  {walkInfo?.walker && <>Walker: {walkInfo.walker} &middot; </>}
+                  Started: {walkInfo ? new Date(walkInfo.createdAt).toLocaleString() : ''}
+                  {walkInfo?.frequency && walkInfo.frequency !== 'adhoc' && <> &middot; {walkInfo.frequency}</>}
+                </div>
+              </div>
+              {walkInfo?.status !== 'completed' ? (
+                <button className="btn btn-danger" onClick={completeWalk}><I n="stop_circle" className="mi-sm" /> Complete Walk</button>
+              ) : (
+                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                  <span className="status-badge status-completed">Completed</span>
+                  <button className="btn btn-primary btn-sm" onClick={() => window.open(`/api/walks/summary/${walkId}`, '_blank')}>
+                    <I n="description" className="mi-sm" /> Summary
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="stats-grid">
+            <div className="stat-card"><div className="stat-value">{observations.length}</div><div className="stat-label">Total</div></div>
+            <div className="stat-card"><div className="stat-value" style={{ color: 'var(--success)' }}>{posCount}</div><div className="stat-label">Good Things</div></div>
+            <div className="stat-card"><div className="stat-value" style={{ color: 'var(--danger)' }}>{negCount}</div><div className="stat-label">Improvements</div></div>
+          </div>
+
+          {/* Observation Form */}
+          {walkInfo?.status !== 'completed' && (
+            <div className="card card-accent-left">
+              <div className="card-title" style={{ marginBottom: '0.85rem' }}><I n="add_circle" /> Record Observation</div>
+
+              <div className="toggle-group">
+                <button className={`toggle-btn ${newObs.observationType === 'positive' ? 'active-pos' : ''}`}
+                  onClick={() => setNewObs({...newObs, observationType: 'positive'})}>
+                  <I n="thumb_up" className="mi-sm" /> Good Thing
+                </button>
+                <button className={`toggle-btn ${newObs.observationType === 'negative' ? 'active-neg' : ''}`}
+                  onClick={() => setNewObs({...newObs, observationType: 'negative'})}>
+                  <I n="build" className="mi-sm" /> Improvement
+                </button>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Title</label>
+                <input className="form-input" type="text" value={newObs.title} onChange={e => setNewObs({...newObs, title: e.target.value})} placeholder="Brief title of what you observed" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea className="form-textarea" value={newObs.description} onChange={e => setNewObs({...newObs, description: e.target.value})} placeholder="Describe what you observed... or use voice" />
+              </div>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.85rem' }}>
+                <button className={`voice-btn ${isRecording ? 'recording' : ''}`} onClick={toggleVoice}>
+                  <I n={isRecording ? 'stop' : 'mic'} className="mi-sm" /> {isRecording ? 'Stop' : 'Voice'}
+                </button>
+                <button className="btn btn-primary btn-sm" onClick={analyzeWithAI} disabled={!newObs.description.trim()}>
+                  <I n="smart_toy" className="mi-sm" /> AI Categorize
+                </button>
+              </div>
+
+              {aiSuggestion && (
+                <div style={{ padding: '0.6rem 0.85rem', background: 'var(--purple-light)', borderRadius: 'var(--radius-xs)', marginBottom: '0.85rem', fontSize: '0.85rem' }}>
+                  <strong>AI Suggests:</strong>
+                  <span className={`tag ${catTag(aiSuggestion.category)}`} style={{ marginLeft: '0.4rem' }}>{aiSuggestion.category}</span>
+                  <span className="tag tag-dark" style={{ marginLeft: '0.3rem' }}>{aiSuggestion.observationArea}</span>
+                  <span className={`tag ${aiSuggestion.observationType === 'positive' ? 'tag-success' : 'tag-danger'}`} style={{ marginLeft: '0.3rem' }}>{aiSuggestion.observationType}</span>
+                </div>
+              )}
+
+              <div className="upload-zone">
+                <input type="file" accept="image/*,video/*" multiple onChange={handleFileUpload} capture="environment" />
+                <I n="photo_camera" className="mi-lg" style={{ display: 'block', marginBottom: '0.3rem' }} />
+                {uploading ? 'Uploading...' : 'Tap to capture photo/video'}
+              </div>
+              {attachments.length > 0 && (
+                <div className="upload-previews">
+                  {attachments.map((att, idx) => (
+                    <div key={idx} className="upload-thumb">
+                      {att.fileType === 'video' ? <video src={att.url} /> : <img src={att.url} alt={att.originalName} />}
+                      <button className="remove-btn" onClick={() => removeAttachment(idx)}>x</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="form-row" style={{ marginTop: '0.5rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Observation Area (PSS)</label>
+                  <select className="form-select" value={newObs.observationArea} onChange={e => setNewObs({...newObs, observationArea: e.target.value})}>
+                    <option value="">Select area...</option>
+                    {OBSERVATION_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Waste Category</label>
+                  <select className="form-select" value={newObs.category} onChange={e => setNewObs({...newObs, category: e.target.value})}>
+                    <option value="">Select category...</option>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="form-row-3">
+                <div className="form-group">
+                  <label className="form-label">Location</label>
+                  <input className="form-input" type="text" value={newObs.location} onChange={e => setNewObs({...newObs, location: e.target.value})} placeholder="e.g. Assembly Line 2" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Person Met</label>
+                  <input className="form-input" type="text" value={newObs.personMet} onChange={e => setNewObs({...newObs, personMet: e.target.value})} placeholder="Who did you meet?" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Action By</label>
+                  <input className="form-input" type="text" value={newObs.personTagged} onChange={e => setNewObs({...newObs, personTagged: e.target.value})} placeholder="Who should act?" />
+                </div>
+              </div>
+
+              <button className="btn btn-success btn-lg" onClick={submitObservation} disabled={loading || !newObs.title || !newObs.category || !newObs.observationArea} style={{ marginTop: '0.5rem' }}>
+                <I n="save" className="mi-sm" /> {loading ? 'Saving...' : 'Save Observation'}
+              </button>
+            </div>
+          )}
+
+          {/* IoT + 10Q */}
+          {walkInfo?.status !== 'completed' && (
+            <>
+              <IoTFloorMonitor />
+              <TenQuestionsFramework walkId={walkId} />
+            </>
+          )}
+
+          {/* Observations List */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="list" /> Observations ({observations.length})</div>
+            {observations.length === 0 ? (
+              <div className="empty-state"><I n="visibility_off" /><p>No observations yet. Start recording!</p></div>
+            ) : (
+              observations.map(obs => (
+                <div key={obs._id} className={`obs-item type-${obs.observationType || 'negative'}`}>
+                  <div className="obs-tags">
+                    <span className={`tag ${obs.observationType === 'positive' ? 'tag-success' : 'tag-danger'}`}>
+                      {obs.observationType === 'positive' ? 'Good' : 'Improve'}
+                    </span>
+                    <span className={`tag ${catTag(obs.category)}`}>{obs.category}</span>
+                    {obs.observationArea && <span className="tag tag-dark">{obs.observationArea}</span>}
+                  </div>
+                  <div className="obs-title">{obs.title}</div>
+                  <div className="obs-desc">{obs.description}</div>
+                  {obs.attachments && obs.attachments.length > 0 && (
+                    <div className="upload-previews" style={{ marginTop: '0.5rem' }}>
+                      {obs.attachments.map((att, idx) => (
+                        <div key={idx} className="upload-thumb" style={{ cursor: 'pointer' }}
+                          onClick={() => setLightboxSrc({ url: att.url, type: att.fileType === 'video' ? 'video' : 'image' })}>
+                          {att.fileType === 'video' ? <video src={att.url} /> : <img src={att.url} alt={att.originalName} />}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="obs-meta-row">
+                    {obs.location && <span><I n="location_on" className="mi-sm" /> {obs.location}</span>}
+                    {obs.personMet && <span><I n="person" className="mi-sm" /> {obs.personMet}</span>}
+                    {obs.personTagged && <span><I n="assignment_ind" className="mi-sm" /> {obs.personTagged}</span>}
+                  </div>
+                  <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============ IoT FLOOR MONITOR ============
+    function IoTFloorMonitor() {
+      const [floorData, setFloorData] = useState(null);
+      const [expanded, setExpanded] = useState(false);
+
+      useEffect(() => {
+        const fetch_ = async () => { try { const r = await fetch('/api/iot/floor'); setFloorData(await r.json()); } catch {} };
+        fetch_();
+        const iv = setInterval(fetch_, 10000);
+        return () => clearInterval(iv);
+      }, []);
+
+      if (!floorData) return null;
+      const sc = { running: 'var(--success)', idle: 'var(--warning)', maintenance: 'var(--info)', error: 'var(--danger)' };
+
+      return (
+        <div className="card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+            <div className="card-title"><I n="precision_manufacturing" /> IoT Floor Monitor</div>
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+              {floorData.alerts.length > 0 && <span className="tag tag-danger">{floorData.alerts.length} Alert{floorData.alerts.length > 1 ? 's' : ''}</span>}
+              <I n={expanded ? 'expand_less' : 'expand_more'} />
+            </div>
+          </div>
+          <div className="stats-grid" style={{ marginTop: '0.75rem' }}>
+            {[
+              { v: floorData.summary.running, l: 'Running', c: 'var(--success)' },
+              { v: floorData.summary.idle, l: 'Idle', c: 'var(--warning)' },
+              { v: floorData.summary.error, l: 'Error', c: 'var(--danger)' },
+              { v: floorData.summary.avgOEE + '%', l: 'Avg OEE', c: 'var(--info)' },
+            ].map((s, i) => (
+              <div key={i} className="stat-card" style={{ borderBottom: `3px solid ${s.c}` }}>
+                <div className="stat-value" style={{ fontSize: '1.3rem' }}>{s.v}</div>
+                <div className="stat-label">{s.l}</div>
+              </div>
+            ))}
+          </div>
+          {floorData.alerts.map((alert, idx) => (
+            <div key={idx} className={`notif-item ${alert.level === 'critical' ? 'notif-critical' : 'notif-warning'}`} style={{ fontSize: '0.85rem' }}>
+              <strong>{alert.machine}:</strong> {alert.message}
+            </div>
+          ))}
+          {expanded && (
+            <div className="fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.6rem', marginTop: '0.6rem' }}>
+              {floorData.machines.map(m => (
+                <div key={m.id} className="iot-machine" style={{ borderColor: sc[m.status] || 'var(--border)' }}>
+                  <div className="iot-machine-header">
+                    <strong style={{ fontSize: '0.85rem' }}>{m.name}</strong>
+                    <span className="tag" style={{ background: sc[m.status], color: 'white' }}>{m.status}</span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{m.area}</div>
+                  {m.status === 'running' && (
+                    <div className="iot-metrics">
+                      <span>OEE: <strong>{m.metrics.oee}%</strong></span>
+                      <span>Temp: <strong>{m.metrics.temperature}C</strong></span>
+                      <span>Parts: <strong>{m.metrics.partsProduced}</strong></span>
+                      <span>Defect: <strong>{m.metrics.defectRate}%</strong></span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ 10 QUESTIONS ============
+    const TEN_QUESTIONS = [
+      { id: 1, question: "What is the business problem you are trying to solve?", category: "Strategy", hint: "Link to company objectives, KPIs, or strategic goals." },
+      { id: 2, question: "Who owns this process?", category: "Ownership", hint: "Identify the process owner and their accountability." },
+      { id: 3, question: "What does the customer order look like?", category: "Customer", hint: "Understand demand patterns, order frequency, and variations." },
+      { id: 4, question: "What is the takt time?", category: "Pace", hint: "Available production time / Customer demand rate." },
+      { id: 5, question: "What is the pacemaker process?", category: "Pace", hint: "The single point that sets the pace for entire flow." },
+      { id: 6, question: "How do you release work at the pacemaker?", category: "Flow", hint: "How are production instructions communicated? Pull or push?" },
+      { id: 7, question: "How do you level the mix at the pacemaker?", category: "Flow", hint: "Is production leveled (heijunka) or batched?" },
+      { id: 8, question: "How do you create flow?", category: "Flow", hint: "One-piece flow, FIFO lanes, or supermarkets?" },
+      { id: 9, question: "How capable and available is the final step?", category: "Capability", hint: "Check OEE, first-pass yield, and downtime." },
+      { id: 10, question: "How does material and information flow?", category: "Flow", hint: "Map physical flow and information signals." }
+    ];
+
+    function TenQuestionsFramework({ walkId }) {
+      const [answers, setAnswers] = useState({});
+      const [currentQ, setCurrentQ] = useState(0);
+      const [saved, setSaved] = useState(false);
+
+      const saveAnswers = async () => {
+        try {
+          const summary = TEN_QUESTIONS.map(q => `Q${q.id}: ${q.question}\nA: ${answers[q.id] || 'Not answered'}`).join('\n\n');
+          await fetch('/api/walks/submit-observation', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walkId, title: '10-Questions Framework Assessment', description: summary, category: 'Other', observationArea: 'Review Meeting', observationType: 'negative', location: '', personTagged: '', personMet: '' })
+          });
+          setSaved(true);
+        } catch { alert('Failed to save'); }
+      };
+
+      const q = TEN_QUESTIONS[currentQ];
+      const answered = Object.values(answers).filter(a => a && a.trim()).length;
+      const progress = (answered / 10) * 100;
+
+      return (
+        <div className="card card-accent-purple">
+          <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="quiz" /> 10-Questions Framework</div>
+          <div className="card-subtitle" style={{ marginBottom: '0.75rem' }}>Gemba Moonwalker methodology assessment</div>
+
+          <div className="progress-track" style={{ marginBottom: '0.5rem' }}>
+            <div className="progress-fill" style={{ width: `${progress}%`, background: 'var(--success)' }}></div>
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.75rem' }}>{answered}/10 answered</div>
+
+          {saved ? (
+            <div className="empty-state" style={{ color: 'var(--success)' }}>
+              <I n="check_circle" /><p style={{ fontWeight: 600 }}>Assessment Saved!</p>
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.85rem' }}>
+                {TEN_QUESTIONS.map((tq, idx) => (
+                  <button key={tq.id} onClick={() => setCurrentQ(idx)} style={{
+                    width: '32px', height: '32px', borderRadius: '50%', border: 'none', cursor: 'pointer',
+                    fontWeight: 700, fontSize: '0.78rem', transition: 'var(--transition)',
+                    background: currentQ === idx ? 'var(--primary)' : answers[tq.id] ? 'var(--success)' : 'var(--border)',
+                    color: currentQ === idx || answers[tq.id] ? 'white' : 'var(--text-secondary)'
+                  }}>{tq.id}</button>
+                ))}
+              </div>
+
+              <div style={{ background: 'var(--bg)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--purple)', marginBottom: '0.85rem' }}>
+                <span className="tag tag-purple" style={{ marginBottom: '0.3rem' }}>{q.category}</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: '0.5rem' }}>Q{q.id}/10</span>
+                <h4 style={{ margin: '0.35rem 0', fontSize: '0.95rem', color: 'var(--text)' }}>{q.question}</h4>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', marginBottom: '0.6rem' }}>{q.hint}</p>
+                <textarea className="form-textarea" value={answers[q.id] || ''} onChange={e => setAnswers({...answers, [q.id]: e.target.value})}
+                  placeholder="Record your findings..." style={{ minHeight: '70px' }} />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <button className="btn btn-ghost" onClick={() => setCurrentQ(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
+                  <I n="chevron_left" className="mi-sm" /> Previous
+                </button>
+                {currentQ < 9 ? (
+                  <button className="btn btn-primary" onClick={() => setCurrentQ(currentQ + 1)}>Next <I n="chevron_right" className="mi-sm" /></button>
+                ) : (
+                  <button className="btn btn-success" onClick={saveAnswers} disabled={answered === 0}><I n="save" className="mi-sm" /> Save</button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
+
+    // ============ CHART COMPONENT ============
+    function ChartCanvas({ type, data, options, height }) {
+      const chartRef = useRef(null);
+      const callbackRef = useCallback(node => {
+        if (chartRef.current) { chartRef.current.destroy(); chartRef.current = null; }
+        if (node) {
+          chartRef.current = new Chart(node.getContext('2d'), {
+            type, data,
+            options: { responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { labels: { font: { family: 'Inter', size: 12 }, padding: 12, usePointStyle: true, pointStyleWidth: 8 } } },
+              ...options
+            }
+          });
+        }
+      }, [type, JSON.stringify(data)]);
+      return <div style={{ height: height || '280px' }}><canvas ref={callbackRef}></canvas></div>;
+    }
+
+    const CHART_COLORS = ['#6366f1', '#f59e0b', '#8b5cf6', '#ef4444', '#10b981', '#3b82f6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#a855f7', '#64748b', '#84cc16', '#e11d48', '#0ea5e9'];
+
+    // ============ REPORTS ============
+    function ReportsPage() {
+      const [walks, setWalks] = useState([]);
+      const [stats, setStats] = useState(null);
+      const [selectedWalk, setSelectedWalk] = useState(null);
+      const [reviewForm, setReviewForm] = useState({ reviewNotes: '', reviewedBy: '' });
+
+      useEffect(() => { fetchData(); }, []);
+      const fetchData = async () => {
+        try {
+          const [wR, sR] = await Promise.all([fetch('/api/walks/all'), fetch('/api/walks/stats')]);
+          setWalks((await wR.json()).walks || []);
+          setStats(await sR.json());
+        } catch {}
+      };
+
+      const submitReview = async (walkId) => {
+        try {
+          await fetch(`/api/walks/review/${walkId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reviewForm) });
+          setReviewForm({ reviewNotes: '', reviewedBy: '' }); setSelectedWalk(null); fetchData();
+        } catch { alert('Failed to save review'); }
+      };
+
+      return (
+        <div>
+          <div className="card">
+            <div className="card-header">
+              <div>
+                <div className="card-title"><I n="bar_chart" /> Reports & Analytics</div>
+                <div className="card-subtitle">Track observations and improvement trends</div>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => window.open('/api/walks/export/csv', '_blank')}>
+                <I n="download" className="mi-sm" /> Export CSV
+              </button>
+            </div>
+          </div>
+
+          {stats && (
+            <>
+              <div className="stats-grid">
+                {[
+                  { v: stats.totalWalks, l: 'Walks', c: '' },
+                  { v: stats.totalObservations, l: 'Observations', c: '' },
+                  { v: stats.byType?.positive || 0, l: 'Good Things', c: 'var(--success)' },
+                  { v: stats.byType?.negative || 0, l: 'Improvements', c: 'var(--danger)' },
+                  { v: stats.completedWalks, l: 'Completed', c: '' },
+                  { v: stats.reviewedWalks, l: 'Reviewed', c: '' },
+                ].map((s, i) => (
+                  <div key={i} className="stat-card">
+                    <div className="stat-value" style={s.c ? { color: s.c } : {}}>{s.v}</div>
+                    <div className="stat-label">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="charts-row">
+                <div className="card">
+                  <div className="card-title" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>Waste Categories</div>
+                  {Object.keys(stats.byCategory || {}).length > 0 ? (
+                    <ChartCanvas type="doughnut" data={{
+                      labels: Object.keys(stats.byCategory),
+                      datasets: [{ data: Object.values(stats.byCategory), backgroundColor: CHART_COLORS, borderWidth: 2, borderColor: '#fff' }]
+                    }} options={{ plugins: { legend: { position: 'bottom' } }, cutout: '60%' }} />
+                  ) : <div className="empty-state"><p>No data yet</p></div>}
+                </div>
+                <div className="card">
+                  <div className="card-title" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>Good vs Improvements</div>
+                  <ChartCanvas type="doughnut" data={{
+                    labels: ['Good Things', 'Improvements'],
+                    datasets: [{ data: [stats.byType?.positive || 0, stats.byType?.negative || 0], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 2, borderColor: '#fff' }]
+                  }} options={{ plugins: { legend: { position: 'bottom' } }, cutout: '60%' }} />
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>Observations by PSS Area</div>
+                {Object.keys(stats.byArea || {}).length > 0 ? (
+                  <ChartCanvas type="bar" height="320px" data={{
+                    labels: Object.keys(stats.byArea).sort((a,b) => stats.byArea[b] - stats.byArea[a]),
+                    datasets: [{ label: 'Count', data: Object.keys(stats.byArea).sort((a,b) => stats.byArea[b] - stats.byArea[a]).map(k => stats.byArea[k]), backgroundColor: CHART_COLORS, borderRadius: 6, barPercentage: 0.7 }]
+                  }} options={{ indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { display: false } }, y: { grid: { display: false } } } }} />
+                ) : <div className="empty-state"><p>No data yet</p></div>}
+              </div>
+            </>
+          )}
+
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="history" /> Walk History</div>
+            {walks.length === 0 ? (
+              <div className="empty-state"><I n="hiking" /><p>No walks yet. Start your first walk!</p></div>
+            ) : walks.map(walk => (
+              <div key={walk._id}>
+                <div className="walk-item">
+                  <div className="walk-info">
+                    <h4>{walk.title}</h4>
+                    <p>
+                      {walk.walker && <>{walk.walker} &middot; </>}
+                      {walk.observations?.length || 0} obs &middot; {new Date(walk.createdAt).toLocaleDateString()}
+                      {walk.reviewDate && <> &middot; Reviewed {new Date(walk.reviewDate).toLocaleDateString()}</>}
+                    </p>
+                  </div>
+                  <div className="walk-actions">
+                    <span className={`status-badge status-${walk.status}`}>{walk.status}</span>
+                    {walk.status === 'completed' && (
+                      <button className="btn btn-primary btn-sm" onClick={() => window.open(`/api/walks/summary/${walk._id}`, '_blank')}>Summary</button>
+                    )}
+                    {walk.status === 'completed' && !walk.reviewDate && (
+                      <button className="btn btn-warning btn-sm" onClick={() => setSelectedWalk(walk._id)}>Review</button>
+                    )}
+                  </div>
+                </div>
+                {selectedWalk === walk._id && (
+                  <div className="review-form-box fade-in">
+                    <div className="card-title" style={{ marginBottom: '0.6rem', fontSize: '0.9rem' }}>Add Review</div>
+                    <div className="form-group">
+                      <label className="form-label">Reviewed By</label>
+                      <input className="form-input" type="text" value={reviewForm.reviewedBy} onChange={e => setReviewForm({...reviewForm, reviewedBy: e.target.value})} placeholder="Reviewer name" />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Notes</label>
+                      <textarea className="form-textarea" value={reviewForm.reviewNotes} onChange={e => setReviewForm({...reviewForm, reviewNotes: e.target.value})} placeholder="Discussion points, action items..." />
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.4rem' }}>
+                      <button className="btn btn-success btn-sm" onClick={() => submitReview(walk._id)}>Save Review</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => setSelectedWalk(null)}>Cancel</button>
+                    </div>
+                  </div>
+                )}
+                {walk.reviewDate && (
+                  <div className="review-box">
+                    <strong style={{ fontSize: '0.85rem' }}>Review ({new Date(walk.reviewDate).toLocaleDateString()})</strong>
+                    {walk.reviewedBy && <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}> by {walk.reviewedBy}</span>}
+                    <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{walk.reviewNotes}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ============ SCHEDULE ============
+    function SchedulePage() {
+      const [formData, setFormData] = useState({ title: '', walker: '', frequency: 'weekly', scheduledDate: '', description: '' });
+      const [scheduled, setScheduled] = useState([]);
+
+      useEffect(() => { fetchScheduled(); }, []);
+      const fetchScheduled = async () => {
+        try { const d = await (await fetch('/api/walks/all')).json(); setScheduled((d.walks || []).filter(w => w.status === 'scheduled')); } catch {}
+      };
+      const scheduleWalk = async () => {
+        if (!formData.scheduledDate) { alert('Select a date'); return; }
+        try {
+          await fetch('/api/walks/schedule', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+          setFormData({ title: '', walker: '', frequency: 'weekly', scheduledDate: '', description: '' }); fetchScheduled();
+        } catch { alert('Failed to schedule'); }
+      };
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Schedule Walks</h1>
+            <p className="page-subtitle">PSS recommends: Ideally daily. Can be weekly, bimonthly, or monthly.</p>
+          </div>
+
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="event" /> Schedule a Walk</div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Walk Title</label>
+                <input className="form-input" type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Weekly Floor Walk" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Walker</label>
+                <input className="form-input" type="text" value={formData.walker} onChange={e => setFormData({...formData, walker: e.target.value})} placeholder="Who will conduct?" />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Frequency</label>
+                <select className="form-select" value={formData.frequency} onChange={e => setFormData({...formData, frequency: e.target.value})}>
+                  {FREQUENCIES.map(f => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Date</label>
+                <input className="form-input" type="date" value={formData.scheduledDate} onChange={e => setFormData({...formData, scheduledDate: e.target.value})} />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Focus Area</label>
+              <input className="form-input" type="text" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Optional focus" />
+            </div>
+            <button className="btn btn-success" onClick={scheduleWalk}><I n="event_available" className="mi-sm" /> Schedule Walk</button>
+          </div>
+
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="upcoming" /> Upcoming Walks</div>
+            {scheduled.length === 0 ? (
+              <div className="empty-state"><I n="event_busy" /><p>No walks scheduled yet.</p></div>
+            ) : scheduled.map(w => (
+              <div key={w._id} className="walk-item">
+                <div className="walk-info">
+                  <h4>{w.title || 'Scheduled Walk'}</h4>
+                  <p>{w.walker && <>{w.walker} &middot; </>}{w.frequency}{w.scheduledDate && <> &middot; {new Date(w.scheduledDate).toLocaleDateString()}</>}</p>
+                </div>
+                <span className="status-badge status-scheduled">Scheduled</span>
+              </div>
+            ))}
+          </div>
+
+          <RecurringScheduler />
+        </div>
+      );
+    }
+
+    // ============ RECURRING SCHEDULER ============
+    function RecurringScheduler() {
+      const [recurring, setRecurring] = useState([]);
+      const [form, setForm] = useState({ title: '', walker: '', frequency: 'daily', description: '' });
+
+      useEffect(() => { fetchR(); }, []);
+      const fetchR = async () => { try { setRecurring((await (await fetch('/api/walks/recurring')).json()).recurring || []); } catch {} };
+      const addR = async () => {
+        if (!form.frequency || form.frequency === 'adhoc') { alert('Select a frequency'); return; }
+        try { await fetch('/api/walks/recurring', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        setForm({ title: '', walker: '', frequency: 'daily', description: '' }); fetchR(); } catch {}
+      };
+      const removeR = async (id) => { try { await fetch(`/api/walks/recurring/${id}`, { method: 'DELETE' }); fetchR(); } catch {} };
+
+      const cronDesc = { daily: 'Every weekday at 8:00 AM', weekly: 'Every Monday at 8:00 AM', bimonthly: '1st & 15th of month', monthly: '1st of each month' };
+
+      return (
+        <div className="card card-accent-purple">
+          <div className="card-title" style={{ marginBottom: '0.3rem' }}><I n="autorenew" /> Auto-Recurring Walks</div>
+          <div className="card-subtitle" style={{ marginBottom: '0.75rem' }}>Automatic walk creation on a schedule</div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Title</label>
+              <input className="form-input" type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Daily Morning Walk" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Walker</label>
+              <input className="form-input" type="text" value={form.walker} onChange={e => setForm({...form, walker: e.target.value})} placeholder="Who?" />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Frequency</label>
+              <select className="form-select" value={form.frequency} onChange={e => setForm({...form, frequency: e.target.value})}>
+                <option value="daily">Daily</option><option value="weekly">Weekly</option>
+                <option value="bimonthly">Bimonthly</option><option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Schedule</label>
+              <div className="form-hint" style={{ marginTop: '0.6rem' }}>{cronDesc[form.frequency] || ''}</div>
+            </div>
+          </div>
+          <button className="btn btn-success btn-sm" onClick={addR}><I n="add" className="mi-sm" /> Add Schedule</button>
+          {recurring.length > 0 && (
+            <div style={{ marginTop: '0.85rem' }}>
+              {recurring.map(r => (
+                <div key={r.id} className="walk-item">
+                  <div className="walk-info">
+                    <h4>{r.title || 'Recurring Walk'}</h4>
+                    <p>{r.walker && <>{r.walker} &middot; </>}{r.frequency} &middot; {r.cronExpr}</p>
+                  </div>
+                  <button className="btn btn-danger btn-sm" onClick={() => removeR(r.id)}>Remove</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ EMPLOYEE SUGGESTION ============
+    function EmployeeSuggestionBox() {
+      const [form, setForm] = useState({ title: '', description: '', observationArea: '', location: '', submittedBy: '' });
+      const [submitted, setSubmitted] = useState(false);
+      const [points, setPoints] = useState(0);
+
+      const submit = async () => {
+        if (!form.title || !form.submittedBy) { alert('Name and title are required'); return; }
+        try {
+          const data = await (await fetch('/api/walks/employee-suggestion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })).json();
+          setPoints(data.kaizenPoints || 10); setSubmitted(true);
+          setForm({ title: '', description: '', observationArea: '', location: '', submittedBy: '' });
+          setTimeout(() => setSubmitted(false), 5000);
+        } catch { alert('Failed to submit'); }
+      };
+
+      return (
+        <div className="card card-accent-purple">
+          <div className="card-title" style={{ marginBottom: '0.3rem' }}><I n="lightbulb" /> Employee Suggestion Box</div>
+          <div className="card-subtitle" style={{ marginBottom: '0.75rem' }}>Share observations and earn Kaizen points!</div>
+          {submitted ? (
+            <div style={{ textAlign: 'center', padding: '1.5rem' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--success)' }}>+{points} Points!</div>
+              <p style={{ color: 'var(--text-secondary)' }}>Thank you! Your suggestion has been recorded.</p>
+            </div>
+          ) : (
+            <>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Your Name *</label>
+                  <input className="form-input" type="text" value={form.submittedBy} onChange={e => setForm({...form, submittedBy: e.target.value})} placeholder="Your name" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Suggestion Title *</label>
+                  <input className="form-input" type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="What did you notice?" />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea className="form-textarea" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe your idea..." style={{ minHeight: '60px' }} />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Area</label>
+                  <select className="form-select" value={form.observationArea} onChange={e => setForm({...form, observationArea: e.target.value})}>
+                    <option value="">Select...</option>
+                    {OBSERVATION_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Location</label>
+                  <input className="form-input" type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="Where?" />
+                </div>
+              </div>
+              <button className="btn btn-success" onClick={submit}><I n="send" className="mi-sm" /> Submit</button>
+            </>
+          )}
+        </div>
+      );
+    }
+
+    // ============ KAIZEN LEADERBOARD ============
+    function KaizenLeaderboard() {
+      const [lb, setLb] = useState([]);
+      useEffect(() => { fetch('/api/walks/leaderboard').then(r => r.json()).then(d => setLb(d.leaderboard || [])).catch(() => {}); }, []);
+      if (!lb.length) return null;
+      const medals = ['1st', '2nd', '3rd'];
+      return (
+        <div className="card">
+          <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="emoji_events" /> Kaizen Leaderboard</div>
+          <table className="data-table">
+            <thead><tr><th>Rank</th><th>Name</th><th style={{ textAlign: 'center' }}>Contributions</th><th style={{ textAlign: 'center' }}>Points</th></tr></thead>
+            <tbody>
+              {lb.slice(0, 10).map((e, i) => (
+                <tr key={e.name} style={{ fontWeight: i < 3 ? 600 : 400 }}>
+                  <td>{i < 3 ? medals[i] : i + 1}</td>
+                  <td>{e.name}</td>
+                  <td style={{ textAlign: 'center' }}>{e.contributions}</td>
+                  <td style={{ textAlign: 'center' }}><span className="tag tag-warning">{e.totalPoints}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+    // ============ ACTIONS ============
+    function ActionsPage() {
+      const [actions, setActions] = useState([]);
+      const [summary, setSummary] = useState({ open: 0, inProgress: 0, closed: 0, total: 0 });
+      const [filter, setFilter] = useState('all');
+
+      useEffect(() => { fetchActions(); }, []);
+      const fetchActions = async () => {
+        try { const d = await (await fetch('/api/walks/actions')).json(); setActions(d.actions || []); setSummary(d.summary || {}); } catch {}
+      };
+      const updateAction = async (id, status, notes) => {
+        try { await fetch(`/api/walks/action/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ actionStatus: status, actionNotes: notes }) }); fetchActions(); } catch {}
+      };
+
+      const filtered = filter === 'all' ? actions : actions.filter(a => (a.actionStatus || 'open') === filter);
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Action Tracker</h1>
+            <p className="page-subtitle">Follow-through on all tagged action items</p>
+          </div>
+
+          <div className="stats-grid">
+            {[
+              { v: summary.total, l: 'Total', f: 'all', c: '' },
+              { v: summary.open, l: 'Open', f: 'open', c: 'var(--danger)' },
+              { v: summary.inProgress, l: 'In Progress', f: 'in-progress', c: 'var(--warning)' },
+              { v: summary.closed, l: 'Closed', f: 'closed', c: 'var(--success)' },
+            ].map((s, i) => (
+              <div key={i} className={`stat-card clickable ${filter === s.f ? 'selected' : ''}`} onClick={() => setFilter(s.f)}>
+                <div className="stat-value" style={s.c ? { color: s.c } : {}}>{s.v}</div>
+                <div className="stat-label">{s.l}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="task_alt" /> Actions ({filtered.length})</div>
+            {filtered.length === 0 ? (
+              <div className="empty-state"><I n="check_circle" /><p>No actions {filter !== 'all' ? `with "${filter}" status` : 'yet'}</p></div>
+            ) : filtered.map(a => (
+              <div key={a._id} className={`action-item action-${a.actionStatus || 'open'}`}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <div style={{ flex: 1, minWidth: '200px' }}>
+                    <div className="obs-title">{a.title}</div>
+                    <div className="obs-tags" style={{ marginTop: '0.3rem' }}>
+                      {a.observationArea && <span className="tag tag-dark">{a.observationArea}</span>}
+                      {a.location && <span className="tag tag-neutral">{a.location}</span>}
+                    </div>
+                    <div className="obs-desc" style={{ marginTop: '0.3rem' }}>{a.description}</div>
+                    <div className="obs-meta-row">
+                      <span><I n="assignment_ind" className="mi-sm" /> {a.personTagged}</span>
+                      {a.personMet && <span><I n="person" className="mi-sm" /> {a.personMet}</span>}
+                      <span><I n="calendar_today" className="mi-sm" /> {new Date(a.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    {a.actionNotes && <div style={{ marginTop: '0.3rem', fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--text-muted)' }}>Note: {a.actionNotes}</div>}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', minWidth: '140px' }}>
+                    <select className="form-select" value={a.actionStatus || 'open'} onChange={e => updateAction(a._id, e.target.value, a.actionNotes || '')}
+                      style={{ padding: '0.4rem', fontSize: '0.82rem' }}>
+                      <option value="open">Open</option><option value="in-progress">In Progress</option><option value="closed">Closed</option>
+                    </select>
+                    <input className="form-input" type="text" placeholder="Add note..." defaultValue={a.actionNotes || ''}
+                      onBlur={e => { if (e.target.value !== (a.actionNotes || '')) updateAction(a._id, a.actionStatus || 'open', e.target.value); }}
+                      style={{ padding: '0.4rem', fontSize: '0.82rem' }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ============ NOTIFICATIONS ============
+    function NotificationsPage() {
+      const [notifications, setNotifications] = useState([]);
+      useEffect(() => { fetch('/api/walks/notifications').then(r => r.json()).then(d => setNotifications(d.notifications || [])).catch(() => {}); }, []);
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Notifications</h1>
+            <p className="page-subtitle">Overdue actions, pending reviews, and hotspots</p>
+          </div>
+          {notifications.length === 0 ? (
+            <div className="card">
+              <div className="empty-state" style={{ color: 'var(--success)' }}>
+                <I n="check_circle" /><p style={{ fontWeight: 600 }}>All Clear! No alerts.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="card">
+              <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="notifications_active" /> Alerts ({notifications.length})</div>
+              {notifications.map((n, idx) => (
+                <div key={idx} className={`notif-item notif-${n.severity}`}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '0.88rem' }}>{n.message}</span>
+                    <span className={`tag tag-${n.severity === 'critical' ? 'danger' : n.severity === 'warning' ? 'warning' : 'info'}`}>{n.severity}</span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{n.type.replace(/_/g, ' ')}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ HISTORY / SEARCH ============
+    function HistoryPage() {
+      const [query, setQuery] = useState('');
+      const [filters, setFilters] = useState({ area: '', category: '', type: '', location: '' });
+      const [results, setResults] = useState([]);
+      const [repeatedIssues, setRepeatedIssues] = useState([]);
+      const [total, setTotal] = useState(0);
+      const [searched, setSearched] = useState(false);
+
+      const doSearch = async () => {
+        const params = new URLSearchParams();
+        if (query) params.set('q', query);
+        if (filters.area) params.set('area', filters.area);
+        if (filters.category) params.set('category', filters.category);
+        if (filters.type) params.set('type', filters.type);
+        if (filters.location) params.set('location', filters.location);
+        try {
+          const d = await (await fetch(`/api/walks/search?${params}`)).json();
+          setResults(d.results || []); setRepeatedIssues(d.repeatedIssues || []); setTotal(d.total || 0); setSearched(true);
+        } catch { alert('Search failed'); }
+      };
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Search History</h1>
+            <p className="page-subtitle">Find repeated issues and track patterns across walks</p>
+          </div>
+
+          <div className="card">
+            <div className="form-group">
+              <label className="form-label">Search</label>
+              <input className="form-input" type="text" value={query} onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') doSearch(); }}
+                placeholder="Search by title, description, location, person..." />
+            </div>
+            <div className="form-row" style={{ marginBottom: '0.5rem' }}>
+              <div className="form-group">
+                <label className="form-label">Area</label>
+                <select className="form-select" value={filters.area} onChange={e => setFilters({...filters, area: e.target.value})}>
+                  <option value="">All Areas</option>
+                  {OBSERVATION_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Category</label>
+                <select className="form-select" value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})}>
+                  <option value="">All</option>
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="form-row" style={{ marginBottom: '0.75rem' }}>
+              <div className="form-group">
+                <label className="form-label">Type</label>
+                <select className="form-select" value={filters.type} onChange={e => setFilters({...filters, type: e.target.value})}>
+                  <option value="">All</option>
+                  <option value="positive">Good Things</option>
+                  <option value="negative">Improvements</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input className="form-input" type="text" value={filters.location} onChange={e => setFilters({...filters, location: e.target.value})} placeholder="e.g. Assembly Line" />
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <button className="btn btn-primary" onClick={doSearch}><I n="search" className="mi-sm" /> Search</button>
+              <button className="btn btn-ghost" onClick={() => { setQuery(''); setFilters({ area: '', category: '', type: '', location: '' }); setResults([]); setRepeatedIssues([]); setSearched(false); }}>Clear</button>
+            </div>
+          </div>
+
+          {repeatedIssues.length > 0 && (
+            <div className="card card-accent-danger">
+              <div className="card-title" style={{ color: 'var(--danger)', marginBottom: '0.5rem' }}><I n="warning" /> Repeated Issues</div>
+              <div className="card-subtitle" style={{ marginBottom: '0.6rem' }}>Areas with multiple observations - recurring problems</div>
+              {repeatedIssues.map((issue, idx) => (
+                <div key={idx} className="notif-item notif-critical" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <strong>{issue.area}</strong> at <strong>{issue.location}</strong>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      {issue.observations.map((o, i) => <div key={i}>{o.title} ({o.category}) - {new Date(o.date).toLocaleDateString()}</div>)}
+                    </div>
+                  </div>
+                  <span className="tag tag-danger">{issue.count}x</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {searched && (
+            <div className="card">
+              <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="format_list_bulleted" /> Results ({total})</div>
+              {results.length === 0 ? (
+                <div className="empty-state"><I n="search_off" /><p>No observations found.</p></div>
+              ) : results.map(obs => (
+                <div key={obs._id} className={`obs-item type-${obs.observationType || 'negative'}`}>
+                  <div className="obs-tags">
+                    <span className={`tag ${obs.observationType === 'positive' ? 'tag-success' : 'tag-danger'}`}>
+                      {obs.observationType === 'positive' ? 'Good' : 'Improve'}
+                    </span>
+                    <span className={`tag ${catTag(obs.category)}`}>{obs.category}</span>
+                    {obs.observationArea && <span className="tag tag-dark">{obs.observationArea}</span>}
+                  </div>
+                  <div className="obs-title">{obs.title}</div>
+                  <div className="obs-desc">{obs.description}</div>
+                  <div className="obs-meta-row">
+                    {obs.location && <span><I n="location_on" className="mi-sm" /> {obs.location}</span>}
+                    {obs.personMet && <span><I n="person" className="mi-sm" /> {obs.personMet}</span>}
+                    {obs.personTagged && <span><I n="assignment_ind" className="mi-sm" /> {obs.personTagged}</span>}
+                  </div>
+                  <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
