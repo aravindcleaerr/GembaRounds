@@ -733,4 +733,71 @@ ${walk.reviewNotes ? `
   }
 });
 
+// ============ BACKUP (export all data as JSON) ============
+router.get('/backup', async (req, res) => {
+  try {
+    let walks, observations;
+    if (!req.dbConnected) {
+      walks = memStore.walks;
+      observations = memStore.observations;
+    } else {
+      walks = await Walk.find().lean();
+      observations = await Observation.find().lean();
+    }
+    res.json({ exportDate: new Date().toISOString(), walks, observations });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to export backup' });
+  }
+});
+
+// ============ RESTORE (import data from JSON backup) ============
+router.post('/restore', async (req, res) => {
+  try {
+    const { walks, observations } = req.body;
+    if (!walks && !observations) return res.status(400).json({ error: 'No data provided. Send { walks: [...], observations: [...] }' });
+    let walksInserted = 0, observationsInserted = 0, skipped = 0;
+
+    if (!req.dbConnected) {
+      // In-memory restore
+      if (walks && Array.isArray(walks)) {
+        walks.forEach(w => {
+          if (!memStore.walks.find(existing => existing._id === w._id)) {
+            memStore.walks.push(w);
+            walksInserted++;
+          } else { skipped++; }
+        });
+      }
+      if (observations && Array.isArray(observations)) {
+        observations.forEach(o => {
+          if (!memStore.observations.find(existing => existing._id === o._id)) {
+            memStore.observations.push(o);
+            observationsInserted++;
+          } else { skipped++; }
+        });
+      }
+    } else {
+      // MongoDB restore
+      if (walks && Array.isArray(walks)) {
+        for (const w of walks) {
+          try {
+            const existing = w._id ? await Walk.findById(w._id) : null;
+            if (!existing) { await Walk.create(w); walksInserted++; } else { skipped++; }
+          } catch { skipped++; }
+        }
+      }
+      if (observations && Array.isArray(observations)) {
+        for (const o of observations) {
+          try {
+            const existing = o._id ? await Observation.findById(o._id) : null;
+            if (!existing) { await Observation.create(o); observationsInserted++; } else { skipped++; }
+          } catch { skipped++; }
+        }
+      }
+    }
+    res.json({ message: 'Restore complete', walksInserted, observationsInserted, skipped });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to restore backup' });
+  }
+});
+
 module.exports = router;

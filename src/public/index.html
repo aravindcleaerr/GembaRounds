@@ -56,6 +56,81 @@
       --nav-height: 68px;
       --bottom-nav: 76px;
     }
+
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #334155;
+      --border-light: #1e293b;
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --primary: #818cf8;
+      --primary-light: rgba(99,102,241,0.15);
+      --primary-dark: #6366f1;
+      --success: #34d399;
+      --success-light: rgba(16,185,129,0.15);
+      --danger: #f87171;
+      --danger-light: rgba(239,68,68,0.15);
+      --warning: #fbbf24;
+      --warning-light: rgba(245,158,11,0.15);
+      --info: #60a5fa;
+      --info-light: rgba(59,130,246,0.15);
+      --purple: #a78bfa;
+      --purple-light: rgba(139,92,246,0.15);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow: 0 2px 8px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.3);
+      --shadow-glow: 0 0 20px rgba(99,102,241,0.25);
+    }
+    [data-theme="dark"] body {
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(99,102,241,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139,92,246,0.04) 0%, transparent 50%);
+    }
+    [data-theme="dark"] .card {
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .stat-card {
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .page-title {
+      background: linear-gradient(135deg, #e2e8f0, #818cf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    [data-theme="dark"] .auth-card {
+      background: rgba(30,41,59,0.95);
+      border-color: rgba(255,255,255,0.08);
+    }
+    [data-theme="dark"] .form-input:focus,
+    [data-theme="dark"] .form-select:focus,
+    [data-theme="dark"] .form-textarea:focus {
+      background: var(--surface);
+    }
+    [data-theme="dark"] .review-box {
+      background: rgba(16,185,129,0.1);
+      border-color: rgba(52,211,153,0.2);
+    }
+    [data-theme="dark"] .review-form-box {
+      background: rgba(245,158,11,0.1);
+      border-color: rgba(251,191,36,0.2);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition); padding: 0;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.2); }
+    .theme-toggle .mi { font-size: 20px; }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
     body {
@@ -608,12 +683,49 @@
     .lift { transition: var(--transition); }
     .lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
   </style>
+  <script>
+    // Apply theme immediately to prevent flash
+    (function(){
+      var t = localStorage.getItem('gemba_theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
+
+    // ============ INPUT SANITIZATION ============
+    const sanitize = (str) => str ? String(str).replace(/[<>]/g, '').trim() : '';
+
+    // ============ ERROR BOUNDARY ============
+    class ErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+      }
+      static getDerivedStateFromError(error) {
+        return { hasError: true };
+      }
+      render() {
+        if (this.state.hasError) {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '2rem', textAlign: 'center', background: 'var(--bg)', color: 'var(--text)' }}>
+              <span className="mi" style={{ fontSize: '48px', color: 'var(--danger)', marginBottom: '1rem' }}>error_outline</span>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Something went wrong</h2>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>An unexpected error occurred. Please reload the page.</p>
+              <button className="btn btn-primary btn-lg" onClick={() => window.location.reload()}>
+                <span className="mi mi-sm">refresh</span> Reload
+              </button>
+            </div>
+          );
+        }
+        return this.props.children;
+      }
+    }
 
     const OBSERVATION_AREAS = [
       'House Keeping (5S)', 'Safety', 'Discipline', 'Productivity',
@@ -641,11 +753,12 @@
 
       const handleSubmit = async () => {
         setError('');
+        const sanitizedForm = { ...form, name: sanitize(form.name), email: sanitize(form.email), department: sanitize(form.department) };
         const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
         try {
           const res = await fetch(endpoint, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(form)
+            body: JSON.stringify(sanitizedForm)
           });
           const data = await res.json();
           if (res.ok) {
@@ -729,6 +842,27 @@
       const [currentView, setCurrentView] = useState('home');
       const [currentWalkId, setCurrentWalkId] = useState(null);
       const [user, setUser] = useState(null);
+      const [theme, setTheme] = useState(() => {
+        const saved = localStorage.getItem('gemba_theme');
+        if (saved) return saved;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      });
+
+      useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('gemba_theme', theme);
+      }, [theme]);
+
+      useEffect(() => {
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = (e) => {
+          if (!localStorage.getItem('gemba_theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+          }
+        };
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+      }, []);
 
       useEffect(() => {
         const savedUser = localStorage.getItem('gemba_user');
@@ -777,6 +911,9 @@
               GembaRounds
             </div>
             <div className="topnav-actions">
+              <button className="theme-toggle" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+                <I n={theme === 'dark' ? 'light_mode' : 'dark_mode'} />
+              </button>
               <div className="topnav-user" onClick={handleLogout} title="Click to logout">
                 <div className="avatar">{initials}</div>
                 <span className="user-name">{user.name}</span>
@@ -1007,11 +1144,12 @@
         if (!newObs.title || !newObs.category || !newObs.observationArea) {
           alert('Please fill title, category, and area'); return;
         }
+        const sanitizedObs = { ...newObs, title: sanitize(newObs.title), description: sanitize(newObs.description), location: sanitize(newObs.location), personTagged: sanitize(newObs.personTagged), personMet: sanitize(newObs.personMet) };
         setLoading(true);
         try {
           const response = await fetch('/api/walks/submit-observation', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ walkId, ...newObs, attachments })
+            body: JSON.stringify({ walkId, ...sanitizedObs, attachments })
           });
           if (response.ok) {
             setNewObs({ title: '', description: '', category: '', observationArea: '', observationType: 'negative', location: '', personTagged: '', personMet: '' });
@@ -1389,6 +1527,53 @@
     const CHART_COLORS = ['#6366f1', '#f59e0b', '#8b5cf6', '#ef4444', '#10b981', '#3b82f6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#a855f7', '#64748b', '#84cc16', '#e11d48', '#0ea5e9'];
 
     // ============ REPORTS ============
+    // ============ TREND ANALYSIS ============
+    function TrendAnalysis() {
+      const [trends, setTrends] = useState(null);
+      useEffect(() => {
+        fetch('/api/walks/trends?weeks=8').then(r => r.json()).then(setTrends).catch(() => {});
+      }, []);
+      if (!trends || !trends.weeks || trends.weeks.every(w => w.observations === 0)) return null;
+
+      return (
+        <div className="card">
+          <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="trending_up" /> Week-over-Week Trends</div>
+          <div className="card-subtitle" style={{ marginBottom: '0.75rem' }}>Observation volume and improvement rate over last 8 weeks</div>
+
+          <div className="charts-row">
+            <div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>Observations per Week</div>
+              <ChartCanvas type="bar" height="220px" data={{
+                labels: trends.weeks.map(w => w.label),
+                datasets: [
+                  { label: 'Good', data: trends.weeks.map(w => w.positive), backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.7 },
+                  { label: 'Improve', data: trends.weeks.map(w => w.negative), backgroundColor: '#ef4444', borderRadius: 4, barPercentage: 0.7 }
+                ]
+              }} options={{ plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 }, grid: { display: false } } } }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>Positive Rate Trend (%)</div>
+              <ChartCanvas type="line" height="220px" data={{
+                labels: trends.improvementTrend.map(t => t.label),
+                datasets: [{ label: 'Positive %', data: trends.improvementTrend.map(t => t.positiveRate), borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#6366f1' }]
+              }} options={{ plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' } } } }} />
+            </div>
+          </div>
+
+          {trends.topAreas && trends.topAreas.length > 0 && (
+            <div style={{ marginTop: '0.75rem' }}>
+              <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Top Focus Areas (all time)</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                {trends.topAreas.map((a, i) => (
+                  <span key={i} className="tag tag-dark">{a.area} ({a.count})</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     function ReportsPage() {
       const [walks, setWalks] = useState([]);
       const [stats, setStats] = useState(null);
@@ -1405,8 +1590,9 @@
       };
 
       const submitReview = async (walkId) => {
+        const sanitizedReview = { reviewNotes: sanitize(reviewForm.reviewNotes), reviewedBy: sanitize(reviewForm.reviewedBy) };
         try {
-          await fetch(`/api/walks/review/${walkId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reviewForm) });
+          await fetch(`/api/walks/review/${walkId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sanitizedReview) });
           setReviewForm({ reviewNotes: '', reviewedBy: '' }); setSelectedWalk(null); fetchData();
         } catch { alert('Failed to save review'); }
       };
@@ -1473,6 +1659,9 @@
               </div>
             </>
           )}
+
+          {/* Week-over-Week Trends */}
+          <TrendAnalysis />
 
           <div className="card">
             <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="history" /> Walk History</div>
@@ -1614,7 +1803,8 @@
       const fetchR = async () => { try { setRecurring((await (await fetch('/api/walks/recurring')).json()).recurring || []); } catch {} };
       const addR = async () => {
         if (!form.frequency || form.frequency === 'adhoc') { alert('Select a frequency'); return; }
-        try { await fetch('/api/walks/recurring', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        const sanitizedForm = { ...form, title: sanitize(form.title), walker: sanitize(form.walker), description: sanitize(form.description) };
+        try { await fetch('/api/walks/recurring', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sanitizedForm) });
         setForm({ title: '', walker: '', frequency: 'daily', description: '' }); fetchR(); } catch {}
       };
       const removeR = async (id) => { try { await fetch(`/api/walks/recurring/${id}`, { method: 'DELETE' }); fetchR(); } catch {} };
@@ -1674,8 +1864,9 @@
 
       const submit = async () => {
         if (!form.title || !form.submittedBy) { alert('Name and title are required'); return; }
+        const sanitizedForm = { ...form, title: sanitize(form.title), description: sanitize(form.description), location: sanitize(form.location), submittedBy: sanitize(form.submittedBy) };
         try {
-          const data = await (await fetch('/api/walks/employee-suggestion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })).json();
+          const data = await (await fetch('/api/walks/employee-suggestion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sanitizedForm) })).json();
           setPoints(data.kaizenPoints || 10); setSubmitted(true);
           setForm({ title: '', description: '', observationArea: '', location: '', submittedBy: '' });
           setTimeout(() => setSubmitted(false), 5000);
@@ -1983,7 +2174,8 @@
       );
     }
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<ErrorBoundary><App /></ErrorBoundary>);
 
     // PWA
     if ('serviceWorker' in navigator) {

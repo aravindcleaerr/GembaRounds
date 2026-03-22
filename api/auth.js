@@ -4,10 +4,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const connectDB = require('./_lib/db');
 const { User } = require('./_lib/models');
+const rateLimit = require('./_lib/ratelimit');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Rate limiting: 10 requests per minute (stricter for auth)
+app.use(rateLimit(10));
+
 app.use(async (req, res, next) => { await connectDB(); next(); });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'gembarounds-secret-key-change-in-production';

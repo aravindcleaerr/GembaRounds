@@ -5,11 +5,8 @@
   "main": "src/server/index.js",
   "scripts": {
     "start": "node src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon src/server/index.js",
-    "client": "cd src/public && npm start",
-    "build": "cd src/public && npm run build",
-    "install-all": "npm install && cd src/public && npm install"
+    "dev": "nodemon src/server/index.js",
+    "vercel-dev": "vercel dev"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

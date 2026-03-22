@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "",
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/api/walks/(.*)", "destination": "/api/walks" },
     { "source": "/api/auth/(.*)", "destination": "/api/auth" },

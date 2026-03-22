@@ -1,11 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./_lib/db');
-const { Walk, Observation, RecurringWalkConfig } = require('./_lib/models');
+const { Walk, Observation, RecurringWalkConfig, User } = require('./_lib/models');
+const rateLimit = require('./_lib/ratelimit');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Rate limiting: 60 requests per minute
+app.use(rateLimit(60));
 
 // Connect DB before each request
 app.use(async (req, res, next) => { await connectDB(); next(); });
@@ -250,6 +254,85 @@ ${walk.reviewNotes ? `<h2>Review Notes</h2><div class="meta"><p><strong>By:</str
     res.setHeader('Content-Type', 'text/html');
     res.send(html);
   } catch (e) { res.status(500).json({ error: 'Failed to generate summary' }); }
+});
+
+// ===== BACKUP (export all data as JSON) =====
+app.get('/api/walks/backup', async (req, res) => {
+  try {
+    const walks = await Walk.find().lean();
+    const observations = await Observation.find().lean();
+    const users = await User.find().select('-password').lean();
+    res.json({ exportDate: new Date().toISOString(), walks, observations, users });
+  } catch (e) { res.status(500).json({ error: 'Failed to export backup' }); }
+});
+
+// ===== RESTORE (import data from JSON backup) =====
+app.post('/api/walks/restore', async (req, res) => {
+  try {
+    const { walks, observations } = req.body;
+    if (!walks && !observations) return res.status(400).json({ error: 'No data provided. Send { walks: [...], observations: [...] }' });
+    let walksInserted = 0, observationsInserted = 0, skipped = 0;
+    if (walks && Array.isArray(walks)) {
+      for (const w of walks) {
+        try {
+          const existing = w._id ? await Walk.findById(w._id) : null;
+          if (!existing) { await Walk.create(w); walksInserted++; } else { skipped++; }
+        } catch { skipped++; }
+      }
+    }
+    if (observations && Array.isArray(observations)) {
+      for (const o of observations) {
+        try {
+          const existing = o._id ? await Observation.findById(o._id) : null;
+          if (!existing) { await Observation.create(o); observationsInserted++; } else { skipped++; }
+        } catch { skipped++; }
+      }
+    }
+    res.json({ message: 'Restore complete', walksInserted, observationsInserted, skipped });
+  } catch (e) { res.status(500).json({ error: 'Failed to restore backup' }); }
+});
+
+// ===== CROSS-WALK TREND ANALYSIS (week-over-week) =====
+app.get('/api/walks/trends', async (req, res) => {
+  try {
+    const weeks = parseInt(req.query.weeks) || 8;
+    const allObs = await Observation.find().lean();
+    const allWalks = await Walk.find().lean();
+    const now = new Date();
+    const weekData = [];
+
+    for (let i = weeks - 1; i >= 0; i--) {
+      const weekStart = new Date(now); weekStart.setDate(now.getDate() - (i + 1) * 7);
+      const weekEnd = new Date(now); weekEnd.setDate(now.getDate() - i * 7);
+      const label = weekStart.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
+      const weekObs = allObs.filter(o => { const d = new Date(o.timestamp); return d >= weekStart && d < weekEnd; });
+      const weekWalks = allWalks.filter(w => { const d = new Date(w.createdAt); return d >= weekStart && d < weekEnd; });
+
+      const positive = weekObs.filter(o => o.observationType === 'positive').length;
+      const negative = weekObs.filter(o => o.observationType === 'negative').length;
+      const actionsOpen = weekObs.filter(o => o.personTagged && (!o.actionStatus || o.actionStatus === 'open')).length;
+      const actionsClosed = weekObs.filter(o => o.personTagged && o.actionStatus === 'closed').length;
+
+      const byArea = {};
+      weekObs.forEach(o => { byArea[o.observationArea || 'Others'] = (byArea[o.observationArea || 'Others'] || 0) + 1; });
+
+      weekData.push({ label, weekStart: weekStart.toISOString(), weekEnd: weekEnd.toISOString(), walks: weekWalks.length, observations: weekObs.length, positive, negative, actionsOpen, actionsClosed, byArea });
+    }
+
+    // Calculate improvement rate (positive ratio trend)
+    const improvementTrend = weekData.map(w => {
+      const total = w.positive + w.negative;
+      return { label: w.label, positiveRate: total > 0 ? Math.round((w.positive / total) * 100) : 0, total };
+    });
+
+    // Top recurring areas across all weeks
+    const areaTotal = {};
+    allObs.forEach(o => { areaTotal[o.observationArea || 'Others'] = (areaTotal[o.observationArea || 'Others'] || 0) + 1; });
+    const topAreas = Object.entries(areaTotal).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([area, count]) => ({ area, count }));
+
+    res.json({ weeks: weekData, improvementTrend, topAreas, totalWeeks: weeks });
+  } catch (e) { res.status(500).json({ error: 'Failed to fetch trends' }); }
 });
 
 module.exports = app;

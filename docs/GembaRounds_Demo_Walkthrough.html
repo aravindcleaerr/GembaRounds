@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GembaRounds - Demo Walkthrough & Feature Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  @page { margin: 2cm 2.5cm; size: A4; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+    font-size: 11pt;
+    background: white;
+  }
+
+  .page-break { page-break-before: always; }
+
+  /* ===== COVER PAGE ===== */
+  .cover {
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    min-height: 90vh; text-align: center;
+    page-break-after: always;
+  }
+  .cover-logo {
+    width: 100px; height: 100px; border-radius: 24px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 40px; font-weight: 800;
+    margin-bottom: 2rem;
+    box-shadow: 0 12px 40px rgba(99,102,241,0.3);
+  }
+  .cover h1 {
+    font-size: 36pt; font-weight: 800;
+    background: linear-gradient(135deg, #1e293b, #4f46e5);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem; letter-spacing: -0.03em;
+  }
+  .cover h2 {
+    font-size: 16pt; font-weight: 400; color: #64748b;
+    margin-bottom: 2rem;
+  }
+  .cover-meta { font-size: 10pt; color: #94a3b8; margin-top: 1rem; }
+  .cover-meta a { color: #6366f1; text-decoration: none; font-weight: 600; }
+  .cover-badge {
+    display: inline-block; padding: 0.4rem 1.2rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; border-radius: 100px; font-weight: 600;
+    font-size: 10pt; margin-top: 1.5rem;
+  }
+
+  /* ===== HEADERS ===== */
+  h1 {
+    font-size: 22pt; font-weight: 800; color: #1e293b;
+    border-bottom: 3px solid #6366f1; padding-bottom: 0.5rem;
+    margin-bottom: 1rem; letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: 14pt; font-weight: 700; color: #4f46e5;
+    margin-top: 1.5rem; margin-bottom: 0.6rem;
+  }
+  h3 {
+    font-size: 12pt; font-weight: 600; color: #334155;
+    margin-top: 1rem; margin-bottom: 0.4rem;
+  }
+
+  /* ===== CONTENT ===== */
+  p { margin-bottom: 0.6rem; }
+  ul, ol { margin: 0.4rem 0 0.8rem 1.5rem; }
+  li { margin-bottom: 0.25rem; }
+  strong { color: #1e293b; }
+  code {
+    background: #f1f5f9; padding: 0.15rem 0.4rem;
+    border-radius: 4px; font-size: 9.5pt; color: #6366f1;
+  }
+  blockquote {
+    background: #f0f4ff; border-left: 4px solid #6366f1;
+    padding: 0.8rem 1rem; margin: 0.8rem 0;
+    font-style: italic; color: #475569; border-radius: 0 8px 8px 0;
+  }
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0; }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 0.6rem 0 1rem; font-size: 10pt;
+  }
+  th {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: white; padding: 0.5rem 0.7rem; text-align: left;
+    font-weight: 600; font-size: 9pt; text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child { border-radius: 0 6px 0 0; }
+  td {
+    padding: 0.45rem 0.7rem; border-bottom: 1px solid #f1f5f9;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .status-done {
+    display: inline-block; padding: 0.15rem 0.5rem;
+    background: #ecfdf5; color: #059669; border-radius: 100px;
+    font-size: 8.5pt; font-weight: 600;
+  }
+
+  /* ===== FEATURE CARDS ===== */
+  .feature-card {
+    border: 1px solid #e2e8f0; border-radius: 12px;
+    padding: 1rem 1.2rem; margin-bottom: 0.8rem;
+    page-break-inside: avoid;
+  }
+  .feature-card h3 {
+    margin: 0 0 0.4rem 0; color: #4f46e5;
+    font-size: 11pt;
+  }
+  .feature-card p { font-size: 10pt; color: #475569; margin: 0; }
+  .feature-num {
+    display: inline-block; width: 28px; height: 28px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; border-radius: 50%; text-align: center;
+    line-height: 28px; font-size: 9pt; font-weight: 700;
+    margin-right: 0.5rem; vertical-align: middle;
+  }
+
+  /* ===== WALKTHROUGH STEPS ===== */
+  .step {
+    display: flex; gap: 1rem; margin-bottom: 1rem;
+    page-break-inside: avoid;
+  }
+  .step-num {
+    flex-shrink: 0; width: 36px; height: 36px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; border-radius: 50%; text-align: center;
+    line-height: 36px; font-weight: 700; font-size: 11pt;
+  }
+  .step-content { flex: 1; }
+  .step-content h3 { margin: 0 0 0.2rem 0; font-size: 11pt; color: #1e293b; }
+  .step-content p { font-size: 10pt; color: #475569; margin: 0; }
+
+  /* ===== INFO BOXES ===== */
+  .info-box {
+    background: #f0f4ff; border: 1px solid #c7d2fe;
+    border-radius: 8px; padding: 0.8rem 1rem;
+    margin: 0.8rem 0; page-break-inside: avoid;
+  }
+  .info-box.success { background: #ecfdf5; border-color: #a7f3d0; }
+  .info-box.warning { background: #fffbeb; border-color: #fde68a; }
+
+  /* ===== FOOTER ===== */
+  .page-footer {
+    margin-top: 2rem; padding-top: 0.8rem;
+    border-top: 1px solid #e2e8f0;
+    font-size: 8.5pt; color: #94a3b8; text-align: center;
+  }
+
+  /* ===== PRINT ===== */
+  .no-print { }
+  @media print {
+    .no-print { display: none; }
+    body { font-size: 10pt; }
+  }
+
+  /* ===== SCREEN ONLY ===== */
+  @media screen {
+    body { max-width: 210mm; margin: 0 auto; padding: 2cm; background: #f8fafc; }
+    .cover { min-height: 80vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+  <div class="cover-logo">GR</div>
+  <h1 style="font-size: 36pt; border: none; padding: 0;">GembaRounds</h1>
+  <h2>AI-Powered Gemba Walk Platform</h2>
+  <p style="color: #64748b; max-width: 500px;">
+    Digital solution for operational excellence based on PSS methodology.<br>
+    Connect. Appreciate. Check Standards. Improve.
+  </p>
+  <div class="cover-badge">Live at gembarounds.vercel.app</div>
+  <div class="cover-meta">
+    <p>Prepared for: <strong>PS Satish Sir</strong> | PSS Review</p>
+    <p>Date: March 2026</p>
+    <p>URL: <a href="https://gembarounds.vercel.app">https://gembarounds.vercel.app</a></p>
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<h1>Table of Contents</h1>
+<ol style="font-size: 11pt; line-height: 2.2;">
+  <li>Project Overview</li>
+  <li>PSS Methodology Integration</li>
+  <li>Demo Walkthrough (Step-by-Step)</li>
+  <li>Complete Feature Guide (15 Features)</li>
+  <li>UI/UX Design Highlights</li>
+  <li>Technical Architecture</li>
+  <li>PSS Requirements Compliance Matrix</li>
+  <li>Login Credentials & Access</li>
+</ol>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Page 2</div>
+
+<!-- ==================== PAGE 3: OVERVIEW ==================== -->
+<div class="page-break"></div>
+<h1>1. Project Overview</h1>
+
+<p>
+  <strong>GembaRounds</strong> is a full-stack digital Gemba Walk platform that transforms traditional
+  pen-and-paper Gemba walks into an AI-powered, data-driven system. It is built specifically on
+  <strong>PSS (PS Satish) methodology</strong> for operational excellence in manufacturing environments.
+</p>
+
+<blockquote>
+  "Go to Gemba. Connect with operating people. Appreciate good things. Check standards. Find improvements."
+</blockquote>
+
+<h2>What Problem Does It Solve?</h2>
+<ul>
+  <li>Paper-based Gemba walks lack traceability and follow-through</li>
+  <li>Observations are lost or forgotten after the walk</li>
+  <li>No systematic way to track recurring issues</li>
+  <li>Difficult to measure improvement over time</li>
+  <li>Employee involvement is limited to managers</li>
+</ul>
+
+<h2>Key Capabilities</h2>
+<table>
+  <tr><th>Capability</th><th>Description</th></tr>
+  <tr><td>AI Categorization</td><td>Auto-detect waste type, observation area, and sentiment from description</td></tr>
+  <tr><td>Voice Dictation</td><td>Speak observations instead of typing (Web Speech API)</td></tr>
+  <tr><td>Photo/Video Capture</td><td>Attach visual evidence directly from camera</td></tr>
+  <tr><td>IoT Integration</td><td>Real-time machine data (OEE, temperature, vibration)</td></tr>
+  <tr><td>Action Tracking</td><td>Assign, track, and close action items with accountability</td></tr>
+  <tr><td>Gamification</td><td>Kaizen points and leaderboard for employee engagement</td></tr>
+  <tr><td>Trend Analysis</td><td>Week-over-week charts showing improvement trajectory</td></tr>
+  <tr><td>Dark Mode</td><td>System-aware dark/light theme toggle</td></tr>
+</table>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Page 3</div>
+
+<!-- ==================== PAGE 4: PSS METHODOLOGY ==================== -->
+<div class="page-break"></div>
+<h1>2. PSS Methodology Integration</h1>
+
+<h2>15 PSS Observation Areas</h2>
+<p>Every observation is categorized into one of 15 areas defined by PSS methodology:</p>
+
+<table>
+  <tr><th>#</th><th>Observation Area</th><th>What to Look For</th></tr>
+  <tr><td>1</td><td>House Keeping (5S)</td><td>Sort, Set, Shine, Standardize, Sustain</td></tr>
+  <tr><td>2</td><td>Safety</td><td>PPE, guards, hazards, fire safety</td></tr>
+  <tr><td>3</td><td>Discipline</td><td>Attendance, uniforms, SOP compliance</td></tr>
+  <tr><td>4</td><td>Productivity</td><td>Output, OEE, cycle time, targets</td></tr>
+  <tr><td>5</td><td>Wastes</td><td>Muda, Mura, Muri - 7 wastes of lean</td></tr>
+  <tr><td>6</td><td>Ambience</td><td>Lighting, temperature, noise, ventilation</td></tr>
+  <tr><td>7</td><td>Environment Impact</td><td>Emissions, spills, disposal, pollution</td></tr>
+  <tr><td>8</td><td>Material Handling</td><td>Storage, transport, forklift, lifting</td></tr>
+  <tr><td>9</td><td>Data Recording</td><td>Logs, checklists, registers, tracking</td></tr>
+  <tr><td>10</td><td>Adherence to Standards</td><td>SOPs, specifications, calibration, ISO</td></tr>
+  <tr><td>11</td><td>Machine Condition</td><td>Breakdown, maintenance, oil, vibration</td></tr>
+  <tr><td>12</td><td>Gauges and Fixture</td><td>Calibration, measurement tools, jigs</td></tr>
+  <tr><td>13</td><td>Inventory</td><td>Stock levels, FIFO, Kanban, WIP</td></tr>
+  <tr><td>14</td><td>Review Meeting</td><td>Huddles, standups, discussion minutes</td></tr>
+  <tr><td>15</td><td>Others</td><td>Any observation not fitting above areas</td></tr>
+</table>
+
+<h2>Waste Categories (Lean)</h2>
+<table>
+  <tr><th>Category</th><th>Description</th></tr>
+  <tr><td><strong>Muda</strong></td><td>7 wastes: Overproduction, Waiting, Transport, Processing, Inventory, Motion, Defects</td></tr>
+  <tr><td><strong>Mura</strong></td><td>Unevenness, inconsistency, variation in process</td></tr>
+  <tr><td><strong>Muri</strong></td><td>Overburden, strain, fatigue, unreasonable workload</td></tr>
+  <tr><td><strong>Safety</strong></td><td>Hazards, PPE violations, unsafe conditions</td></tr>
+  <tr><td><strong>Quality</strong></td><td>Defects, rework, inspection failures</td></tr>
+</table>
+
+<h2>Walk Frequency (PSS Recommendation)</h2>
+<div class="info-box">
+  <strong>PSS recommends:</strong> Ideally daily. Can be weekly, bimonthly, or monthly depending on organizational maturity.
+  The system supports all frequencies with automatic scheduling and reminders.
+</div>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Page 4</div>
+
+<!-- ==================== PAGE 5-6: WALKTHROUGH ==================== -->
+<div class="page-break"></div>
+<h1>3. Demo Walkthrough (Step-by-Step)</h1>
+<p>Follow these steps to experience the complete GembaRounds workflow:</p>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h3>Login as Manager</h3>
+    <p>Open <code>gembarounds.vercel.app</code>. Login with <code>rajesh@factory.com</code> / <code>pass123</code>.
+    You'll see the Home page with welcome message, PSS areas, how-to guide, suggestion box, and leaderboard.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h3>Start a New Walk</h3>
+    <p>Click <strong>"New Walk"</strong> button. Enter title (e.g., "Morning Floor Walk"), your name, frequency (Daily),
+    and click <strong>"Begin Walk"</strong>. You'll be taken to the Walk Interface.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <h3>Record a Positive Observation</h3>
+    <p>Click <strong>"Good Thing"</strong> toggle (green). Title: "Clean workstation at CNC Bay 3".
+    Description: "Excellent 5S maintained, tools organized on shadow board".
+    Select Area: "House Keeping (5S)", Category: "Other", Location: "CNC Bay 3", Person Met: "Sunil".
+    Click <strong>"Save Observation"</strong>.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <h3>Record a Negative Observation with AI</h3>
+    <p>Click <strong>"Improvement"</strong> toggle (red). Title: "Safety guard missing".
+    Description: "Press machine 4 safety guard not properly latched, hazard for operator".
+    Click <strong>"AI Categorize"</strong> - it auto-fills Category: Safety, Area: Safety, Type: Negative.
+    Add Person Tagged: "Maintenance Head". Save.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">5</div>
+  <div class="step-content">
+    <h3>Use Voice Dictation</h3>
+    <p>Click the purple <strong>"Voice"</strong> button. Speak your observation (e.g., "Operators are waiting
+    fifteen minutes between batches because material is not arriving from previous station").
+    The text appears automatically. Click "AI Categorize" to auto-fill fields. Save.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">6</div>
+  <div class="step-content">
+    <h3>Capture Photo Evidence</h3>
+    <p>Click the camera upload zone. Take a photo or select from gallery. The photo preview appears.
+    Multiple photos/videos can be attached. Save the observation with visual evidence.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">7</div>
+  <div class="step-content">
+    <h3>Check IoT Floor Monitor</h3>
+    <p>Scroll down to see the <strong>IoT Floor Monitor</strong> showing live machine status.
+    Running/Idle/Error counts, average OEE, and alerts for high temperature or vibration.
+    Click "Expand" to see individual machine details.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">8</div>
+  <div class="step-content">
+    <h3>Complete the 10-Questions Framework</h3>
+    <p>Scroll to <strong>"10-Questions Framework"</strong>. Answer each Gemba Moonwalker question
+    (takt time, pacemaker, flow, etc.). Navigate with number buttons. Click "Save" when done.
+    Responses are saved as an observation.</p>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="step">
+  <div class="step-num">9</div>
+  <div class="step-content">
+    <h3>Complete the Walk</h3>
+    <p>Click the red <strong>"Complete Walk"</strong> button at the top. The walk status changes to "Completed".
+    A <strong>"Summary"</strong> button appears - click it to open the printable walk summary report in a new tab.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">10</div>
+  <div class="step-content">
+    <h3>View Reports & Charts</h3>
+    <p>Navigate to <strong>Reports</strong> tab. See stat cards, doughnut charts (waste categories, positive vs negative),
+    horizontal bar chart (by PSS area), and week-over-week trend analysis. Click "Export CSV" to download all data.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">11</div>
+  <div class="step-content">
+    <h3>Add Weekly Review</h3>
+    <p>In Reports, find the completed walk. Click <strong>"Review"</strong>. Enter reviewer name ("PS Satish Sir")
+    and notes ("Safety guard critical - fix by Monday. Good 5S at CNC Bay 3."). Save. The review appears below the walk.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">12</div>
+  <div class="step-content">
+    <h3>Track Actions</h3>
+    <p>Navigate to <strong>Actions</strong> tab. See all tagged action items with Open/In Progress/Closed status.
+    Click the status dropdown to update. Add notes for follow-up. Filter by clicking stat cards.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">13</div>
+  <div class="step-content">
+    <h3>Search History & Find Patterns</h3>
+    <p>Navigate to <strong>History</strong> tab. Search by keyword, filter by area/category/type/location.
+    The system automatically detects <strong>repeated issues</strong> and highlights them in red.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">14</div>
+  <div class="step-content">
+    <h3>Toggle Dark Mode</h3>
+    <p>Click the <strong>moon icon</strong> in the top navigation bar. The entire app switches to a beautiful dark theme.
+    Click the sun icon to switch back. Preference is remembered.</p>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">15</div>
+  <div class="step-content">
+    <h3>Test as Operator</h3>
+    <p>Logout. Login as <code>sunil@factory.com</code> / <code>pass123</code> (Operator role).
+    You can view reports, submit suggestions via the <strong>Employee Suggestion Box</strong> (earns Kaizen points),
+    and see the leaderboard. Operators cannot start walks - that's a manager privilege.</p>
+  </div>
+</div>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Pages 5-6</div>
+
+<!-- ==================== PAGE 7-8: FEATURES ==================== -->
+<div class="page-break"></div>
+<h1>4. Complete Feature Guide</h1>
+
+<div class="feature-card">
+  <h3><span class="feature-num">1</span> Authentication & Roles</h3>
+  <p>JWT-based register/login with three roles: Admin, Manager, Operator. Managers start walks and review.
+  Operators submit suggestions. Guest access available for demos.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">2</span> Gemba Walk Management</h3>
+  <p>Start walks with title, walker name, and frequency (daily/weekly/bimonthly/monthly/ad-hoc).
+  Full lifecycle: Scheduled &rarr; In Progress &rarr; Completed &rarr; Reviewed.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">3</span> Observation Recording (15 PSS Areas)</h3>
+  <p>Record both positive (appreciate) and negative (improve) observations across all 15 PSS areas.
+  Capture location, person met, person tagged for action, with photo/video and voice dictation.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">4</span> AI Auto-Categorization</h3>
+  <p>One-click AI analysis of description text. Auto-detects waste category (Muda/Mura/Muri/Safety/Quality),
+  observation area from 15 PSS areas, and positive vs negative sentiment using keyword NLP.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">5</span> 10-Questions Framework (Gemba Moonwalker)</h3>
+  <p>Interactive assessment: business problem, process ownership, takt time, pacemaker, flow, capability.
+  Progress tracking with circular navigation. Saves as observation.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">6</span> IoT Floor Monitor</h3>
+  <p>Live machine data for 8 machines: OEE, temperature, vibration, cycle time, parts produced, defect rate.
+  Real-time alerts for critical conditions. Auto-refreshes every 10 seconds.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">7</span> Reports & Dashboard</h3>
+  <p>6 stat cards, doughnut charts (waste categories, positive/negative ratio), horizontal bar chart (by area),
+  week-over-week trend analysis (stacked bar + line chart). CSV export.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">8</span> Walk Summary Report</h3>
+  <p>Full HTML printable report with walk metadata, stats, good things table, improvements table,
+  action items, review notes. Print or save as PDF directly from browser.</p>
+</div>
+
+<div class="page-break"></div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">9</span> Scheduling & Recurring Walks</h3>
+  <p>Schedule future walks with date picker. Set up auto-recurring walks (daily/weekly/bimonthly/monthly)
+  with cron-based scheduling. View upcoming walks dashboard.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">10</span> Action Tracking</h3>
+  <p>All "Person Tagged" observations become action items. Track status: Open &rarr; In Progress &rarr; Closed.
+  Filter by status with clickable stat cards. Add follow-up notes.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">11</span> Search & History</h3>
+  <p>Full-text search across all observations. Filter by area, category, type, location.
+  Automatic <strong>Repeated Issues Detection</strong> flags recurring problems at same locations.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">12</span> Notifications & Alerts</h3>
+  <p>Overdue actions (7+ days), pending reviews, overdue scheduled walks, hotspot areas (5+ observations).
+  Severity-sorted: Critical &rarr; Warning &rarr; Info.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">13</span> Employee Involvement</h3>
+  <p>Employee Suggestion Box on home page. Operators submit observations directly without a walk.
+  Each suggestion earns 10 Kaizen points. No manager approval needed.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">14</span> Gamification & Leaderboard</h3>
+  <p>Kaizen Points: 5 pts for being met during walk, 10 pts for submitting suggestions.
+  Leaderboard with rank, contributions, total points. Top 3 highlighted with medals.</p>
+</div>
+
+<div class="feature-card">
+  <h3><span class="feature-num">15</span> Progressive Web App (PWA)</h3>
+  <p>Install on phone like a native app. Service worker for offline caching. Mobile-optimized with
+  bottom navigation bar. Responsive design for all screen sizes.</p>
+</div>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Pages 7-8</div>
+
+<!-- ==================== PAGE 9: UI/UX ==================== -->
+<div class="page-break"></div>
+<h1>5. UI/UX Design Highlights</h1>
+
+<table>
+  <tr><th>Element</th><th>Design Choice</th></tr>
+  <tr><td>Typography</td><td>Inter font (Google Fonts) - modern, clean, highly readable</td></tr>
+  <tr><td>Icons</td><td>Material Icons Round - 200+ consistent icons throughout</td></tr>
+  <tr><td>Color System</td><td>CSS custom properties with semantic colors (primary, success, danger, warning)</td></tr>
+  <tr><td>Top Navigation</td><td>Dark gradient (navy to indigo) with glowing logo and glass-morphic user button</td></tr>
+  <tr><td>Desktop Sidebar</td><td>Dark gradient with glowing active state indicators</td></tr>
+  <tr><td>Mobile Bottom Nav</td><td>Dark translucent bar with pill-shaped active indicators</td></tr>
+  <tr><td>Buttons</td><td>Gradient backgrounds with glow shadows and hover lift animations</td></tr>
+  <tr><td>Cards</td><td>White surfaces with subtle shadows, hover lift, gradient accent borders</td></tr>
+  <tr><td>Auth Page</td><td>Glassmorphism card with animated radial gradient background and floating logo</td></tr>
+  <tr><td>Stat Cards</td><td>Gradient top bar on hover with lift animation</td></tr>
+  <tr><td>Form Inputs</td><td>Purple glow focus ring with smooth transitions</td></tr>
+  <tr><td>Charts</td><td>Chart.js with custom indigo/purple color palette</td></tr>
+  <tr><td>Dark Mode</td><td>Full dark theme with system preference detection and manual toggle</td></tr>
+  <tr><td>Animations</td><td>Fade-in page transitions, hover lifts, pulse recording indicator</td></tr>
+  <tr><td>Responsive</td><td>Mobile-first: 768px tablet breakpoint, 480px phone breakpoint</td></tr>
+</table>
+
+<h1 style="margin-top: 2rem;">6. Technical Architecture</h1>
+
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Details</th></tr>
+  <tr><td>Frontend</td><td>React 18 (CDN)</td><td>Single-file SPA, Babel standalone, no build step</td></tr>
+  <tr><td>Charts</td><td>Chart.js 4.4</td><td>Doughnut, bar, line, stacked charts</td></tr>
+  <tr><td>Voice</td><td>Web Speech API</td><td>Browser-native speech recognition (en-IN)</td></tr>
+  <tr><td>Backend</td><td>Express.js</td><td>5 serverless functions on Vercel</td></tr>
+  <tr><td>Database</td><td>MongoDB Atlas</td><td>Free M0 cluster, Mongoose ODM</td></tr>
+  <tr><td>Auth</td><td>JWT + bcrypt</td><td>7-day token expiry, password hashing</td></tr>
+  <tr><td>Hosting</td><td>Vercel</td><td>Serverless deployment, CDN, auto SSL</td></tr>
+  <tr><td>Security</td><td>Rate Limiting</td><td>Auth: 10/min, API: 60/min + XSS sanitization</td></tr>
+  <tr><td>PWA</td><td>Service Worker</td><td>Offline caching, installable on mobile</td></tr>
+</table>
+
+<div class="page-footer">GembaRounds - Demo Walkthrough & Feature Guide | Page 9</div>
+
+<!-- ==================== PAGE 10: COMPLIANCE ==================== -->
+<div class="page-break"></div>
+<h1>7. PSS Requirements Compliance Matrix</h1>
+
+<p>All requirements from PS Satish Sir's review have been addressed:</p>
+
+<table>
+  <tr><th>PSS Requirement</th><th>Implementation</th><th>Status</th></tr>
+  <tr><td>15 Observation Areas</td><td>Dropdown with all 15 areas in observation form</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Positive + Negative observations</td><td>Toggle switch: "Good Thing" / "Improvement"</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Photo/Video capture</td><td>Camera + gallery upload, preview, lightbox view</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Voice/Oral dictation</td><td>Web Speech API with en-IN language, continuous mode</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Person Met + Person Tagged</td><td>Separate fields for who you met and who should act</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Walk frequency (daily to monthly)</td><td>5 options: Daily, Weekly, Bimonthly, Monthly, Ad-hoc</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Weekly review/discussion</td><td>Inline review form on completed walks in Reports</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Walk summary/briefing</td><td>Full HTML printable report with stats, tables, actions</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Employee involvement</td><td>Suggestion Box for operators, no walk required</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Gamification (Kaizen points)</td><td>Points system + leaderboard with rank and medals</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Past history for repeated issues</td><td>Search + auto-detect repeated area/location patterns</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Action tracking</td><td>Open/In-Progress/Closed with notes and filtering</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>IoT data integration</td><td>Live floor monitor: 8 machines with OEE, alerts</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>AI categorization</td><td>Keyword NLP: auto-detect category, area, sentiment</td><td><span class="status-done">Done</span></td></tr>
+  <tr><td>Mobile responsive</td><td>PWA with bottom nav, responsive breakpoints</td><td><span class="status-done">Done</span></td></tr>
+</table>
+
+<hr>
+
+<h1>8. Login Credentials & Access</h1>
+
+<div class="info-box success">
+  <strong>Live URL:</strong> <code>https://gembarounds.vercel.app</code>
+</div>
+
+<table>
+  <tr><th>Role</th><th>Email</th><th>Password</th><th>Capabilities</th></tr>
+  <tr><td><strong>Manager</strong></td><td>rajesh@factory.com</td><td>pass123</td><td>Start walks, record observations, review, schedule, all features</td></tr>
+  <tr><td><strong>Operator</strong></td><td>sunil@factory.com</td><td>pass123</td><td>View reports, submit suggestions, earn Kaizen points, search history</td></tr>
+</table>
+
+<div class="info-box warning">
+  <strong>Note:</strong> New users can be registered directly on the app. Select the appropriate role during registration.
+  Data persists in MongoDB Atlas cloud database.
+</div>
+
+<div class="page-footer" style="margin-top: 3rem;">
+  <p><strong>GembaRounds</strong> - AI-Powered Gemba Walk Platform</p>
+  <p>PSS Methodology | Operational Excellence | Continuous Improvement</p>
+  <p>Generated: March 2026</p>
+</div>
+
+<!-- Print button (screen only) -->
+<div class="no-print" style="text-align: center; margin-top: 2rem;">
+  <button onclick="window.print()" style="
+    padding: 0.8rem 2rem; font-size: 14pt; font-weight: 700;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; border: none; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+  ">Save as PDF (Ctrl+P)</button>
+</div>
+
+</body>
+</html>
