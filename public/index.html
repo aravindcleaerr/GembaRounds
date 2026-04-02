@@ -1167,9 +1167,8 @@
       { id: 'history', icon: 'search', label: 'History' },
       { id: 'actions', icon: 'task_alt', label: 'Actions' },
       { id: 'notifications', icon: 'notifications', label: 'Alerts' },
-      { id: 'learn', icon: 'school', label: 'Learn' },
       { id: 'admin', icon: 'admin_panel_settings', label: 'Admin', adminOnly: true },
-      { id: 'about', icon: 'info', label: 'About' },
+      { id: 'help', icon: 'help', label: 'Help' },
     ];
 
     // ============ MAIN APP ============
@@ -1295,16 +1294,15 @@
           {/* Main Content */}
           <div className="main-wrapper">
             <main className="main-content fade-in" key={currentView}>
-              {currentView === 'home' && <HomePage onStartWalk={startNewWalk} isManager={isManager} user={user} />}
+              {currentView === 'home' && <HomePage onStartWalk={startNewWalk} isManager={isManager} user={user} onNavigate={setCurrentView} />}
               {currentView === 'walk' && <WalkInterface walkId={currentWalkId} />}
               {currentView === 'reports' && <ReportsPage />}
               {currentView === 'schedule' && <SchedulePage />}
               {currentView === 'history' && <HistoryPage />}
               {currentView === 'actions' && <ActionsPage />}
               {currentView === 'notifications' && <NotificationsPage />}
-              {currentView === 'learn' && <LearnPage />}
               {currentView === 'admin' && <AdminPage />}
-              {currentView === 'about' && <AboutPage />}
+              {currentView === 'help' && <HelpPage />}
             </main>
             {/* Copyright Footer */}
             <footer style={{ textAlign: 'center', padding: '1.25rem 1rem 2rem', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
@@ -1322,7 +1320,7 @@
     }
 
     // ============ HOME PAGE ============
-    function HomePage({ onStartWalk, isManager, user }) {
+    function HomePage({ onStartWalk, isManager, user, onNavigate }) {
       const [showForm, setShowForm] = useState(false);
       const [walkData, setWalkData] = useState({ title: '', walker: '', description: '', frequency: 'adhoc' });
 
@@ -1393,77 +1391,20 @@
             </div>
           )}
 
-          {/* PSS Areas */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="grid_view" /> PSS Observation Areas</div>
-            <div className="area-tags">
-              {OBSERVATION_AREAS.map(area => <span key={area} className="tag tag-dark">{area}</span>)}
-            </div>
-          </div>
-
-          {/* How to use */}
-          {/* COACH Framework Guide */}
-          <div className="card" style={{ borderLeft: '4px solid var(--info)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="school" /> COACH Framework (PSS)</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
-              {[
-                { letter: 'C', word: 'Connect', icon: 'handshake', text: 'Meet operating people on the shop floor', color: '#6366f1' },
-                { letter: 'O', word: 'Observe', icon: 'visibility', text: 'See the actual process, record observations', color: '#3b82f6' },
-                { letter: 'A', word: 'Appreciate', icon: 'thumb_up', text: 'Acknowledge good things people are doing', color: '#10b981' },
-                { letter: 'C', word: 'Conform', icon: 'checklist', text: 'Check if standards are being followed', color: '#f59e0b' },
-                { letter: 'H', word: 'Honing', icon: 'trending_up', text: 'Highlight improvements needed, tag for action', color: '#ef4444' },
-              ].map((step, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: step.color, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>{step.letter}</div>
-                  <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{step.word}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{step.text}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* How to Use */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="lightbulb" /> How to Use</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
-              {[
-                { icon: 'play_circle', text: 'Start a Walk - Enter name, set frequency' },
-                { icon: 'school', text: 'Follow COACH - Connect, Observe, Appreciate, Conform, Hone' },
-                { icon: 'smart_toy', text: 'AI Categorize - Auto-detect waste category' },
-                { icon: 'mic', text: 'Voice Dictation - Speak observations hands-free' },
-                { icon: 'check_circle', text: 'Complete Walk - Generate summary report' },
-                { icon: 'groups', text: 'Weekly Review - Discuss and sustain improvements' },
-              ].map((step, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
-                  <I n={step.icon} className="mi-lg" style={{ color: 'var(--primary)' }} />
-                  <span style={{ fontSize: '0.85rem' }}>{step.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AI Features Highlight */}
-          <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="smart_toy" /> Where AI is Used</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
-              {[
-                { icon: 'auto_fix_high', title: 'Auto-Categorization', desc: 'AI detects waste category (Muda/Mura/Muri) and observation area from description text' },
-                { icon: 'mic', title: 'Voice-to-Text', desc: 'Browser Speech Recognition API converts oral dictation into typed observations' },
-                { icon: 'trending_up', title: 'Trend Analysis', desc: 'AI identifies recurring issues, hotspot areas, and patterns across walks' },
-                { icon: 'notifications_active', title: 'Smart Alerts', desc: 'Auto-detects overdue actions, pending reviews, and hotspot locations' },
-                { icon: 'summarize', title: 'Walk Summary', desc: 'AI-generated walk summary report with statistics and key findings' },
-                { icon: 'psychology', title: 'Pattern Recognition', desc: 'Identifies repeated issues at same location to flag systemic problems' },
-              ].map((ai, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.65rem', borderRadius: 'var(--radius-xs)', background: 'var(--purple-light)' }}>
-                  <I n={ai.icon} className="mi-lg" style={{ color: 'var(--purple)', flexShrink: 0, marginTop: 2 }} />
-                  <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>{ai.title}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 2 }}>{ai.desc}</div>
-                  </div>
-                </div>
-              ))}
+          {/* Quick COACH reminder */}
+          <div className="card" style={{ padding: '0.85rem 1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <I n="school" style={{ color: 'var(--primary)' }} />
+                <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>COACH:</span>
+                {['C', 'O', 'A', 'C', 'H'].map((l, i) => (
+                  <div key={i} style={{ width: 24, height: 24, borderRadius: '50%', background: ['#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444'][i], color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.7rem' }}>{l}</div>
+                ))}
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Connect, Observe, Appreciate, Conform, Hone</span>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => onNavigate('help')} style={{ fontSize: '0.75rem' }}>
+                <I n="help" className="mi-sm" /> Learn More
+              </button>
             </div>
           </div>
 
@@ -2950,306 +2891,355 @@
       );
     }
 
-    // ============ LEARN PAGE ============
-    function LearnPage() {
+    // ============ HELP PAGE (unified) ============
+    function HelpPage() {
+      const [activeTab, setActiveTab] = useState('guide');
       const [expandedTopic, setExpandedTopic] = useState(null);
 
-      const topics = [
-        {
-          id: 'what', icon: 'help', title: 'What is Gemba Walk?',
-          content: `Gemba (現場) is a Japanese term meaning "the actual place" or "where the work happens." In manufacturing, it refers to the shop floor.\n\nA Gemba Walk is a management practice where leaders go to the actual workplace to observe processes, engage with workers, and identify opportunities for improvement.\n\nIt is NOT an audit or inspection — it is about understanding the real situation, connecting with people, and fostering continuous improvement.`
-        },
-        {
-          id: 'why', icon: 'lightbulb', title: 'Why Gemba Walks Matter',
-          content: `Current problems in most factories:\n• Observations are random and unstructured\n• Insights and observations not documented\n• No systematic tracking or closure of actions\n• Accountability for action closure not clear\n\nGemba Walks solve these by making observations systematic, documented, and actionable. They transform management from "sitting in office looking at reports" to "going to the floor and seeing reality."`
-        },
-        {
-          id: 'coach', icon: 'school', title: 'COACH Framework (PSS)',
-          content: `The COACH framework by PS Satish Sir provides a structured approach:\n\n🔵 C - CONNECT: Meet operating people on the shop floor. Build rapport. Ask how they are doing.\n\n🔵 O - OBSERVE: See the actual process. Don't rely on reports. Look at 5S, safety, machine condition, material flow.\n\n🟢 A - APPRECIATE: Acknowledge good things people are doing. Positive reinforcement builds trust and motivation.\n\n🟡 C - CONFORM: Check if standards are being followed. Are SOPs displayed? Is data being recorded? Are gauges calibrated?\n\n🔴 H - HONING/HIGHLIGHT: Highlight areas needing improvement. Tag responsible persons. Set due dates. Follow up.`
-        },
-        {
-          id: 'areas', icon: 'grid_view', title: '15 PSS Observation Areas',
-          content: `1. House Keeping (5S) — Workplace organization\n2. Safety — Hazards, guards, PPE\n3. Discipline — Following rules and timing\n4. Productivity — Output, efficiency, utilization\n5. Wastes (Muda) — 7 wastes of lean\n6. Ambience — Lighting, temperature, noise\n7. Environment Impact — Emissions, waste disposal\n8. Material Handling — Storage, movement, damage\n9. Data Recording — Log sheets, checklists\n10. Adherence to Standards — SOPs, work instructions\n11. Machine Condition — Maintenance, leaks, vibration\n12. Gauges and Fixture — Calibration, condition\n13. Inventory — FIFO, Kanban, stock levels\n14. Review Meeting — Action follow-up, MIS\n15. Others — Anything noteworthy`
-        },
-        {
-          id: 'wastes', icon: 'delete_sweep', title: '7 Wastes (Muda) in Lean',
-          content: `The 7 types of waste to look for during Gemba walks:\n\n1. 🚗 TRANSPORT — Unnecessary movement of materials\n2. 📦 INVENTORY — Excess stock, WIP buildup\n3. 🏃 MOTION — Unnecessary worker movement\n4. ⏳ WAITING — Idle time, waiting for materials/machines\n5. 🏭 OVERPRODUCTION — Making more than needed\n6. ⚙️ OVERPROCESSING — Doing more work than required\n7. ❌ DEFECTS — Rework, scrap, quality issues\n\nRemember: TIMWOOD (Transport, Inventory, Motion, Waiting, Overproduction, Overprocessing, Defects)`
-        },
-        {
-          id: 'frequency', icon: 'calendar_month', title: 'Walk Frequency',
-          content: `PSS recommends:\n\n• Daily — Shop floor managers, supervisors (15-20 min)\n• Weekly — Department heads, senior managers (30-45 min)\n• Bimonthly — Plant head, VP operations (1 hour)\n• Monthly — MD, CEO, leadership team (1-2 hours)\n\nKey: Consistency is more important than duration. A 15-minute daily walk is better than a 2-hour monthly walk.`
-        },
-        {
-          id: 'tips', icon: 'tips_and_updates', title: 'Tips for Effective Walks',
-          content: `DO:\n✅ Go with an open mind — observe, don't judge\n✅ Talk to operators — ask "what problems do you face?"\n✅ Appreciate good work publicly\n✅ Take notes/photos immediately\n✅ Follow up on previous observations\n✅ Vary your route — don't always go to the same areas\n\nDON'T:\n❌ Don't treat it as an audit or inspection\n❌ Don't go only when there's a problem\n❌ Don't skip the appreciation step\n❌ Don't make promises you can't keep\n❌ Don't spend all time in one area — cover the full floor`
-        },
-        {
-          id: 'review', icon: 'groups', title: 'Weekly Review Meeting',
-          content: `After collecting observations through the week:\n\n1. Review all observations from the week\n2. Categorize by area and priority\n3. Identify patterns — are same issues repeating?\n4. Check action status — what's been closed?\n5. Recognize contributions — who found issues, who fixed them?\n6. Plan next week's focus areas\n7. Share the summary with stakeholders\n\nGembaRounds makes this easy with Reports, Actions tracking, and Email/WhatsApp sharing.`
-        },
+      const tabs = [
+        { id: 'guide', icon: 'lightbulb', label: 'How to Use' },
+        { id: 'learn', icon: 'school', label: 'Gemba Methodology' },
+        { id: 'features', icon: 'star', label: 'Features & AI' },
+        { id: 'about', icon: 'info', label: 'About & Pricing' },
       ];
 
       return (
         <div>
           <div className="page-header">
-            <h1 className="page-title">Learn Gemba Walk</h1>
-            <p className="page-subtitle">PSS methodology for effective shop floor management</p>
+            <h1 className="page-title">Help Center</h1>
+            <p className="page-subtitle">Everything you need to know about GembaRounds</p>
           </div>
 
-          {/* Quick Summary Card */}
-          <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.5rem' }}>
-            <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-              <I n="format_quote" /> "Go see, ask why, show respect"
-            </div>
-            <div style={{ fontSize: '0.85rem', opacity: 0.85, lineHeight: 1.6 }}>
-              The essence of Gemba Walk — leave your desk, go to where work happens,
-              understand the real situation, and work with people to improve.
-            </div>
-            <div style={{ fontSize: '0.75rem', opacity: 0.65, marginTop: '0.5rem' }}>— Taiichi Ohno, Toyota Production System</div>
+          {/* Tab Navigation */}
+          <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '1.25rem', overflowX: 'auto', paddingBottom: 4 }}>
+            {tabs.map(tab => (
+              <button key={tab.id}
+                className={`btn ${activeTab === tab.id ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ whiteSpace: 'nowrap', fontSize: '0.8rem' }}
+                onClick={() => setActiveTab(tab.id)}>
+                <I n={tab.icon} className="mi-sm" /> {tab.label}
+              </button>
+            ))}
           </div>
 
-          {/* Topics */}
-          {topics.map(topic => (
-            <div key={topic.id} className="card card-hover" style={{ cursor: 'pointer' }}
-              onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div className="card-title">
-                  <I n={topic.icon} /> {topic.title}
-                </div>
-                <I n={expandedTopic === topic.id ? 'expand_less' : 'expand_more'} style={{ color: 'var(--text-muted)' }} />
-              </div>
-              {expandedTopic === topic.id && (
-                <div className="fade-in" style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
-                  {topic.content}
-                </div>
-              )}
-            </div>
-          ))}
-
-          {/* PSS Talk placeholder */}
-          <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
-            <I n="play_circle" className="mi-lg" style={{ fontSize: 48, color: 'var(--primary)', opacity: 0.5 }} />
-            <div style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: '0.75rem' }}>PSS Talk on Gemba Walk</div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              Video content coming soon — PS Satish Sir explaining COACH methodology
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // ============ ABOUT PAGE ============
-    function AboutPage() {
-      return (
-        <div>
-          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <div>
-              <h1 className="page-title">About GembaRounds</h1>
-              <p className="page-subtitle">AI-Powered Gemba Walk Platform based on PSS Methodology</p>
-            </div>
-            <button className="btn btn-ghost btn-sm no-print" onClick={() => window.print()}>
-              <I n="print" className="mi-sm" /> Print / PDF
-            </button>
-          </div>
-
-          {/* Hero */}
-          <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <img src="/logo.svg" alt="GR" style={{ width: 64, height: 64, borderRadius: 16 }} />
-              <div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>GembaRounds</div>
-                <div style={{ opacity: 0.85, fontSize: '0.85rem' }}>Digitizing Gemba Walks for Manufacturing Excellence</div>
-                <div style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: 4 }}>Version 1.0 &middot; COACH Framework &middot; 15 PSS Observation Areas</div>
-              </div>
-            </div>
-          </div>
-
-          {/* What is it */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="help" /> What is GembaRounds?</div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-              GembaRounds transforms traditional paper-based Gemba walks into a digital, AI-assisted process.
-              It follows the <strong>COACH framework</strong> (Connect, Observe, Appreciate, Conform, Honing)
-              developed by <strong>PS Satish Sir</strong> to make shop floor observations systematic, accountable,
-              and improvement-oriented.
-            </p>
-          </div>
-
-          {/* Where can it be used - PSS #4/#5 */}
-          <div className="card" style={{ borderLeft: '4px solid var(--info)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="factory" /> Where Can GembaRounds Be Used?</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem' }}>
-              {[
-                { icon: 'precision_manufacturing', name: 'Manufacturing', desc: 'Shop floor, assembly lines, CNC bays' },
-                { icon: 'engineering', name: 'Projects', desc: 'Construction sites, EPC projects' },
-                { icon: 'local_hospital', name: 'Hospitals', desc: 'Ward rounds, safety audits' },
-                { icon: 'warehouse', name: 'Warehouses', desc: 'Storage, logistics, inventory' },
-                { icon: 'storefront', name: 'Retail Stores', desc: 'Store audits, customer experience' },
-                { icon: 'business', name: 'Offices', desc: 'Workspace audits, process checks' },
-              ].map((u, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.5rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
-                  <I n={u.icon} style={{ color: 'var(--info)', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{u.name}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{u.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Similar Products - PSS #4 */}
-          <div className="card" style={{ borderLeft: '4px solid var(--warning)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="compare" /> How is GembaRounds Different?</div>
-            <div style={{ overflow: 'auto' }}>
-              <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: 'var(--bg)', fontWeight: 700 }}>
-                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>Feature</td>
-                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>GembaRounds</td>
-                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>Others (iAuditor, Tulip)</td>
-                  </tr>
-                </thead>
-                <tbody>
+          {/* ====== TAB: HOW TO USE ====== */}
+          {activeTab === 'guide' && (
+            <div className="fade-in">
+              {/* Quick Start Steps */}
+              <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="rocket_launch" /> Quick Start Guide</div>
+                <div style={{ display: 'grid', gap: '0.6rem' }}>
                   {[
-                    ['PSS COACH Framework', 'Built-in', 'Not available'],
-                    ['15 Observation Areas', 'Pre-configured', 'Generic checklists'],
-                    ['AI Auto-categorization', 'Yes (Waste detection)', 'Limited/No'],
-                    ['Voice Dictation', 'Built-in', 'Some paid plans'],
-                    ['Kaizen Points System', 'Yes', 'No'],
-                    ['Pricing', 'Free / Low cost', '$19-33/user/month'],
-                    ['Indian Manufacturing Focus', 'Yes', 'Western-centric'],
-                    ['Custom for SME', 'Yes', 'Enterprise-focused'],
-                  ].map((row, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{row[0]}</td>
-                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', color: 'var(--success)' }}>{row[1]}</td>
-                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>{row[2]}</td>
-                    </tr>
+                    { step: '1', icon: 'login', title: 'Sign In', desc: 'Register with your name, email, role (Manager/Supervisor/Operator), and factory' },
+                    { step: '2', icon: 'play_circle', title: 'Start a Walk', desc: 'Click the purple "Start a New Gemba Walk" card on the Home page. Set title and frequency.' },
+                    { step: '3', icon: 'school', title: 'Follow COACH', desc: 'Connect with people, Observe the process, Appreciate good work, check Conformance, Highlight improvements' },
+                    { step: '4', icon: 'add_circle', title: 'Record Observations', desc: 'For each finding: set title, describe it, pick area, tag who you met and who should act. Use Voice or AI Categorize.' },
+                    { step: '5', icon: 'camera_alt', title: 'Capture Evidence', desc: 'Upload photos or videos. Use voice dictation for hands-free description entry.' },
+                    { step: '6', icon: 'check_circle', title: 'Complete & Share', desc: 'Complete the walk to generate a summary. Share via WhatsApp or Email with stakeholders.' },
+                    { step: '7', icon: 'groups', title: 'Weekly Review', desc: 'Review all walks in Reports page. Add review notes. Track actions until closure.' },
+                  ].map((s, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.65rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                      <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'var(--success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>{s.step}</div>
+                      <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700 }}><I n={s.icon} className="mi-sm" style={{ color: 'var(--success)', marginRight: 4 }} />{s.title}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: 2 }}>{s.desc}</div>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                </div>
+              </div>
 
-          {/* Investment - PSS #6 */}
-          <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="payments" /> Investment & Costs</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
-              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--success-light)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Current (Beta)</div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--success)', margin: '0.25rem 0' }}>FREE</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Vercel hosting + MongoDB Atlas free tier</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>Up to 100 users, 512 MB data</div>
+              {/* COACH Framework */}
+              <div className="card" style={{ borderLeft: '4px solid var(--primary)' }}>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="school" /> COACH Framework (PSS)</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
+                  {[
+                    { letter: 'C', word: 'Connect', text: 'Meet operating people on the shop floor. Build rapport.', color: '#6366f1' },
+                    { letter: 'O', word: 'Observe', text: 'See the actual process. Record what you find.', color: '#3b82f6' },
+                    { letter: 'A', word: 'Appreciate', text: 'Acknowledge good things people are doing.', color: '#10b981' },
+                    { letter: 'C', word: 'Conform', text: 'Check if standards and SOPs are being followed.', color: '#f59e0b' },
+                    { letter: 'H', word: 'Honing', text: 'Highlight improvements needed. Tag responsible person.', color: '#ef4444' },
+                  ].map((step, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: step.color, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>{step.letter}</div>
+                      <div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{step.word}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{step.text}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recurring (Production)</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text)', margin: '0.25rem 0' }}>~$20-50/mo</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Vercel Pro + MongoDB M10 cluster</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>Unlimited users, 10 GB+ data</div>
+
+              {/* 15 PSS Observation Areas */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="grid_view" /> 15 PSS Observation Areas</div>
+                <div className="area-tags">
+                  {OBSERVATION_AREAS.map(area => <span key={area} className="tag tag-dark">{area}</span>)}
+                </div>
               </div>
-              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Mobile App (Optional)</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text)', margin: '0.25rem 0' }}>$25 + $99/yr</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Google Play ($25 one-time) + Apple ($99/yr)</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>PWA works free without app stores</div>
+
+              {/* Role Permissions */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="people" /> Roles & Permissions</div>
+                <div style={{ overflow: 'auto' }}>
+                  <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ background: 'var(--bg)' }}>
+                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Role</td>
+                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Start Walk</td>
+                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Review</td>
+                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Schedule</td>
+                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Admin</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { role: 'Admin', walk: true, review: true, schedule: true, admin: true },
+                        { role: 'Leader', walk: true, review: true, schedule: true, admin: false },
+                        { role: 'Manager', walk: true, review: true, schedule: true, admin: false },
+                        { role: 'Supervisor', walk: true, review: true, schedule: true, admin: false },
+                        { role: 'Operator', walk: false, review: false, schedule: false, admin: false },
+                      ].map((r, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{r.role}</td>
+                          {['walk', 'review', 'schedule', 'admin'].map(p => (
+                            <td key={p} style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: r[p] ? 'var(--success)' : 'var(--text-muted)' }}>
+                              {r[p] ? 'Yes' : '-'}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>All roles can view Reports, History, Actions, and Alerts. Operators can submit suggestions.</p>
+              </div>
+
+              {/* Tips */}
+              <div className="card" style={{ borderLeft: '4px solid var(--warning)' }}>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="tips_and_updates" /> Pro Tips</div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.3rem' }}>
+                  <div>&#x2705; Walk daily, even if just 15 minutes — consistency beats duration</div>
+                  <div>&#x2705; Always start with appreciation (the A in COACH)</div>
+                  <div>&#x2705; Use voice dictation on mobile for hands-free entry</div>
+                  <div>&#x2705; Take photos as evidence — one photo saves 100 words</div>
+                  <div>&#x2705; Review and close actions weekly — accountability drives results</div>
+                  <div>&#x274C; Don't treat it as an audit — it's about improvement, not blame</div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Local Server - PSS #10 */}
-          <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="dns" /> Can Data Be Saved Locally?</div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '0.5rem' }}>
-              <strong>Yes!</strong> GembaRounds supports both cloud and local deployment:
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.5rem' }}>
+          {/* ====== TAB: GEMBA METHODOLOGY ====== */}
+          {activeTab === 'learn' && (
+            <div className="fade-in">
+              <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.5rem' }}>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                  <I n="format_quote" /> "Go see, ask why, show respect"
+                </div>
+                <div style={{ fontSize: '0.85rem', opacity: 0.85, lineHeight: 1.6 }}>
+                  The essence of Gemba Walk — leave your desk, go to where work happens,
+                  understand the real situation, and work with people to improve.
+                </div>
+                <div style={{ fontSize: '0.75rem', opacity: 0.65, marginTop: '0.5rem' }}>— Taiichi Ohno, Toyota Production System</div>
+              </div>
+
               {[
-                { icon: 'cloud', title: 'Cloud (Current)', desc: 'MongoDB Atlas + Vercel. Data in cloud, accessible anywhere.' },
-                { icon: 'computer', title: 'Local Server', desc: 'Install MongoDB locally. Run Node.js server. All data stays on-premise.' },
-                { icon: 'security', title: 'Hybrid', desc: 'Local server with cloud backup. Best of both worlds.' },
-              ].map((opt, i) => (
-                <div key={i} style={{ padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', display: 'flex', gap: '0.5rem' }}>
-                  <I n={opt.icon} style={{ color: 'var(--purple)', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{opt.title}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{opt.desc}</div>
+                { id: 'what', icon: 'help', title: 'What is Gemba Walk?', content: 'Gemba is Japanese for "the actual place." In manufacturing, it means the shop floor.\n\nA Gemba Walk is when leaders go to the workplace to observe, engage with workers, and find improvement opportunities.\n\nIt is NOT an audit — it is about understanding reality, connecting with people, and building continuous improvement.' },
+                { id: 'why', icon: 'lightbulb', title: 'Why Gemba Walks Matter', content: 'Current problems:\n- Observations are random and unstructured\n- Insights not documented — lost after a day\n- No tracking of actions or closure\n- Same issues repeat month after month\n\nGemba Walks make observations systematic, documented, and actionable.' },
+                { id: 'coach', icon: 'school', title: 'COACH Framework (PSS)', content: 'C - CONNECT: Meet people on the floor. Build rapport.\nO - OBSERVE: See the actual process. Don\'t rely on reports.\nA - APPRECIATE: Acknowledge good work publicly.\nC - CONFORM: Check if standards are followed. SOPs, data recording, calibration.\nH - HONING: Highlight improvements. Tag responsible person. Set due dates.' },
+                { id: 'wastes', icon: 'delete_sweep', title: '7 Wastes (Muda) — TIMWOOD', content: '1. TRANSPORT — Unnecessary material movement\n2. INVENTORY — Excess stock, WIP buildup\n3. MOTION — Unnecessary worker movement\n4. WAITING — Idle time, material delays\n5. OVERPRODUCTION — Making more than needed\n6. OVERPROCESSING — More work than required\n7. DEFECTS — Rework, scrap, quality rejects' },
+                { id: 'freq', icon: 'calendar_month', title: 'Walk Frequency', content: 'Daily — Supervisors (15-20 min)\nWeekly — Department managers (30-45 min)\nBimonthly — Plant head (1 hour)\nMonthly — Leadership team (1-2 hours)\n\nKey: Consistency matters more than duration.' },
+                { id: 'tips', icon: 'tips_and_updates', title: 'Tips for Effective Walks', content: 'DO:\n- Go with an open mind\n- Talk to operators — ask what problems they face\n- Appreciate good work publicly\n- Take notes/photos immediately\n- Follow up on previous observations\n\nDON\'T:\n- Don\'t treat it as an audit\n- Don\'t go only when there\'s a problem\n- Don\'t skip the appreciation step\n- Don\'t make promises you can\'t keep' },
+                { id: 'review', icon: 'groups', title: 'Weekly Review Meeting', content: '1. Review all observations from the week\n2. Categorize by area and priority\n3. Identify patterns — are same issues repeating?\n4. Check action status — what\'s been closed?\n5. Recognize contributors\n6. Plan next week\'s focus areas\n7. Share summary with stakeholders via WhatsApp/Email' },
+              ].map(topic => (
+                <div key={topic.id} className="card card-hover" style={{ cursor: 'pointer' }}
+                  onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="card-title"><I n={topic.icon} /> {topic.title}</div>
+                    <I n={expandedTopic === topic.id ? 'expand_less' : 'expand_more'} style={{ color: 'var(--text-muted)' }} />
                   </div>
+                  {expandedTopic === topic.id && (
+                    <div className="fade-in" style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
+                      {topic.content}
+                    </div>
+                  )}
                 </div>
               ))}
-            </div>
-          </div>
 
-          {/* Local Setup Steps */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="terminal" /> Local Server Setup (3 Steps)</div>
-            <div style={{ display: 'grid', gap: '0.5rem' }}>
-              {[
-                { step: '1', title: 'Install Prerequisites', cmd: 'Install Node.js (v18+) and MongoDB Community Server from official sites' },
-                { step: '2', title: 'Clone & Install', cmd: 'git clone https://github.com/aravindcleaerr/GembaRounds.git\ncd GembaRounds && npm install' },
-                { step: '3', title: 'Run', cmd: 'Set MONGO_URI=mongodb://localhost:27017/gembarounds in .env\nnode src/server/index.js → Open http://localhost:3000' },
-              ].map((s, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>{s.step}</div>
+              <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
+                <I n="play_circle" style={{ fontSize: 48, color: 'var(--primary)', opacity: 0.5 }} />
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: '0.75rem' }}>PSS Talk on Gemba Walk</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Video content coming soon</div>
+              </div>
+            </div>
+          )}
+
+          {/* ====== TAB: FEATURES & AI ====== */}
+          {activeTab === 'features' && (
+            <div className="fade-in">
+              {/* AI Features */}
+              <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="smart_toy" /> Where AI is Used</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
+                  {[
+                    { icon: 'auto_fix_high', title: 'Auto-Categorization', desc: 'AI detects waste category (Muda/Mura/Muri) and observation area from description text' },
+                    { icon: 'mic', title: 'Voice-to-Text', desc: 'Browser Speech Recognition converts oral dictation into typed observations' },
+                    { icon: 'trending_up', title: 'Trend Analysis', desc: 'Identifies recurring issues, hotspot areas, and patterns across walks' },
+                    { icon: 'notifications_active', title: 'Smart Alerts', desc: 'Auto-detects overdue actions, pending reviews, and hotspot locations' },
+                    { icon: 'summarize', title: 'Walk Summary', desc: 'Auto-generated summary report with statistics and key findings' },
+                    { icon: 'psychology', title: 'Pattern Recognition', desc: 'Flags repeated issues at same location to detect systemic problems' },
+                  ].map((ai, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.65rem', borderRadius: 'var(--radius-xs)', background: 'var(--purple-light)' }}>
+                      <I n={ai.icon} className="mi-lg" style={{ color: 'var(--purple)', flexShrink: 0, marginTop: 2 }} />
+                      <div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{ai.title}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 2 }}>{ai.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* All Features List */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="featured_play_list" /> All Features</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
+                  {[
+                    { cat: 'Walk', items: ['Start/Complete walks', 'COACH progress tracker', '15 observation areas', 'Photo & video upload', 'Voice dictation', 'AI auto-categorize'] },
+                    { cat: 'Analytics', items: ['Dashboard charts', 'Spaghetti diagram', 'Trend analysis (8-week)', 'CSV export & import', 'Walk summary report', 'Data backup/restore'] },
+                    { cat: 'Team', items: ['5 user roles', 'Action tracking', 'Employee suggestions', 'Kaizen leaderboard', 'Notifications/alerts', 'Admin dashboard'] },
+                    { cat: 'Platform', items: ['Dark mode', 'Hindi language', 'PWA (installable)', 'Mobile responsive', 'WhatsApp sharing', 'Email sharing'] },
+                  ].map((group, i) => (
+                    <div key={i} style={{ padding: '0.75rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--primary)' }}>{group.cat}</div>
+                      {group.items.map((item, j) => (
+                        <div key={j} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '0.15rem 0' }}>&#x2713; {item}</div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tech Stack */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="code" /> Technology Stack</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                  {['React 18', 'Node.js', 'Express', 'MongoDB Atlas', 'Chart.js', 'Vercel Serverless', 'JWT Auth', 'PWA', 'Speech API', 'AI Categorization'].map(t => (
+                    <span key={t} className="tag tag-dark">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ====== TAB: ABOUT & PRICING ====== */}
+          {activeTab === 'about' && (
+            <div className="fade-in">
+              {/* Hero */}
+              <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                  <img src="/logo.svg" alt="GR" style={{ width: 64, height: 64, borderRadius: 16 }} />
                   <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{s.title}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>{s.cmd}</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>GembaRounds</div>
+                    <div style={{ opacity: 0.85, fontSize: '0.85rem' }}>Digitizing Gemba Walks for Manufacturing Excellence</div>
+                    <div style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: 4 }}>Version 1.0 | COACH Framework | 15 PSS Areas | MIT License</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Resistance & Adoption - PSS #5 */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="psychology" /> Adoption Challenges & Solutions</div>
-            <div style={{ display: 'grid', gap: '0.4rem' }}>
-              {[
-                { challenge: 'Resistance to change from paper', solution: 'Start with one team, show quick wins, then expand' },
-                { challenge: 'Managers too busy to use', solution: 'Voice dictation makes it faster than writing. Takes < 2 minutes per observation' },
-                { challenge: 'Operators afraid of being reported', solution: 'Emphasis on appreciation (COACH-A). Positive observations build trust' },
-                { challenge: 'Data entry fatigue', solution: 'AI auto-categorization, voice input, photo capture reduce manual entry' },
-                { challenge: 'IT infrastructure concerns', solution: 'Works on any phone browser. No app install needed (PWA). Local server option available' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', fontSize: '0.8rem' }}>
-                  <I n="warning" style={{ color: 'var(--warning)', flexShrink: 0, marginTop: 2 }} />
-                  <div>
-                    <span style={{ fontWeight: 700 }}>{item.challenge}</span>
-                    <span style={{ color: 'var(--success)', fontWeight: 600 }}> → {item.solution}</span>
+              {/* Where used */}
+              <div className="card" style={{ borderLeft: '4px solid var(--info)' }}>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="factory" /> Where Can It Be Used?</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
+                  {[
+                    { icon: 'precision_manufacturing', name: 'Manufacturing' },
+                    { icon: 'engineering', name: 'Projects/EPC' },
+                    { icon: 'local_hospital', name: 'Hospitals' },
+                    { icon: 'warehouse', name: 'Warehouses' },
+                    { icon: 'storefront', name: 'Retail' },
+                    { icon: 'business', name: 'Offices' },
+                  ].map((u, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', fontSize: '0.82rem', fontWeight: 600 }}>
+                      <I n={u.icon} style={{ color: 'var(--info)' }} /> {u.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pricing */}
+              <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="payments" /> Investment & Costs</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--success-light)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Beta (Current)</div>
+                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--success)' }}>FREE</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Up to 100 users, 512 MB</div>
+                  </div>
+                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Production</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>~$20-50/mo</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Unlimited users</div>
+                  </div>
+                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>App Stores</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>$25 + $99/yr</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>PWA works free</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Tech Stack */}
-          <div className="card">
-            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="code" /> Technology</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-              {['React 18', 'Node.js', 'Express', 'MongoDB Atlas', 'Chart.js', 'Vercel Serverless', 'JWT Auth', 'PWA', 'Speech API', 'AI Categorization'].map(t => (
-                <span key={t} className="tag tag-dark">{t}</span>
-              ))}
-            </div>
-          </div>
+              {/* Local Server */}
+              <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="dns" /> Deployment Options</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
+                  {[
+                    { icon: 'cloud', title: 'Cloud', desc: 'MongoDB Atlas + Vercel' },
+                    { icon: 'computer', title: 'Local', desc: 'On-premise MongoDB + Node.js' },
+                    { icon: 'security', title: 'Hybrid', desc: 'Local server + cloud backup' },
+                  ].map((opt, i) => (
+                    <div key={i} style={{ padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.8rem' }}>
+                      <I n={opt.icon} style={{ color: 'var(--purple)' }} />
+                      <div><strong>{opt.title}</strong> — {opt.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-          {/* Credits */}
-          <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Credits</div>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              Methodology: <strong>PS Satish Sir</strong> (COACH Framework)
+              {/* Local Setup */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="terminal" /> Local Setup (3 Steps)</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.4rem' }}>
+                  <div><strong>1.</strong> Install Node.js (v18+) and MongoDB</div>
+                  <div><strong>2.</strong> <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>git clone https://github.com/aravindcleaerr/GembaRounds.git && npm install</code></div>
+                  <div><strong>3.</strong> Set <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>MONGO_URI</code> in .env, run <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>node src/server/index.js</code></div>
+                </div>
+              </div>
+
+              {/* Credits */}
+              <div className="card" style={{ textAlign: 'center', padding: '1.25rem' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.35rem' }}>Credits</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Methodology: <strong>PS Satish Sir</strong> (COACH Framework)</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Development: <strong>Aravind & Team</strong></div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>&copy; {new Date().getFullYear()} GembaRounds &middot; MIT License</div>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <button className="btn btn-ghost btn-sm no-print" onClick={() => window.print()}>
+                    <I n="print" className="mi-sm" /> Print / PDF
+                  </button>
+                </div>
+              </div>
             </div>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-              Development: <strong>Aravind & Team</strong> with AI assistance
-            </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
-              &copy; {new Date().getFullYear()} GembaRounds. All rights reserved.
-            </div>
-          </div>
+          )}
         </div>
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
+    // Old LearnPage - kept as fallback
+    function LearnPage() { return <HelpPage />; }
+    function AboutPage() { return <HelpPage />; }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<ErrorBoundary><App /></ErrorBoundary>);
 
     // PWA
