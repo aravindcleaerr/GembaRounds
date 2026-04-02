@@ -220,9 +220,9 @@
     .bottomnav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
       height: var(--bottom-nav);
-      background: rgba(15,23,42,0.95);
+      background: rgba(15,23,42,0.97);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      display: flex; align-items: center; justify-content: space-around;
+      display: flex !important; align-items: center; justify-content: space-around;
       padding-bottom: env(safe-area-inset-bottom, 0);
       box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
     }
@@ -643,14 +643,16 @@
 
     /* ===== RESPONSIVE ===== */
     @media (min-width: 768px) {
-      .bottomnav { display: none; }
-      .sidenav { display: block; }
+      .bottomnav { display: none !important; }
+      .sidenav { display: block !important; }
       .main-wrapper { padding-left: 240px; }
       .main-content { padding: 1.5rem 2rem; }
       .page-title { font-size: 1.75rem; }
     }
     @media (max-width: 767px) {
-      .sidenav { display: none; }
+      .sidenav { display: none !important; }
+      .bottomnav { display: flex !important; }
+      .main-wrapper { padding-left: 0 !important; }
       .form-row, .form-row-3 { grid-template-columns: 1fr; }
       .charts-row { grid-template-columns: 1fr; }
       .main-content { padding: 1rem; }
@@ -981,52 +983,60 @@
             <p className="page-subtitle">Go to Gemba. Connect, Appreciate, Check Standards, Improve.</p>
           </div>
 
-          {/* Quick Start */}
-          <div className="card card-hover">
-            <div className="card-header">
-              <div>
-                <div className="card-title"><I n="play_circle" /> Start a Gemba Walk</div>
-                <div className="card-subtitle">Record observations, capture photos, track improvements</div>
-              </div>
-              {isManager && !showForm && (
-                <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+          {/* Quick Start - Hero Card */}
+          {isManager && !showForm && (
+            <div className="card card-hover" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', cursor: 'pointer', padding: '1.75rem' }} onClick={() => setShowForm(true)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                    <I n="play_circle" className="mi-lg" /> Start a New Gemba Walk
+                  </div>
+                  <div style={{ fontSize: '0.85rem', opacity: 0.85 }}>Record observations, capture photos, track improvements</div>
+                </div>
+                <button className="btn" style={{ background: 'white', color: 'var(--primary-dark)', fontWeight: 700, padding: '0.65rem 1.5rem', fontSize: '0.9rem' }}>
                   <I n="add" className="mi-sm" /> New Walk
                 </button>
-              )}
+              </div>
             </div>
-            {!isManager && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Managers can start walks. Use the suggestion box below to share your observations.</p>}
+          )}
+          {!isManager && (
+            <div className="card" style={{ borderLeft: '4px solid var(--primary)' }}>
+              <div className="card-title"><I n="info" /> Welcome</div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.35rem' }}>Managers can start walks. Use the suggestion box below to share your observations directly.</p>
+            </div>
+          )}
 
-            {showForm && (
-              <div className="fade-in">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Walk Title</label>
-                    <input className="form-input" type="text" value={walkData.title} onChange={e => setWalkData({...walkData, title: e.target.value})} placeholder="e.g. Morning Shop Floor Walk" />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Walker Name</label>
-                    <input className="form-input" type="text" value={walkData.walker} onChange={e => setWalkData({...walkData, walker: e.target.value})} placeholder="Who is conducting?" />
-                  </div>
+          {showForm && (
+            <div className="card fade-in" style={{ borderLeft: '4px solid var(--success)' }}>
+              <div className="card-title" style={{ marginBottom: '1rem' }}><I n="play_circle" /> New Gemba Walk</div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Walk Title</label>
+                  <input className="form-input" type="text" value={walkData.title} onChange={e => setWalkData({...walkData, title: e.target.value})} placeholder="e.g. Morning Shop Floor Walk" />
                 </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Frequency</label>
-                    <select className="form-select" value={walkData.frequency} onChange={e => setWalkData({...walkData, frequency: e.target.value})}>
-                      {FREQUENCIES.map(f => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Focus Area</label>
-                    <input className="form-input" type="text" value={walkData.description} onChange={e => setWalkData({...walkData, description: e.target.value})} placeholder="Optional focus" />
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button className="btn btn-success" onClick={handleStart}><I n="play_arrow" className="mi-sm" /> Begin Walk</button>
-                  <button className="btn btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+                <div className="form-group">
+                  <label className="form-label">Walker Name</label>
+                  <input className="form-input" type="text" value={walkData.walker} onChange={e => setWalkData({...walkData, walker: e.target.value})} placeholder="Who is conducting?" />
                 </div>
               </div>
-            )}
-          </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Frequency</label>
+                  <select className="form-select" value={walkData.frequency} onChange={e => setWalkData({...walkData, frequency: e.target.value})}>
+                    {FREQUENCIES.map(f => <option key={f} value={f}>{f.charAt(0).toUpperCase() + f.slice(1)}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Focus Area</label>
+                  <input className="form-input" type="text" value={walkData.description} onChange={e => setWalkData({...walkData, description: e.target.value})} placeholder="Optional focus" />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button className="btn btn-success" onClick={handleStart}><I n="play_arrow" className="mi-sm" /> Begin Walk</button>
+                <button className="btn btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+              </div>
+            </div>
+          )}
 
           {/* PSS Areas */}
           <div className="card">
