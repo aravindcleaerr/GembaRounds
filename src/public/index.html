@@ -839,6 +839,7 @@
       { id: 'history', icon: 'search', label: 'History' },
       { id: 'actions', icon: 'task_alt', label: 'Actions' },
       { id: 'notifications', icon: 'notifications', label: 'Alerts' },
+      { id: 'about', icon: 'info', label: 'About' },
     ];
 
     // ============ MAIN APP ============
@@ -962,7 +963,17 @@
               {currentView === 'history' && <HistoryPage />}
               {currentView === 'actions' && <ActionsPage />}
               {currentView === 'notifications' && <NotificationsPage />}
+              {currentView === 'about' && <AboutPage />}
             </main>
+            {/* Copyright Footer */}
+            <footer style={{ textAlign: 'center', padding: '1.25rem 1rem 2rem', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              <div style={{ marginBottom: '0.25rem' }}>
+                <img src="/logo.svg" alt="GR" style={{ width: 20, height: 20, borderRadius: 5, verticalAlign: 'middle', marginRight: 4 }} />
+                <strong style={{ color: 'var(--text-secondary)' }}>GembaRounds</strong> &copy; {new Date().getFullYear()}
+              </div>
+              <div>Based on PSS Methodology &middot; COACH Framework</div>
+              <div style={{ marginTop: '0.15rem' }}>Built with AI by Aravind &amp; Team</div>
+            </footer>
           </div>
         </div>
       );
@@ -1249,10 +1260,19 @@
               {walkInfo?.status !== 'completed' ? (
                 <button className="btn btn-danger" onClick={completeWalk}><I n="stop_circle" className="mi-sm" /> Complete Walk</button>
               ) : (
-                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
                   <span className="status-badge status-completed">Completed</span>
                   <button className="btn btn-primary btn-sm" onClick={() => window.open(`/api/walks/summary/${walkId}`, '_blank')}>
                     <I n="description" className="mi-sm" /> Summary
+                  </button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => {
+                    const subject = encodeURIComponent(`Gemba Walk Summary: ${walkInfo?.title || 'Walk'}`);
+                    const body = encodeURIComponent(
+                      `Gemba Walk Summary\n\nTitle: ${walkInfo?.title}\nWalker: ${walkInfo?.walker}\nDate: ${new Date(walkInfo?.createdAt).toLocaleDateString()}\nObservations: ${observations.length} (${posCount} positive, ${negCount} improvements)\n\nView full summary:\n${window.location.origin}/api/walks/summary/${walkId}\n\n---\nSent from GembaRounds`
+                    );
+                    window.open(`mailto:?subject=${subject}&body=${body}`);
+                  }}>
+                    <I n="email" className="mi-sm" /> Share
                   </button>
                 </div>
               )}
@@ -1664,6 +1684,110 @@
       );
     }
 
+    // ============ SPAGHETTI DIAGRAM ============
+    function SpaghettiDiagram({ walks }) {
+      const locations = {};
+      const connections = [];
+
+      // Aggregate observations by location
+      (walks || []).forEach(walk => {
+        const walkLocs = [];
+        (walk.observations || []).forEach(obs => {
+          const loc = obs.location || 'Unknown';
+          if (!locations[loc]) locations[loc] = { positive: 0, negative: 0, total: 0, categories: {} };
+          locations[loc].total++;
+          locations[loc][obs.observationType || 'negative']++;
+          locations[loc].categories[obs.category || 'Other'] = (locations[loc].categories[obs.category || 'Other'] || 0) + 1;
+          walkLocs.push(loc);
+        });
+        // Create connections between consecutive locations in the same walk
+        for (let i = 0; i < walkLocs.length - 1; i++) {
+          connections.push({ from: walkLocs[i], to: walkLocs[i+1] });
+        }
+      });
+
+      const sortedLocs = Object.entries(locations).sort((a, b) => b[1].total - a[1].total);
+      const maxCount = Math.max(...sortedLocs.map(([_, d]) => d.total), 1);
+
+      if (sortedLocs.length === 0) return null;
+
+      // Generate SVG positions in a circular layout
+      const cx = 250, cy = 180, radius = 140;
+      const posMap = {};
+      sortedLocs.forEach(([loc], i) => {
+        const angle = (2 * Math.PI * i / sortedLocs.length) - Math.PI / 2;
+        posMap[loc] = { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+      });
+
+      return (
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <div className="card-title"><I n="route" /> Spaghetti Diagram</div>
+              <div className="card-subtitle">Walk path and observation frequency by location</div>
+            </div>
+          </div>
+
+          {/* SVG Diagram */}
+          <div style={{ overflow: 'auto', margin: '0.5rem 0' }}>
+            <svg viewBox="0 0 500 360" style={{ width: '100%', maxWidth: 500, margin: '0 auto', display: 'block' }}>
+              {/* Connection lines */}
+              {connections.map((conn, i) => {
+                const from = posMap[conn.from], to = posMap[conn.to];
+                if (!from || !to) return null;
+                return <line key={i} x1={from.x} y1={from.y} x2={to.x} y2={to.y}
+                  stroke="#6366f1" strokeWidth="1.5" opacity="0.25" strokeDasharray="4,4" />;
+              })}
+              {/* Location nodes */}
+              {sortedLocs.map(([loc, data], i) => {
+                const pos = posMap[loc];
+                const size = 12 + (data.total / maxCount) * 22;
+                const negRatio = data.negative / data.total;
+                const color = negRatio > 0.6 ? '#ef4444' : negRatio > 0.3 ? '#f59e0b' : '#10b981';
+                return (
+                  <g key={loc}>
+                    <circle cx={pos.x} cy={pos.y} r={size} fill={color} opacity="0.2" stroke={color} strokeWidth="2" />
+                    <circle cx={pos.x} cy={pos.y} r={4} fill={color} />
+                    <text x={pos.x} y={pos.y + size + 14} textAnchor="middle" fontSize="9" fontWeight="600" fill="#64748b">{loc.length > 18 ? loc.slice(0, 16) + '..' : loc}</text>
+                    <text x={pos.x} y={pos.y + size + 24} textAnchor="middle" fontSize="8" fill="#94a3b8">{data.total} obs</text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+
+          {/* Location Table */}
+          <div style={{ overflow: 'auto' }}>
+            <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: 'var(--bg)' }}>
+                  <td style={{ padding: '0.45rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Location</td>
+                  <td style={{ padding: '0.45rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)', textAlign: 'center' }}>Total</td>
+                  <td style={{ padding: '0.45rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)', textAlign: 'center', color: 'var(--success)' }}>Good</td>
+                  <td style={{ padding: '0.45rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)', textAlign: 'center', color: 'var(--danger)' }}>Issues</td>
+                  <td style={{ padding: '0.45rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Frequency</td>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedLocs.map(([loc, data]) => (
+                  <tr key={loc}>
+                    <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{loc}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>{data.total}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', textAlign: 'center', color: 'var(--success)' }}>{data.positive}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', textAlign: 'center', color: 'var(--danger)' }}>{data.negative}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)' }}>
+                      <div style={{ width: `${(data.total/maxCount)*100}%`, minWidth: 8, height: 8, borderRadius: 4,
+                        background: data.negative > data.positive ? 'var(--danger)' : 'var(--success)' }} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
     function ReportsPage() {
       const [walks, setWalks] = useState([]);
       const [stats, setStats] = useState(null);
@@ -1753,6 +1877,9 @@
           {/* Week-over-Week Trends */}
           <TrendAnalysis />
 
+          {/* Spaghetti Diagram - Location Heatmap */}
+          <SpaghettiDiagram walks={walks} />
+
           <div className="card">
             <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="history" /> Walk History</div>
             {walks.length === 0 ? (
@@ -1772,6 +1899,13 @@
                     <span className={`status-badge status-${walk.status}`}>{walk.status}</span>
                     {walk.status === 'completed' && (
                       <button className="btn btn-primary btn-sm" onClick={() => window.open(`/api/walks/summary/${walk._id}`, '_blank')}>Summary</button>
+                    )}
+                    {walk.status === 'completed' && (
+                      <button className="btn btn-ghost btn-sm" onClick={() => {
+                        const s = encodeURIComponent(`Gemba Walk: ${walk.title}`);
+                        const b = encodeURIComponent(`Walk: ${walk.title}\nBy: ${walk.walker}\nDate: ${new Date(walk.createdAt).toLocaleDateString()}\nObservations: ${walk.observations?.length || 0}\n\nView: ${window.location.origin}/api/walks/summary/${walk._id}\n\n--GembaRounds`);
+                        window.open(`mailto:?subject=${s}&body=${b}`);
+                      }}><I n="email" className="mi-sm" /></button>
                     )}
                     {walk.status === 'completed' && !walk.reviewDate && (
                       <button className="btn btn-warning btn-sm" onClick={() => setSelectedWalk(walk._id)}>Review</button>
@@ -2260,6 +2394,212 @@
               ))}
             </div>
           )}
+        </div>
+      );
+    }
+
+    // ============ ABOUT PAGE ============
+    function AboutPage() {
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">About GembaRounds</h1>
+            <p className="page-subtitle">AI-Powered Gemba Walk Platform based on PSS Methodology</p>
+          </div>
+
+          {/* Hero */}
+          <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <img src="/logo.svg" alt="GR" style={{ width: 64, height: 64, borderRadius: 16 }} />
+              <div>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>GembaRounds</div>
+                <div style={{ opacity: 0.85, fontSize: '0.85rem' }}>Digitizing Gemba Walks for Manufacturing Excellence</div>
+                <div style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: 4 }}>Version 1.0 &middot; COACH Framework &middot; 15 PSS Observation Areas</div>
+              </div>
+            </div>
+          </div>
+
+          {/* What is it */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="help" /> What is GembaRounds?</div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+              GembaRounds transforms traditional paper-based Gemba walks into a digital, AI-assisted process.
+              It follows the <strong>COACH framework</strong> (Connect, Observe, Appreciate, Conform, Honing)
+              developed by <strong>PS Satish Sir</strong> to make shop floor observations systematic, accountable,
+              and improvement-oriented.
+            </p>
+          </div>
+
+          {/* Where can it be used - PSS #4/#5 */}
+          <div className="card" style={{ borderLeft: '4px solid var(--info)' }}>
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="factory" /> Where Can GembaRounds Be Used?</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem' }}>
+              {[
+                { icon: 'precision_manufacturing', name: 'Manufacturing', desc: 'Shop floor, assembly lines, CNC bays' },
+                { icon: 'engineering', name: 'Projects', desc: 'Construction sites, EPC projects' },
+                { icon: 'local_hospital', name: 'Hospitals', desc: 'Ward rounds, safety audits' },
+                { icon: 'warehouse', name: 'Warehouses', desc: 'Storage, logistics, inventory' },
+                { icon: 'storefront', name: 'Retail Stores', desc: 'Store audits, customer experience' },
+                { icon: 'business', name: 'Offices', desc: 'Workspace audits, process checks' },
+              ].map((u, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.5rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                  <I n={u.icon} style={{ color: 'var(--info)', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{u.name}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{u.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Similar Products - PSS #4 */}
+          <div className="card" style={{ borderLeft: '4px solid var(--warning)' }}>
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="compare" /> How is GembaRounds Different?</div>
+            <div style={{ overflow: 'auto' }}>
+              <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg)', fontWeight: 700 }}>
+                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>Feature</td>
+                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>GembaRounds</td>
+                    <td style={{ padding: '0.5rem 0.75rem', borderBottom: '2px solid var(--border)' }}>Others (iAuditor, Tulip)</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ['PSS COACH Framework', 'Built-in', 'Not available'],
+                    ['15 Observation Areas', 'Pre-configured', 'Generic checklists'],
+                    ['AI Auto-categorization', 'Yes (Waste detection)', 'Limited/No'],
+                    ['Voice Dictation', 'Built-in', 'Some paid plans'],
+                    ['Kaizen Points System', 'Yes', 'No'],
+                    ['Pricing', 'Free / Low cost', '$19-33/user/month'],
+                    ['Indian Manufacturing Focus', 'Yes', 'Western-centric'],
+                    ['Custom for SME', 'Yes', 'Enterprise-focused'],
+                  ].map((row, i) => (
+                    <tr key={i}>
+                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{row[0]}</td>
+                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', color: 'var(--success)' }}>{row[1]}</td>
+                      <td style={{ padding: '0.4rem 0.75rem', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>{row[2]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Investment - PSS #6 */}
+          <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="payments" /> Investment & Costs</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem' }}>
+              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--success-light)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Current (Beta)</div>
+                <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--success)', margin: '0.25rem 0' }}>FREE</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Vercel hosting + MongoDB Atlas free tier</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>Up to 100 users, 512 MB data</div>
+              </div>
+              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recurring (Production)</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text)', margin: '0.25rem 0' }}>~$20-50/mo</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Vercel Pro + MongoDB M10 cluster</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>Unlimited users, 10 GB+ data</div>
+              </div>
+              <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Mobile App (Optional)</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text)', margin: '0.25rem 0' }}>$25 + $99/yr</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Google Play ($25 one-time) + Apple ($99/yr)</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>PWA works free without app stores</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Local Server - PSS #10 */}
+          <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="dns" /> Can Data Be Saved Locally?</div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '0.5rem' }}>
+              <strong>Yes!</strong> GembaRounds supports both cloud and local deployment:
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.5rem' }}>
+              {[
+                { icon: 'cloud', title: 'Cloud (Current)', desc: 'MongoDB Atlas + Vercel. Data in cloud, accessible anywhere.' },
+                { icon: 'computer', title: 'Local Server', desc: 'Install MongoDB locally. Run Node.js server. All data stays on-premise.' },
+                { icon: 'security', title: 'Hybrid', desc: 'Local server with cloud backup. Best of both worlds.' },
+              ].map((opt, i) => (
+                <div key={i} style={{ padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', display: 'flex', gap: '0.5rem' }}>
+                  <I n={opt.icon} style={{ color: 'var(--purple)', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{opt.title}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{opt.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Local Setup Steps */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="terminal" /> Local Server Setup (3 Steps)</div>
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              {[
+                { step: '1', title: 'Install Prerequisites', cmd: 'Install Node.js (v18+) and MongoDB Community Server from official sites' },
+                { step: '2', title: 'Clone & Install', cmd: 'git clone https://github.com/aravindcleaerr/GembaRounds.git\ncd GembaRounds && npm install' },
+                { step: '3', title: 'Run', cmd: 'Set MONGO_URI=mongodb://localhost:27017/gembarounds in .env\nnode src/server/index.js → Open http://localhost:3000' },
+              ].map((s, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>{s.step}</div>
+                  <div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{s.title}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>{s.cmd}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Resistance & Adoption - PSS #5 */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="psychology" /> Adoption Challenges & Solutions</div>
+            <div style={{ display: 'grid', gap: '0.4rem' }}>
+              {[
+                { challenge: 'Resistance to change from paper', solution: 'Start with one team, show quick wins, then expand' },
+                { challenge: 'Managers too busy to use', solution: 'Voice dictation makes it faster than writing. Takes < 2 minutes per observation' },
+                { challenge: 'Operators afraid of being reported', solution: 'Emphasis on appreciation (COACH-A). Positive observations build trust' },
+                { challenge: 'Data entry fatigue', solution: 'AI auto-categorization, voice input, photo capture reduce manual entry' },
+                { challenge: 'IT infrastructure concerns', solution: 'Works on any phone browser. No app install needed (PWA). Local server option available' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', fontSize: '0.8rem' }}>
+                  <I n="warning" style={{ color: 'var(--warning)', flexShrink: 0, marginTop: 2 }} />
+                  <div>
+                    <span style={{ fontWeight: 700 }}>{item.challenge}</span>
+                    <span style={{ color: 'var(--success)', fontWeight: 600 }}> → {item.solution}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tech Stack */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="code" /> Technology</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+              {['React 18', 'Node.js', 'Express', 'MongoDB Atlas', 'Chart.js', 'Vercel Serverless', 'JWT Auth', 'PWA', 'Speech API', 'AI Categorization'].map(t => (
+                <span key={t} className="tag tag-dark">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Credits */}
+          <div className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>Credits</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              Methodology: <strong>PS Satish Sir</strong> (COACH Framework)
+            </div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+              Development: <strong>Aravind & Team</strong> with AI assistance
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
+              &copy; {new Date().getFullYear()} GembaRounds. All rights reserved.
+            </div>
+          </div>
         </div>
       );
     }
