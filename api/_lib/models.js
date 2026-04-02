@@ -39,7 +39,7 @@ const observationSchema = new mongoose.Schema({
   actionNotes: { type: String, default: '' },
   attachments: [{ url: String, filename: String, originalName: String, fileType: { type: String, enum: ['image', 'video'] } }],
   submittedBy: { type: String, default: '' },
-  submittedByRole: { type: String, enum: ['manager', 'operator', 'employee'], default: 'manager' },
+  submittedByRole: { type: String, enum: ['leader', 'manager', 'supervisor', 'operator', 'employee'], default: 'manager' },
   kaizenPoints: { type: Number, default: 0 },
   aiCategorized: { type: Boolean, default: false },
   metadata: { type: Object }
@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['admin', 'manager', 'operator'], default: 'operator' },
+  role: { type: String, enum: ['admin', 'leader', 'manager', 'supervisor', 'operator'], default: 'operator' },
   department: { type: String, default: '' },
   kaizenPoints: { type: Number, default: 0 }
 }, { timestamps: true });
