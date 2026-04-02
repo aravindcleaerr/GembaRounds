@@ -684,6 +684,20 @@
     /* Hover lift for interactive elements */
     .lift { transition: var(--transition); }
     .lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white !important; font-size: 10pt; }
+      .topnav, .sidenav, .bottomnav, .theme-toggle, .topnav-actions, .no-print { display: none !important; }
+      .main-wrapper { padding: 0 !important; }
+      .main-content { padding: 0 !important; max-width: 100% !important; }
+      .card { break-inside: avoid; box-shadow: none !important; border: 1px solid #e2e8f0 !important; margin-bottom: 0.75rem; }
+      .page-header { margin-bottom: 0.75rem; }
+      .page-title { font-size: 18pt !important; -webkit-text-fill-color: #0f172a !important; }
+      footer { break-before: auto; }
+      a { text-decoration: none; color: inherit; }
+    }
   </style>
   <script>
     // Apply theme immediately to prevent flash
@@ -740,6 +754,7 @@
 
     // Hindi translations
     const HINDI = {
+      // ── Navigation ──────────────────────────────────────────────
       'Welcome': 'स्वागत है',
       'Home': 'होम',
       'Walk': 'वॉक',
@@ -750,9 +765,64 @@
       'Alerts': 'अलर्ट',
       'Learn': 'सीखें',
       'About': 'जानकारी',
+
+      // ── Home Page ────────────────────────────────────────────────
       'Start a New Gemba Walk': 'नई गेम्बा वॉक शुरू करें',
       'Record observations, capture photos, track improvements': 'अवलोकन रिकॉर्ड करें, फोटो लें, सुधार ट्रैक करें',
       'New Walk': 'नई वॉक',
+      'PSS Observation Areas': 'पीएसएस अवलोकन क्षेत्र',
+      'How to Use': 'उपयोग कैसे करें',
+      'Where AI is Used': 'AI का उपयोग कहाँ होता है',
+      'COACH Framework (PSS)': 'कोच फ्रेमवर्क (पीएसएस)',
+      'New Gemba Walk': 'नई गेम्बा वॉक',
+      'Walk Title': 'वॉक का शीर्षक',
+      'Walker Name': 'वॉकर का नाम',
+      'Focus Area': 'फोकस क्षेत्र',
+      'Begin Walk': 'वॉक शुरू करें',
+      'Managers can start walks. Use the suggestion box below to share your observations directly.': 'प्रबंधक वॉक शुरू कर सकते हैं। अपने अवलोकन सीधे साझा करने के लिए नीचे दिए सुझाव बॉक्स का उपयोग करें।',
+
+      // How-to-Use steps
+      'Start a Walk - Enter name, set frequency': 'वॉक शुरू करें – नाम दर्ज करें, आवृत्ति निर्धारित करें',
+      'Follow COACH - Connect, Observe, Appreciate, Conform, Hone': 'कोच का पालन करें – जुड़ें, देखें, सराहें, मानकों की जाँच करें, सुधारें',
+      'AI Categorize - Auto-detect waste category': 'AI वर्गीकरण – अपशिष्ट श्रेणी स्वतः पहचानें',
+      'Voice Dictation - Speak observations hands-free': 'आवाज़ से लिखें – बिना हाथ लगाए अवलोकन बोलें',
+      'Complete Walk - Generate summary report': 'वॉक पूरी करें – सारांश रिपोर्ट तैयार करें',
+      'Weekly Review - Discuss and sustain improvements': 'साप्ताहिक समीक्षा – सुधारों पर चर्चा करें और उन्हें बनाए रखें',
+
+      // AI Features
+      'Auto-Categorization': 'स्वतः वर्गीकरण',
+      'AI detects waste category (Muda/Mura/Muri) and observation area from description text': 'AI विवरण से अपशिष्ट श्रेणी (मुदा/मुरा/मुरी) और अवलोकन क्षेत्र पहचानता है',
+      'Voice-to-Text': 'आवाज़ से टेक्स्ट',
+      'Browser Speech Recognition API converts oral dictation into typed observations': 'ब्राउज़र स्पीच API मौखिक बोल को टाइप किए अवलोकनों में बदलता है',
+      'Trend Analysis': 'प्रवृत्ति विश्लेषण',
+      'AI identifies recurring issues, hotspot areas, and patterns across walks': 'AI बार-बार आने वाली समस्याओं, हॉटस्पॉट क्षेत्रों और पैटर्न की पहचान करता है',
+      'Smart Alerts': 'स्मार्ट अलर्ट',
+      'Auto-detects overdue actions, pending reviews, and hotspot locations': 'विलंबित कार्य, लंबित समीक्षाएँ और हॉटस्पॉट स्थान स्वतः पहचानता है',
+      'Walk Summary': 'वॉक सारांश',
+      'AI-generated walk summary report with statistics and key findings': 'AI द्वारा तैयार सांख्यिकी और मुख्य निष्कर्षों सहित वॉक सारांश रिपोर्ट',
+      'Pattern Recognition': 'पैटर्न पहचान',
+      'Identifies repeated issues at same location to flag systemic problems': 'एक ही स्थान पर बार-बार आने वाली समस्याओं की पहचान कर प्रणालीगत मुद्दे उजागर करता है',
+
+      // ── COACH Framework ──────────────────────────────────────────
+      'COACH Framework': 'कोच फ्रेमवर्क',
+      'Connect': 'जुड़ें',
+      'Observe': 'देखें',
+      'Appreciate': 'सराहें',
+      'Conform': 'मानकों की जाँच',
+      'Honing': 'सुधार करें',
+      'Meet operating people on the shop floor': 'शॉप फ्लोर पर कार्यरत लोगों से मिलें',
+      'See the actual process, record observations': 'वास्तविक प्रक्रिया देखें, अवलोकन रिकॉर्ड करें',
+      'Acknowledge good things people are doing': 'लोग जो अच्छा कर रहे हैं उसे सराहें',
+      'Check if standards are being followed': 'जाँचें कि मानकों का पालन हो रहा है',
+      'Highlight improvements needed, tag for action': 'जरूरी सुधार उजागर करें, कार्रवाई के लिए टैग करें',
+      'Meet people on the floor': 'फ्लोर पर लोगों से मिलें',
+      'See the actual process': 'वास्तविक प्रक्रिया देखें',
+      'Acknowledge good work': 'अच्छे काम को सराहें',
+      'Check standards adherence': 'मानक पालन की जाँच करें',
+      'Highlight improvements': 'सुधार उजागर करें',
+
+      // ── Walk Interface ────────────────────────────────────────────
+      'Record Observation': 'अवलोकन रिकॉर्ड करें',
       'Good Thing': 'अच्छी बात',
       'Improvement': 'सुधार',
       'Title': 'शीर्षक',
@@ -760,23 +830,226 @@
       'Location': 'स्थान',
       'Person Met': 'मिले व्यक्ति',
       'Person Tagged': 'टैग किया गया',
-      'Submit': 'जमा करें',
+      'Action By': 'कार्रवाई द्वारा',
+      'Observation Area (PSS)': 'अवलोकन क्षेत्र (पीएसएस)',
+      'Waste Category': 'अपशिष्ट श्रेणी',
+      'AI Categorize': 'AI वर्गीकरण',
+      'Voice': 'आवाज़',
+      'Stop': 'रोकें',
+      'Save Observation': 'अवलोकन सहेजें',
+      'Saving...': 'सहेजा जा रहा है...',
       'Complete Walk': 'वॉक पूरी करें',
-      'Summary': 'सारांश',
+      'Completed': 'पूर्ण',
+      'Email': 'ईमेल',
+      'WhatsApp': 'व्हाट्सएप',
+      'Walker': 'वॉकर',
+      'Started': 'शुरू हुई',
+      'AI Suggests:': 'AI सुझाव:',
+      'Uploading...': 'अपलोड हो रहा है...',
+      'Tap to capture photo/video': 'फोटो/वीडियो लेने के लिए टैप करें',
+      'No observations yet. Start recording!': 'अभी कोई अवलोकन नहीं। रिकॉर्डिंग शुरू करें!',
+      'Observations': 'अवलोकन',
+      'Brief title of what you observed': 'जो देखा उसका संक्षिप्त शीर्षक',
+      'Describe what you observed... or use voice': 'जो देखा उसका विवरण दें... या आवाज़ का उपयोग करें',
+      'Select area...': 'क्षेत्र चुनें...',
+      'Select category...': 'श्रेणी चुनें...',
+      'Who did you meet?': 'आप किससे मिले?',
+      'Who should act?': 'कार्रवाई कौन करेगा?',
+      'e.g. Assembly Line 2': 'उदा. असेंबली लाइन 2',
+
+      // ── Stats Labels ──────────────────────────────────────────────
       'Total': 'कुल',
       'Good Things': 'अच्छी बातें',
       'Improvements': 'सुधार',
       'Walks': 'वॉक्स',
-      'Observations': 'अवलोकन',
-      'Completed': 'पूर्ण',
+      'Completed Walks': 'पूर्ण वॉक्स',
+      'Summary': 'सारांश',
       'Reviewed': 'समीक्षित',
+      'Good': 'अच्छा',
+      'Improve': 'सुधार',
+
+      // ── IoT Monitor ───────────────────────────────────────────────
+      'IoT Floor Monitor': 'IoT फ्लोर मॉनिटर',
+      'Running': 'चालू',
+      'Idle': 'बेकार',
+      'Error': 'त्रुटि',
+      'Avg OEE': 'औसत OEE',
+
+      // ── 10-Questions Framework ────────────────────────────────────
+      '10-Questions Framework': '10-प्रश्न फ्रेमवर्क',
+      'Gemba Moonwalker methodology assessment': 'गेम्बा मूनवॉकर पद्धति मूल्यांकन',
+      'Record your findings...': 'अपने निष्कर्ष लिखें...',
+      'Previous': 'पिछला',
+      'Next': 'अगला',
+      'Save': 'सहेजें',
+      'Assessment Saved!': 'मूल्यांकन सहेज लिया गया!',
+      'answered': 'उत्तर दिए गए',
+
+      // ── Reports & Analytics ───────────────────────────────────────
+      'Reports & Analytics': 'रिपोर्ट और विश्लेषण',
+      'Track observations and improvement trends': 'अवलोकन और सुधार प्रवृत्तियाँ ट्रैक करें',
+      'Export CSV': 'CSV निर्यात करें',
+      'Waste Categories': 'अपशिष्ट श्रेणियाँ',
+      'Good vs Improvements': 'अच्छाई बनाम सुधार',
+      'Observations by PSS Area': 'पीएसएस क्षेत्र के अनुसार अवलोकन',
+      'Walk History': 'वॉक इतिहास',
+      'No data yet': 'अभी कोई डेटा नहीं',
+      'No walks yet. Start your first walk!': 'अभी कोई वॉक नहीं। अपनी पहली वॉक शुरू करें!',
+      'Week-over-Week Trends': 'सप्ताह-दर-सप्ताह प्रवृत्तियाँ',
+      'Observation volume and improvement rate over last 8 weeks': 'पिछले 8 हफ्तों में अवलोकन मात्रा और सुधार दर',
+      'Observations per Week': 'प्रति सप्ताह अवलोकन',
+      'Positive Rate Trend (%)': 'सकारात्मक दर प्रवृत्ति (%)',
+      'Top Focus Areas (all time)': 'शीर्ष फोकस क्षेत्र (सभी समय)',
+      'Spaghetti Diagram': 'स्पेगेटी आरेख',
+      'Walk path and observation frequency by location': 'स्थान के अनुसार वॉक मार्ग और अवलोकन आवृत्ति',
+      'Issues': 'समस्याएँ',
+      'Frequency': 'आवृत्ति',
+      'Add Review': 'समीक्षा जोड़ें',
+      'Reviewed By': 'समीक्षा करने वाले',
+      'Notes': 'नोट्स',
+      'Save Review': 'समीक्षा सहेजें',
+      'Review': 'समीक्षा',
+      'Reviewer name': 'समीक्षक का नाम',
+      'Discussion points, action items...': 'चर्चा बिंदु, कार्य-सूची...',
+
+      // ── Schedule Page ─────────────────────────────────────────────
+      'Schedule Walks': 'वॉक्स शेड्यूल करें',
+      'PSS recommends: Ideally daily. Can be weekly, bimonthly, or monthly.': 'पीएसएस अनुशंसा: आदर्शतः दैनिक। साप्ताहिक, द्विमासिक या मासिक भी हो सकती है।',
+      'Schedule a Walk': 'वॉक शेड्यूल करें',
+      'Walker': 'वॉकर',
+      'Date': 'तारीख',
+      'Schedule Walk': 'वॉक शेड्यूल करें',
+      'Upcoming Walks': 'आगामी वॉक्स',
+      'No walks scheduled yet.': 'अभी कोई वॉक शेड्यूल नहीं है।',
+      'Scheduled': 'शेड्यूल किया गया',
+      'Auto-Recurring Walks': 'स्वतः आवर्ती वॉक्स',
+      'Automatic walk creation on a schedule': 'शेड्यूल पर स्वतः वॉक तैयार करना',
+      'Add Schedule': 'शेड्यूल जोड़ें',
+      'Remove': 'हटाएँ',
+      'Who will conduct?': 'संचालन कौन करेगा?',
+      'Who?': 'कौन?',
+      'Daily Morning Walk': 'सुबह की दैनिक वॉक',
+
+      // ── History / Search ──────────────────────────────────────────
+      'Search History': 'इतिहास खोजें',
+      'Find repeated issues and track patterns across walks': 'बार-बार आने वाली समस्याएँ खोजें और वॉक्स में पैटर्न ट्रैक करें',
       'Search': 'खोजें',
-      'COACH Framework': 'कोच फ्रेमवर्क',
-      'Connect': 'जुड़ें',
-      'Observe': 'देखें',
-      'Appreciate': 'सराहें',
-      'Conform': 'मानकों की जाँच',
-      'Honing': 'सुधार करें',
+      'Search by title, description, location, person...': 'शीर्षक, विवरण, स्थान, व्यक्ति से खोजें...',
+      'Area': 'क्षेत्र',
+      'All Areas': 'सभी क्षेत्र',
+      'Category': 'श्रेणी',
+      'All': 'सभी',
+      'Type': 'प्रकार',
+      'Clear': 'साफ करें',
+      'Repeated Issues': 'बार-बार आने वाली समस्याएँ',
+      'Areas with multiple observations - recurring problems': 'एकाधिक अवलोकन वाले क्षेत्र – आवर्ती समस्याएँ',
+      'Results': 'परिणाम',
+      'No observations found.': 'कोई अवलोकन नहीं मिला।',
+      'e.g. Assembly Line': 'उदा. असेंबली लाइन',
+
+      // ── Actions / Action Tracker ──────────────────────────────────
+      'Action Tracker': 'कार्य ट्रैकर',
+      'Follow-through on all tagged action items': 'सभी टैग किए गए कार्य-मदों पर अनुवर्ती कार्रवाई',
+      'Open': 'खुला',
+      'In Progress': 'प्रगति में',
+      'Closed': 'बंद',
+      'Actions': 'कार्य',
+      'Add note...': 'नोट जोड़ें...',
+      'Note:': 'नोट:',
+      'No actions yet': 'अभी कोई कार्य नहीं',
+
+      // ── Notifications ─────────────────────────────────────────────
+      'Notifications': 'सूचनाएँ',
+      'Overdue actions, pending reviews, and hotspots': 'विलंबित कार्य, लंबित समीक्षाएँ और हॉटस्पॉट',
+      'All Clear! No alerts.': 'सब ठीक है! कोई अलर्ट नहीं।',
+      'Alerts': 'अलर्ट',
+
+      // ── Auth Page ─────────────────────────────────────────────────
+      'Sign in to continue': 'जारी रखने के लिए साइन इन करें',
+      'Create your account': 'अपना खाता बनाएँ',
+      'Full Name': 'पूरा नाम',
+      'Email': 'ईमेल',
+      'Password': 'पासवर्ड',
+      'Role': 'भूमिका',
+      'Department': 'विभाग',
+      'Sign In': 'साइन इन',
+      'Create Account': 'खाता बनाएँ',
+      "Don't have an account? Register": 'खाता नहीं है? रजिस्टर करें',
+      'Already have an account? Sign In': 'पहले से खाता है? साइन इन करें',
+      'or': 'या',
+      'Continue as Guest': 'अतिथि के रूप में जारी रखें',
+      'Your name': 'आपका नाम',
+      'Optional': 'वैकल्पिक',
+      'Operator': 'ऑपरेटर',
+      'Supervisor': 'पर्यवेक्षक',
+      'Manager': 'प्रबंधक',
+      'Leader': 'नेता',
+      'Admin': 'प्रशासक',
+
+      // ── Employee Suggestion Box ───────────────────────────────────
+      'Employee Suggestion Box': 'कर्मचारी सुझाव बॉक्स',
+      'Share observations and earn Kaizen points!': 'अवलोकन साझा करें और काइज़न पॉइंट कमाएँ!',
+      'Your Name *': 'आपका नाम *',
+      'Suggestion Title *': 'सुझाव शीर्षक *',
+      'What did you notice?': 'आपने क्या देखा?',
+      'Describe your idea...': 'अपना विचार बताएँ...',
+      'Select...': 'चुनें...',
+      'Where?': 'कहाँ?',
+      'Submit': 'जमा करें',
+      'Thank you! Your suggestion has been recorded.': 'धन्यवाद! आपका सुझाव दर्ज कर लिया गया है।',
+
+      // ── Kaizen Leaderboard ────────────────────────────────────────
+      'Kaizen Leaderboard': 'काइज़न लीडरबोर्ड',
+      'Rank': 'रैंक',
+      'Name': 'नाम',
+      'Contributions': 'योगदान',
+      'Points': 'पॉइंट',
+
+      // ── Learn Page ────────────────────────────────────────────────
+      'Learn Gemba Walk': 'गेम्बा वॉक सीखें',
+      'PSS methodology for effective shop floor management': 'प्रभावी शॉप फ्लोर प्रबंधन के लिए पीएसएस पद्धति',
+      'What is Gemba Walk?': 'गेम्बा वॉक क्या है?',
+      'Why Gemba Walks Matter': 'गेम्बा वॉक क्यों महत्वपूर्ण है',
+      'COACH Framework (PSS)': 'कोच फ्रेमवर्क (पीएसएस)',
+      '15 PSS Observation Areas': '15 पीएसएस अवलोकन क्षेत्र',
+      '7 Wastes (Muda) in Lean': 'लीन में 7 अपशिष्ट (मुदा)',
+      'Walk Frequency': 'वॉक आवृत्ति',
+      'Tips for Effective Walks': 'प्रभावी वॉक के लिए सुझाव',
+      'Weekly Review Meeting': 'साप्ताहिक समीक्षा बैठक',
+      'PSS Talk on Gemba Walk': 'गेम्बा वॉक पर पीएसएस वार्ता',
+      'Video content coming soon — PS Satish Sir explaining COACH methodology': 'वीडियो सामग्री जल्द आ रही है — पीएस सतीश सर COACH पद्धति समझाते हुए',
+
+      // ── About Page ────────────────────────────────────────────────
+      'About GembaRounds': 'गेम्बा राउंड्स के बारे में',
+      'AI-Powered Gemba Walk Platform based on PSS Methodology': 'पीएसएस पद्धति पर आधारित AI-संचालित गेम्बा वॉक प्लेटफ़ॉर्म',
+      'What is GembaRounds?': 'गेम्बा राउंड्स क्या है?',
+      'Where Can GembaRounds Be Used?': 'गेम्बा राउंड्स कहाँ उपयोग हो सकता है?',
+      'How is GembaRounds Different?': 'गेम्बा राउंड्स अलग कैसे है?',
+      'Investment & Costs': 'निवेश और लागत',
+      'Can Data Be Saved Locally?': 'क्या डेटा स्थानीय रूप से सहेजा जा सकता है?',
+      'Local Server Setup (3 Steps)': 'स्थानीय सर्वर सेटअप (3 चरण)',
+      'Adoption Challenges & Solutions': 'अपनाने की चुनौतियाँ और समाधान',
+      'Technology': 'तकनीक',
+      'Credits': 'श्रेय',
+
+      // ── Common Actions ────────────────────────────────────────────
+      'Cancel': 'रद्द करें',
+      'Delete': 'हटाएँ',
+      'Loading': 'लोड हो रहा है',
+      'View': 'देखें',
+      'Edit': 'संपादित करें',
+      'Back': 'वापस',
+      'Close': 'बंद करें',
+      'Confirm': 'पुष्टि करें',
+      'Yes': 'हाँ',
+      'No': 'नहीं',
+      'OK': 'ठीक है',
+      'Navigation': 'नेविगेशन',
+      'PSS Methodology': 'पीएसएस पद्धति',
+      'Go to Gemba. Connect, Appreciate, Check Standards, Improve.': 'गेम्बा जाएँ। जुड़ें, सराहें, मानकों की जाँच करें, सुधारें।',
+      'who is conducting?': 'संचालन कौन कर रहा है?',
+      'e.g. Morning Shop Floor Walk': 'उदा. सुबह की शॉप फ्लोर वॉक',
+      'Optional focus': 'वैकल्पिक फोकस',
     };
 
     // Language context
@@ -801,12 +1074,12 @@
     // ============ AUTH ============
     function AuthPage({ onLogin }) {
       const [isLogin, setIsLogin] = useState(true);
-      const [form, setForm] = useState({ name: '', email: '', password: '', role: 'operator', department: '' });
+      const [form, setForm] = useState({ name: '', email: '', password: '', role: 'operator', department: '', factory: '' });
       const [error, setError] = useState('');
 
       const handleSubmit = async () => {
         setError('');
-        const sanitizedForm = { ...form, name: sanitize(form.name), email: sanitize(form.email), department: sanitize(form.department) };
+        const sanitizedForm = { ...form, name: sanitize(form.name), email: sanitize(form.email), department: sanitize(form.department), factory: sanitize(form.factory || '') };
         const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
         try {
           const res = await fetch(endpoint, {
@@ -865,6 +1138,10 @@
                   <input className="form-input" type="text" value={form.department} onChange={e => setForm({...form, department: e.target.value})} placeholder="Optional" />
                 </div>
               </div>
+              <div className="form-group">
+                <label className="form-label">Factory / Plant</label>
+                <input className="form-input" type="text" value={form.factory} onChange={e => setForm({...form, factory: e.target.value})} placeholder="e.g. Plant 1, Unit A (optional)" />
+              </div>
             )}
             <button className="btn btn-primary btn-block btn-lg" onClick={handleSubmit} style={{ marginBottom: '0.5rem' }}>
               {isLogin ? 'Sign In' : 'Create Account'}
@@ -891,6 +1168,7 @@
       { id: 'actions', icon: 'task_alt', label: 'Actions' },
       { id: 'notifications', icon: 'notifications', label: 'Alerts' },
       { id: 'learn', icon: 'school', label: 'Learn' },
+      { id: 'admin', icon: 'admin_panel_settings', label: 'Admin', adminOnly: true },
       { id: 'about', icon: 'info', label: 'About' },
     ];
 
@@ -952,8 +1230,10 @@
       const isManager = ['admin', 'leader', 'manager', 'supervisor'].includes(user.role);
       const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
+      const isAdmin = user.role === 'admin';
       const navItems = NAV_ITEMS.filter(n => {
         if (n.managerOnly && !isManager) return false;
+        if (n.adminOnly && !isAdmin) return false;
         if (n.needsWalk && !currentWalkId) return false;
         return true;
       });
@@ -1023,6 +1303,7 @@
               {currentView === 'actions' && <ActionsPage />}
               {currentView === 'notifications' && <NotificationsPage />}
               {currentView === 'learn' && <LearnPage />}
+              {currentView === 'admin' && <AdminPage />}
               {currentView === 'about' && <AboutPage />}
             </main>
             {/* Copyright Footer */}
@@ -1888,9 +2169,33 @@
                 <div className="card-title"><I n="bar_chart" /> Reports & Analytics</div>
                 <div className="card-subtitle">Track observations and improvement trends</div>
               </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => window.open('/api/walks/export/csv', '_blank')}>
-                <I n="download" className="mi-sm" /> Export CSV
-              </button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="btn btn-ghost btn-sm" onClick={() => window.open('/api/walks/export/csv', '_blank')}>
+                  <I n="download" className="mi-sm" /> Export
+                </button>
+                <button className="btn btn-ghost btn-sm" onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = '.csv';
+                  input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const text = await file.text();
+                    try {
+                      const res = await fetch('/api/walks/import', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ csvData: text })
+                      });
+                      const data = await res.json();
+                      alert(data.message || 'Import complete');
+                      fetchData();
+                    } catch { alert('Import failed'); }
+                  };
+                  input.click();
+                }}>
+                  <I n="upload" className="mi-sm" /> Import
+                </button>
+              </div>
             </div>
           </div>
 
@@ -2474,6 +2779,177 @@
     }
 
     // ============ ABOUT PAGE ============
+    // ============ AUDIT TRAIL ============
+    function AuditTrail() {
+      const [trail, setTrail] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        fetch('/api/walks/audit').then(r => r.json()).then(d => setTrail(d.trail || [])).catch(() => {}).finally(() => setLoading(false));
+      }, []);
+
+      const iconMap = { walk: 'directions_walk', observation: 'visibility', review: 'rate_review' };
+      const colorMap = { created: 'var(--info)', completed: 'var(--success)', reviewed: 'var(--purple)', status_changed: 'var(--warning)' };
+
+      return (
+        <div className="card">
+          <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="history" /> Audit Trail</div>
+          {loading ? <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading...</p> : trail.length === 0 ? (
+            <div className="empty-state"><p>No activity yet</p></div>
+          ) : (
+            <div style={{ maxHeight: 300, overflow: 'auto' }}>
+              {trail.slice(0, 30).map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.5rem', padding: '0.4rem 0', borderBottom: '1px solid var(--border)', fontSize: '0.78rem' }}>
+                  <I n={iconMap[item.type] || 'circle'} style={{ color: colorMap[item.action] || 'var(--text-muted)', flexShrink: 0, marginTop: 2 }} className="mi-sm" />
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontWeight: 600 }}>{item.title}</span>
+                    <span style={{ color: 'var(--text-muted)' }}> — {item.action.replace('_', ' ')}</span>
+                    {item.by && <span style={{ color: 'var(--text-secondary)' }}> by {item.by}</span>}
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>
+                    {item.at ? new Date(item.at).toLocaleDateString() : ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ============ ADMIN PAGE ============
+    function AdminPage() {
+      const [users, setUsers] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [editingUser, setEditingUser] = useState(null);
+
+      useEffect(() => { fetchUsers(); }, []);
+      const fetchUsers = async () => {
+        try {
+          const res = await fetch('/api/auth/users');
+          const data = await res.json();
+          setUsers(data.users || []);
+        } catch {} finally { setLoading(false); }
+      };
+
+      const updateRole = async (userId, role) => {
+        try {
+          await fetch(`/api/auth/users/${userId}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role })
+          });
+          fetchUsers();
+          setEditingUser(null);
+        } catch { alert('Failed to update'); }
+      };
+
+      const deleteUser = async (userId, name) => {
+        if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+        try {
+          await fetch(`/api/auth/users/${userId}`, { method: 'DELETE' });
+          fetchUsers();
+        } catch { alert('Failed to delete'); }
+      };
+
+      const roleCounts = {};
+      users.forEach(u => { roleCounts[u.role] = (roleCounts[u.role] || 0) + 1; });
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Admin Dashboard</h1>
+            <p className="page-subtitle">Manage users, roles, and system settings</p>
+          </div>
+
+          {/* Stats */}
+          <div className="stats-grid">
+            <div className="stat-card"><div className="stat-value">{users.length}</div><div className="stat-label">Total Users</div></div>
+            {['leader', 'manager', 'supervisor', 'operator'].map(role => (
+              <div key={role} className="stat-card">
+                <div className="stat-value">{roleCounts[role] || 0}</div>
+                <div className="stat-label">{role.charAt(0).toUpperCase() + role.slice(1)}s</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Users Table */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="people" /> User Management</div>
+            {loading ? <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading...</p> : (
+              <div style={{ overflow: 'auto' }}>
+                <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg)' }}>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Name</td>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Email</td>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Role</td>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Department</td>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Joined</td>
+                      <td style={{ padding: '0.5rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Actions</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map(u => (
+                      <tr key={u._id}>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{u.name}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: 'var(--text-secondary)' }}>{u.email}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)' }}>
+                          {editingUser === u._id ? (
+                            <select className="form-select" style={{ padding: '0.25rem', fontSize: '0.75rem' }}
+                              defaultValue={u.role}
+                              onChange={e => updateRole(u._id, e.target.value)}>
+                              {['operator', 'supervisor', 'manager', 'leader', 'admin'].map(r =>
+                                <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
+                              )}
+                            </select>
+                          ) : (
+                            <span className={`tag ${u.role === 'admin' ? 'tag-danger' : u.role === 'leader' ? 'tag-purple' : u.role === 'manager' ? 'tag-info' : u.role === 'supervisor' ? 'tag-warning' : 'tag-neutral'}`}>
+                              {u.role}
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>{u.department || '-'}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                          {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}
+                        </td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)' }}>
+                          <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            <button className="btn btn-ghost btn-sm" style={{ padding: '0.2rem 0.4rem' }}
+                              onClick={() => setEditingUser(editingUser === u._id ? null : u._id)}>
+                              <I n="edit" className="mi-sm" />
+                            </button>
+                            <button className="btn btn-ghost btn-sm" style={{ padding: '0.2rem 0.4rem', color: 'var(--danger)' }}
+                              onClick={() => deleteUser(u._id, u.name)}>
+                              <I n="delete" className="mi-sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Audit Trail */}
+          <AuditTrail />
+
+          {/* System Info */}
+          <div className="card">
+            <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="settings" /> System Info</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.3rem' }}>
+              <div><strong>Database:</strong> MongoDB Atlas</div>
+              <div><strong>Hosting:</strong> Vercel Serverless</div>
+              <div><strong>Auth:</strong> JWT (7-day expiry)</div>
+              <div><strong>Storage:</strong> Vercel Blob (uploads)</div>
+              <div><strong>Version:</strong> 1.0.0</div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // ============ LEARN PAGE ============
     function LearnPage() {
       const [expandedTopic, setExpandedTopic] = useState(null);
@@ -2566,9 +3042,14 @@
     function AboutPage() {
       return (
         <div>
-          <div className="page-header">
-            <h1 className="page-title">About GembaRounds</h1>
-            <p className="page-subtitle">AI-Powered Gemba Walk Platform based on PSS Methodology</p>
+          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div>
+              <h1 className="page-title">About GembaRounds</h1>
+              <p className="page-subtitle">AI-Powered Gemba Walk Platform based on PSS Methodology</p>
+            </div>
+            <button className="btn btn-ghost btn-sm no-print" onClick={() => window.print()}>
+              <I n="print" className="mi-sm" /> Print / PDF
+            </button>
           </div>
 
           {/* Hero */}

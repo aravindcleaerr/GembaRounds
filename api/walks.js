@@ -335,4 +335,69 @@ app.get('/api/walks/trends', async (req, res) => {
   } catch (e) { res.status(500).json({ error: 'Failed to fetch trends' }); }
 });
 
+// ===== BULK CSV IMPORT =====
+app.post('/api/walks/import', async (req, res) => {
+  try {
+    const { csvData } = req.body;
+    if (!csvData) return res.status(400).json({ error: 'No CSV data provided' });
+
+    const lines = csvData.split('\n').filter(l => l.trim());
+    if (lines.length < 2) return res.status(400).json({ error: 'CSV must have header + at least 1 row' });
+
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+    const results = { imported: 0, errors: [] };
+
+    // Create a walk for the import
+    const walk = await Walk.create({ title: `CSV Import ${new Date().toLocaleDateString()}`, walker: 'CSV Import', status: 'completed' });
+
+    for (let i = 1; i < lines.length; i++) {
+      try {
+        const values = lines[i].split(',').map(v => v.trim().replace(/^['"]|['"]$/g, ''));
+        const row = {};
+        headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+
+        const obs = await Observation.create({
+          walk: walk._id,
+          title: row.title || row.observation || `Observation ${i}`,
+          description: row.description || row.details || row.notes || '',
+          category: row.category || 'Other',
+          observationArea: row.area || row['observation area'] || row.observationarea || 'Others',
+          observationType: (row.type || row.observationtype || '').toLowerCase().includes('pos') ? 'positive' : 'negative',
+          location: row.location || '',
+          personMet: row['person met'] || row.personmet || '',
+          personTagged: row['person tagged'] || row.persontagged || row.action || '',
+          submittedBy: row['submitted by'] || row.submittedby || row.walker || 'CSV Import',
+        });
+        walk.observations.push(obs._id);
+        results.imported++;
+      } catch (e) {
+        results.errors.push(`Row ${i + 1}: ${e.message}`);
+      }
+    }
+
+    await walk.save();
+    res.json({ message: `Imported ${results.imported} observations`, walkId: walk._id, ...results });
+  } catch (e) { res.status(500).json({ error: 'Import failed: ' + e.message }); }
+});
+
+// ===== AUDIT TRAIL =====
+app.get('/api/walks/audit', async (req, res) => {
+  try {
+    const walks = await Walk.find().sort({ updatedAt: -1 }).limit(50).lean();
+    const observations = await Observation.find().sort({ updatedAt: -1 }).limit(100).lean();
+
+    const trail = [];
+    walks.forEach(w => {
+      trail.push({ type: 'walk', action: w.status === 'completed' ? 'completed' : 'created', title: w.title, by: w.walker, at: w.updatedAt || w.createdAt });
+      if (w.reviewDate) trail.push({ type: 'review', action: 'reviewed', title: w.title, by: w.reviewedBy, at: w.reviewDate });
+    });
+    observations.forEach(o => {
+      trail.push({ type: 'observation', action: o.actionStatus !== 'open' ? 'status_changed' : 'created', title: o.title, by: o.submittedBy || o.personMet, at: o.updatedAt || o.timestamp, status: o.actionStatus });
+    });
+
+    trail.sort((a, b) => new Date(b.at) - new Date(a.at));
+    res.json({ trail: trail.slice(0, 100) });
+  } catch (e) { res.status(500).json({ error: 'Failed to fetch audit trail' }); }
+});
+
 module.exports = app;
