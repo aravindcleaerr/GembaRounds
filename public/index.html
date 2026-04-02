@@ -738,8 +738,59 @@
     const CATEGORIES = ['Muda', 'Mura', 'Muri', 'Safety', 'Quality', 'Other'];
     const FREQUENCIES = ['daily', 'weekly', 'bimonthly', 'monthly', 'adhoc'];
 
+    // Hindi translations
+    const HINDI = {
+      'Welcome': 'स्वागत है',
+      'Home': 'होम',
+      'Walk': 'वॉक',
+      'Reports': 'रिपोर्ट',
+      'Schedule': 'शेड्यूल',
+      'History': 'इतिहास',
+      'Actions': 'कार्य',
+      'Alerts': 'अलर्ट',
+      'Learn': 'सीखें',
+      'About': 'जानकारी',
+      'Start a New Gemba Walk': 'नई गेम्बा वॉक शुरू करें',
+      'Record observations, capture photos, track improvements': 'अवलोकन रिकॉर्ड करें, फोटो लें, सुधार ट्रैक करें',
+      'New Walk': 'नई वॉक',
+      'Good Thing': 'अच्छी बात',
+      'Improvement': 'सुधार',
+      'Title': 'शीर्षक',
+      'Description': 'विवरण',
+      'Location': 'स्थान',
+      'Person Met': 'मिले व्यक्ति',
+      'Person Tagged': 'टैग किया गया',
+      'Submit': 'जमा करें',
+      'Complete Walk': 'वॉक पूरी करें',
+      'Summary': 'सारांश',
+      'Total': 'कुल',
+      'Good Things': 'अच्छी बातें',
+      'Improvements': 'सुधार',
+      'Walks': 'वॉक्स',
+      'Observations': 'अवलोकन',
+      'Completed': 'पूर्ण',
+      'Reviewed': 'समीक्षित',
+      'Search': 'खोजें',
+      'COACH Framework': 'कोच फ्रेमवर्क',
+      'Connect': 'जुड़ें',
+      'Observe': 'देखें',
+      'Appreciate': 'सराहें',
+      'Conform': 'मानकों की जाँच',
+      'Honing': 'सुधार करें',
+    };
+
+    // Language context
+    const LangContext = React.createContext('en');
+    const useLang = () => React.useContext(LangContext);
+    const T = ({ children }) => {
+      const lang = useLang();
+      if (lang === 'hi' && HINDI[children]) return HINDI[children];
+      return children;
+    };
+    const t = (text, lang) => (lang === 'hi' && HINDI[text]) ? HINDI[text] : text;
+
     // Icon helper
-    const I = ({n, className}) => <span className={`mi ${className||''}`}>{n}</span>;
+    const I = ({n, className, style}) => <span className={`mi ${className||''}`} style={style}>{n}</span>;
 
     // Tag color map
     const catTag = (cat) => {
@@ -839,6 +890,7 @@
       { id: 'history', icon: 'search', label: 'History' },
       { id: 'actions', icon: 'task_alt', label: 'Actions' },
       { id: 'notifications', icon: 'notifications', label: 'Alerts' },
+      { id: 'learn', icon: 'school', label: 'Learn' },
       { id: 'about', icon: 'info', label: 'About' },
     ];
 
@@ -852,11 +904,13 @@
         if (saved) return saved;
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       });
+      const [lang, setLang] = useState(() => localStorage.getItem('gemba_lang') || 'en');
 
       useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('gemba_theme', theme);
       }, [theme]);
+      useEffect(() => { localStorage.setItem('gemba_lang', lang); }, [lang]);
 
       useEffect(() => {
         const mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -908,6 +962,7 @@
       const bottomItems = navItems.slice(0, 5);
 
       return (
+        <LangContext.Provider value={lang}>
         <div>
           {/* Top Nav */}
           <nav className="topnav">
@@ -916,7 +971,11 @@
               GembaRounds
             </div>
             <div className="topnav-actions">
-              <button className="theme-toggle" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+              <button className="theme-toggle" onClick={() => setLang(l => l === 'en' ? 'hi' : 'en')} title={lang === 'en' ? 'हिंदी में बदलें' : 'Switch to English'}
+                style={{ fontSize: '0.7rem', fontWeight: 800, fontFamily: 'Inter, sans-serif' }}>
+                {lang === 'en' ? 'हि' : 'EN'}
+              </button>
+              <button className="theme-toggle" onClick={() => setTheme(th => th === 'dark' ? 'light' : 'dark')} title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
                 <I n={theme === 'dark' ? 'light_mode' : 'dark_mode'} />
               </button>
               <div className="topnav-user" onClick={handleLogout} title="Click to logout">
@@ -935,7 +994,7 @@
                 className={`sidenav-item ${currentView === n.id ? 'active' : ''}`}
                 onClick={() => setCurrentView(n.id)}
               >
-                <I n={n.icon} /> {n.label}
+                <I n={n.icon} /> {t(n.label, lang)}
               </button>
             ))}
           </aside>
@@ -948,7 +1007,7 @@
                 onClick={() => setCurrentView(n.id)}
               >
                 <I n={n.icon} />
-                <span>{n.label}</span>
+                <span>{t(n.label, lang)}</span>
               </button>
             ))}
           </nav>
@@ -963,6 +1022,7 @@
               {currentView === 'history' && <HistoryPage />}
               {currentView === 'actions' && <ActionsPage />}
               {currentView === 'notifications' && <NotificationsPage />}
+              {currentView === 'learn' && <LearnPage />}
               {currentView === 'about' && <AboutPage />}
             </main>
             {/* Copyright Footer */}
@@ -976,6 +1036,7 @@
             </footer>
           </div>
         </div>
+        </LangContext.Provider>
       );
     }
 
@@ -1272,7 +1333,15 @@
                     );
                     window.open(`mailto:?subject=${subject}&body=${body}`);
                   }}>
-                    <I n="email" className="mi-sm" /> Share
+                    <I n="email" className="mi-sm" /> Email
+                  </button>
+                  <button className="btn btn-sm" style={{ background: '#25D366', color: 'white' }} onClick={() => {
+                    const text = encodeURIComponent(
+                      `*Gemba Walk Summary*\n\n*${walkInfo?.title}*\nWalker: ${walkInfo?.walker}\nDate: ${new Date(walkInfo?.createdAt).toLocaleDateString()}\nObservations: ${observations.length} (${posCount} good, ${negCount} improvements)\n\nView: ${window.location.origin}/api/walks/summary/${walkId}\n\n_Sent from GembaRounds_`
+                    );
+                    window.open(`https://wa.me/?text=${text}`);
+                  }}>
+                    <I n="chat" className="mi-sm" /> WhatsApp
                   </button>
                 </div>
               )}
@@ -1907,6 +1976,12 @@
                         window.open(`mailto:?subject=${s}&body=${b}`);
                       }}><I n="email" className="mi-sm" /></button>
                     )}
+                    {walk.status === 'completed' && (
+                      <button className="btn btn-sm" style={{ background: '#25D366', color: 'white', padding: '0.3rem 0.5rem' }} onClick={() => {
+                        const t = encodeURIComponent(`*${walk.title}*\nBy: ${walk.walker}\nDate: ${new Date(walk.createdAt).toLocaleDateString()}\nObs: ${walk.observations?.length || 0}\n\nView: ${window.location.origin}/api/walks/summary/${walk._id}`);
+                        window.open(`https://wa.me/?text=${t}`);
+                      }}><I n="chat" className="mi-sm" /></button>
+                    )}
                     {walk.status === 'completed' && !walk.reviewDate && (
                       <button className="btn btn-warning btn-sm" onClick={() => setSelectedWalk(walk._id)}>Review</button>
                     )}
@@ -2394,6 +2469,95 @@
               ))}
             </div>
           )}
+        </div>
+      );
+    }
+
+    // ============ ABOUT PAGE ============
+    // ============ LEARN PAGE ============
+    function LearnPage() {
+      const [expandedTopic, setExpandedTopic] = useState(null);
+
+      const topics = [
+        {
+          id: 'what', icon: 'help', title: 'What is Gemba Walk?',
+          content: `Gemba (現場) is a Japanese term meaning "the actual place" or "where the work happens." In manufacturing, it refers to the shop floor.\n\nA Gemba Walk is a management practice where leaders go to the actual workplace to observe processes, engage with workers, and identify opportunities for improvement.\n\nIt is NOT an audit or inspection — it is about understanding the real situation, connecting with people, and fostering continuous improvement.`
+        },
+        {
+          id: 'why', icon: 'lightbulb', title: 'Why Gemba Walks Matter',
+          content: `Current problems in most factories:\n• Observations are random and unstructured\n• Insights and observations not documented\n• No systematic tracking or closure of actions\n• Accountability for action closure not clear\n\nGemba Walks solve these by making observations systematic, documented, and actionable. They transform management from "sitting in office looking at reports" to "going to the floor and seeing reality."`
+        },
+        {
+          id: 'coach', icon: 'school', title: 'COACH Framework (PSS)',
+          content: `The COACH framework by PS Satish Sir provides a structured approach:\n\n🔵 C - CONNECT: Meet operating people on the shop floor. Build rapport. Ask how they are doing.\n\n🔵 O - OBSERVE: See the actual process. Don't rely on reports. Look at 5S, safety, machine condition, material flow.\n\n🟢 A - APPRECIATE: Acknowledge good things people are doing. Positive reinforcement builds trust and motivation.\n\n🟡 C - CONFORM: Check if standards are being followed. Are SOPs displayed? Is data being recorded? Are gauges calibrated?\n\n🔴 H - HONING/HIGHLIGHT: Highlight areas needing improvement. Tag responsible persons. Set due dates. Follow up.`
+        },
+        {
+          id: 'areas', icon: 'grid_view', title: '15 PSS Observation Areas',
+          content: `1. House Keeping (5S) — Workplace organization\n2. Safety — Hazards, guards, PPE\n3. Discipline — Following rules and timing\n4. Productivity — Output, efficiency, utilization\n5. Wastes (Muda) — 7 wastes of lean\n6. Ambience — Lighting, temperature, noise\n7. Environment Impact — Emissions, waste disposal\n8. Material Handling — Storage, movement, damage\n9. Data Recording — Log sheets, checklists\n10. Adherence to Standards — SOPs, work instructions\n11. Machine Condition — Maintenance, leaks, vibration\n12. Gauges and Fixture — Calibration, condition\n13. Inventory — FIFO, Kanban, stock levels\n14. Review Meeting — Action follow-up, MIS\n15. Others — Anything noteworthy`
+        },
+        {
+          id: 'wastes', icon: 'delete_sweep', title: '7 Wastes (Muda) in Lean',
+          content: `The 7 types of waste to look for during Gemba walks:\n\n1. 🚗 TRANSPORT — Unnecessary movement of materials\n2. 📦 INVENTORY — Excess stock, WIP buildup\n3. 🏃 MOTION — Unnecessary worker movement\n4. ⏳ WAITING — Idle time, waiting for materials/machines\n5. 🏭 OVERPRODUCTION — Making more than needed\n6. ⚙️ OVERPROCESSING — Doing more work than required\n7. ❌ DEFECTS — Rework, scrap, quality issues\n\nRemember: TIMWOOD (Transport, Inventory, Motion, Waiting, Overproduction, Overprocessing, Defects)`
+        },
+        {
+          id: 'frequency', icon: 'calendar_month', title: 'Walk Frequency',
+          content: `PSS recommends:\n\n• Daily — Shop floor managers, supervisors (15-20 min)\n• Weekly — Department heads, senior managers (30-45 min)\n• Bimonthly — Plant head, VP operations (1 hour)\n• Monthly — MD, CEO, leadership team (1-2 hours)\n\nKey: Consistency is more important than duration. A 15-minute daily walk is better than a 2-hour monthly walk.`
+        },
+        {
+          id: 'tips', icon: 'tips_and_updates', title: 'Tips for Effective Walks',
+          content: `DO:\n✅ Go with an open mind — observe, don't judge\n✅ Talk to operators — ask "what problems do you face?"\n✅ Appreciate good work publicly\n✅ Take notes/photos immediately\n✅ Follow up on previous observations\n✅ Vary your route — don't always go to the same areas\n\nDON'T:\n❌ Don't treat it as an audit or inspection\n❌ Don't go only when there's a problem\n❌ Don't skip the appreciation step\n❌ Don't make promises you can't keep\n❌ Don't spend all time in one area — cover the full floor`
+        },
+        {
+          id: 'review', icon: 'groups', title: 'Weekly Review Meeting',
+          content: `After collecting observations through the week:\n\n1. Review all observations from the week\n2. Categorize by area and priority\n3. Identify patterns — are same issues repeating?\n4. Check action status — what's been closed?\n5. Recognize contributions — who found issues, who fixed them?\n6. Plan next week's focus areas\n7. Share the summary with stakeholders\n\nGembaRounds makes this easy with Reports, Actions tracking, and Email/WhatsApp sharing.`
+        },
+      ];
+
+      return (
+        <div>
+          <div className="page-header">
+            <h1 className="page-title">Learn Gemba Walk</h1>
+            <p className="page-subtitle">PSS methodology for effective shop floor management</p>
+          </div>
+
+          {/* Quick Summary Card */}
+          <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.5rem' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+              <I n="format_quote" /> "Go see, ask why, show respect"
+            </div>
+            <div style={{ fontSize: '0.85rem', opacity: 0.85, lineHeight: 1.6 }}>
+              The essence of Gemba Walk — leave your desk, go to where work happens,
+              understand the real situation, and work with people to improve.
+            </div>
+            <div style={{ fontSize: '0.75rem', opacity: 0.65, marginTop: '0.5rem' }}>— Taiichi Ohno, Toyota Production System</div>
+          </div>
+
+          {/* Topics */}
+          {topics.map(topic => (
+            <div key={topic.id} className="card card-hover" style={{ cursor: 'pointer' }}
+              onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div className="card-title">
+                  <I n={topic.icon} /> {topic.title}
+                </div>
+                <I n={expandedTopic === topic.id ? 'expand_less' : 'expand_more'} style={{ color: 'var(--text-muted)' }} />
+              </div>
+              {expandedTopic === topic.id && (
+                <div className="fade-in" style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
+                  {topic.content}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* PSS Talk placeholder */}
+          <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
+            <I n="play_circle" className="mi-lg" style={{ fontSize: 48, color: 'var(--primary)', opacity: 0.5 }} />
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: '0.75rem' }}>PSS Talk on Gemba Walk</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+              Video content coming soon — PS Satish Sir explaining COACH methodology
+            </div>
+          </div>
         </div>
       );
     }
