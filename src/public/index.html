@@ -1121,7 +1121,7 @@
               <input className="form-input" type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} placeholder="Password"
                 onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }} />
             </div>
-            {!isLogin && (
+            {!isLogin && (<>
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Role</label>
@@ -1142,7 +1142,7 @@
                 <label className="form-label">Factory / Plant</label>
                 <input className="form-input" type="text" value={form.factory} onChange={e => setForm({...form, factory: e.target.value})} placeholder="e.g. Plant 1, Unit A (optional)" />
               </div>
-            )}
+            </>)}
             <button className="btn btn-primary btn-block btn-lg" onClick={handleSubmit} style={{ marginBottom: '0.5rem' }}>
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>
