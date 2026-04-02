@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Gemba Walks Improve Manufacturing | GembaRounds Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --primary: #6366f1; --dark: #0f172a; --text: #1e293b; --muted: #64748b; --light: #f8fafc; --border: #e2e8f0; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.8; background: white; }
+
+  /* Header */
+  .blog-header { background: linear-gradient(135deg, #0f172a 0%, #312e81 100%); color: white; padding: 1rem 2rem; position: sticky; top: 0; z-index: 10; }
+  .blog-header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+  .blog-header a { color: white; text-decoration: none; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .blog-header nav a { font-size: 0.85rem; font-weight: 500; opacity: 0.8; }
+  .blog-header nav a:hover { opacity: 1; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); padding: 4rem 2rem 3rem; text-align: center; }
+  .hero-tag { display: inline-block; background: var(--primary); color: white; padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem; }
+  .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; color: var(--dark); max-width: 700px; margin: 0 auto 1rem; }
+  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 600px; margin: 0 auto; }
+  .hero-meta { margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+
+  /* Article */
+  article { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+  article h2 { font-size: 1.6rem; font-weight: 800; color: var(--dark); margin: 2.5rem 0 1rem; letter-spacing: -0.02em; }
+  article h3 { font-size: 1.15rem; font-weight: 700; color: var(--dark); margin: 2rem 0 0.75rem; }
+  article p { margin-bottom: 1.25rem; color: #334155; font-size: 1rem; }
+  article ul, article ol { margin: 0 0 1.25rem 1.5rem; }
+  article li { margin-bottom: 0.5rem; color: #334155; }
+  article strong { color: var(--dark); }
+  article blockquote { border-left: 4px solid var(--primary); padding: 1rem 1.5rem; margin: 1.5rem 0; background: #f8fafc; border-radius: 0 12px 12px 0; font-style: italic; color: var(--muted); }
+
+  /* SVG Figure */
+  .fig { margin: 2rem 0; text-align: center; }
+  .fig svg { max-width: 100%; height: auto; }
+  .fig-caption { font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; font-style: italic; }
+
+  /* Callout boxes */
+  .callout { padding: 1.25rem 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+  .callout-info { background: #eef2ff; border-left: 4px solid var(--primary); }
+  .callout-success { background: #ecfdf5; border-left: 4px solid var(--success); }
+  .callout-warning { background: #fffbeb; border-left: 4px solid var(--warning); }
+  .callout-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem; }
+  .callout p { margin-bottom: 0; font-size: 0.9rem; }
+
+  /* Stat cards */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .stat-box { text-align: center; padding: 1.25rem; border-radius: 12px; background: var(--light); border: 1px solid var(--border); }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--primary); }
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* CTA */
+  .cta { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 2.5rem; border-radius: 16px; text-align: center; margin: 2rem 0; }
+  .cta h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .cta p { opacity: 0.85; font-size: 0.9rem; margin-bottom: 1rem; }
+  .cta a { display: inline-block; background: white; color: var(--primary); padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+  .cta a:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+  /* Footer */
+  .blog-footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.75rem; }
+    .hero { padding: 3rem 1.25rem 2rem; }
+    article { padding: 2rem 1.25rem; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media print {
+    .blog-header, .cta, .blog-footer { display: none; }
+    article { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="blog-header">
+  <div class="blog-header-inner">
+    <a href="/blog/">
+      <img src="/logo.svg" alt="GR" style="width:32px;height:32px;border-radius:8px"> GembaRounds Blog
+    </a>
+    <nav>
+      <a href="/">Open App</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">Manufacturing Excellence</div>
+  <h1>How Gemba Walks Improve Manufacturing</h1>
+  <p>From Toyota's shop floor to your factory — the practice that transforms operations from reactive to proactive.</p>
+  <div class="hero-meta">By PS Satish Sir & Team | April 2026 | 8 min read</div>
+</div>
+
+<article>
+
+  <h2>The Problem: Invisible Factory Floor</h2>
+  <p>In most manufacturing companies today, managers spend 80% of their time in offices — reading reports, attending meetings, and making decisions based on <strong>second-hand information</strong>. The shop floor, where value is actually created, remains largely invisible.</p>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">73%</div><div class="stat-label">of manufacturing issues go unreported</div></div>
+    <div class="stat-box"><div class="stat-num">4.2x</div><div class="stat-label">faster resolution with early detection</div></div>
+    <div class="stat-box"><div class="stat-num">60%</div><div class="stat-label">of waste is visible only on the floor</div></div>
+  </div>
+
+  <p>The consequences are predictable:</p>
+  <ul>
+    <li>Observations are <strong>random and unstructured</strong></li>
+    <li>Insights are <strong>not documented</strong> — lost after a day</li>
+    <li>No <strong>systematic tracking</strong> of issues or closure of actions</li>
+    <li><strong>Accountability</strong> for improvements is unclear</li>
+  </ul>
+
+  <!-- SVG: Before vs After -->
+  <div class="fig">
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Before -->
+      <rect x="10" y="10" width="320" height="260" rx="16" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+      <text x="170" y="42" text-anchor="middle" font-size="14" font-weight="800" fill="#dc2626">BEFORE: Traditional Approach</text>
+      <g transform="translate(30, 60)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#fca5a5"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Random observations, no structure</text>
+        <text x="260" y="23" font-size="14" fill="#dc2626">X</text>
+      </g>
+      <g transform="translate(30, 105)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#fca5a5"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Paper notes lost after meeting</text>
+        <text x="260" y="23" font-size="14" fill="#dc2626">X</text>
+      </g>
+      <g transform="translate(30, 150)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#fca5a5"/>
+        <text x="14" y="23" font-size="12" fill="#334155">No tracking of actions or closure</text>
+        <text x="260" y="23" font-size="14" fill="#dc2626">X</text>
+      </g>
+      <g transform="translate(30, 195)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#fca5a5"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Same issues repeat month after month</text>
+        <text x="260" y="23" font-size="14" fill="#dc2626">X</text>
+      </g>
+      <!-- After -->
+      <rect x="370" y="10" width="320" height="260" rx="16" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="2"/>
+      <text x="530" y="42" text-anchor="middle" font-size="14" font-weight="800" fill="#059669">AFTER: With Gemba Walks</text>
+      <g transform="translate(390, 60)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#6ee7b7"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Structured COACH framework</text>
+        <text x="260" y="23" font-size="14" fill="#059669">&#x2713;</text>
+      </g>
+      <g transform="translate(390, 105)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#6ee7b7"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Digital records, searchable history</text>
+        <text x="260" y="23" font-size="14" fill="#059669">&#x2713;</text>
+      </g>
+      <g transform="translate(390, 150)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#6ee7b7"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Action tracking with accountability</text>
+        <text x="260" y="23" font-size="14" fill="#059669">&#x2713;</text>
+      </g>
+      <g transform="translate(390, 195)">
+        <rect width="280" height="36" rx="6" fill="white" stroke="#6ee7b7"/>
+        <text x="14" y="23" font-size="12" fill="#334155">Pattern detection prevents recurrence</text>
+        <text x="260" y="23" font-size="14" fill="#059669">&#x2713;</text>
+      </g>
+    </svg>
+    <div class="fig-caption">Fig 1: Before vs After implementing structured Gemba walks</div>
+  </div>
+
+  <h2>What is a Gemba Walk?</h2>
+  <p><strong>Gemba</strong> (&#29694;&#22580;) is Japanese for "the actual place." In manufacturing, it means the shop floor — where value is created. A Gemba Walk is the practice of leaders going to the floor to <strong>observe, connect, and improve</strong>.</p>
+
+  <blockquote>"Go see, ask why, show respect." — Taiichi Ohno, Toyota Production System</blockquote>
+
+  <p>It is NOT an audit. It is NOT an inspection. It is about <strong>understanding reality</strong>, connecting with people, and building a culture of continuous improvement.</p>
+
+  <!-- SVG: COACH Framework -->
+  <div class="fig">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#6366f1"/>
+          <stop offset="100%" style="stop-color:#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <!-- Title -->
+      <text x="350" y="25" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">The COACH Framework (PSS Methodology)</text>
+      <!-- Steps -->
+      <g transform="translate(20, 50)">
+        <rect width="120" height="130" rx="12" fill="#6366f1"/>
+        <circle cx="60" cy="35" r="20" fill="rgba(255,255,255,0.2)"/>
+        <text x="60" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="white">C</text>
+        <text x="60" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">Connect</text>
+        <text x="60" y="95" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Meet people</text>
+        <text x="60" y="108" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">on the floor</text>
+      </g>
+      <text x="155" y="115" font-size="20" fill="#94a3b8">&#8594;</text>
+      <g transform="translate(160, 50)">
+        <rect width="120" height="130" rx="12" fill="#3b82f6"/>
+        <circle cx="60" cy="35" r="20" fill="rgba(255,255,255,0.2)"/>
+        <text x="60" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="white">O</text>
+        <text x="60" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">Observe</text>
+        <text x="60" y="95" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">See the actual</text>
+        <text x="60" y="108" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">process</text>
+      </g>
+      <text x="295" y="115" font-size="20" fill="#94a3b8">&#8594;</text>
+      <g transform="translate(300, 50)">
+        <rect width="120" height="130" rx="12" fill="#10b981"/>
+        <circle cx="60" cy="35" r="20" fill="rgba(255,255,255,0.2)"/>
+        <text x="60" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="white">A</text>
+        <text x="60" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">Appreciate</text>
+        <text x="60" y="95" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Acknowledge</text>
+        <text x="60" y="108" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">good work</text>
+      </g>
+      <text x="435" y="115" font-size="20" fill="#94a3b8">&#8594;</text>
+      <g transform="translate(440, 50)">
+        <rect width="120" height="130" rx="12" fill="#f59e0b"/>
+        <circle cx="60" cy="35" r="20" fill="rgba(255,255,255,0.2)"/>
+        <text x="60" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="white">C</text>
+        <text x="60" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">Conform</text>
+        <text x="60" y="95" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Check standards</text>
+        <text x="60" y="108" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">adherence</text>
+      </g>
+      <text x="575" y="115" font-size="20" fill="#94a3b8">&#8594;</text>
+      <g transform="translate(580, 50)">
+        <rect width="120" height="130" rx="12" fill="#ef4444"/>
+        <circle cx="60" cy="35" r="20" fill="rgba(255,255,255,0.2)"/>
+        <text x="60" y="42" text-anchor="middle" font-size="20" font-weight="800" fill="white">H</text>
+        <text x="60" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="white">Honing</text>
+        <text x="60" y="95" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Highlight</text>
+        <text x="60" y="108" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">improvements</text>
+      </g>
+    </svg>
+    <div class="fig-caption">Fig 2: The COACH Framework — a structured approach to Gemba walks by PS Satish Sir</div>
+  </div>
+
+  <h2>The 7 Wastes You Can Spot on the Floor</h2>
+  <p>Gemba walks are the most effective way to identify the <strong>7 wastes (Muda)</strong> of Lean manufacturing. These wastes are often invisible from a desk but immediately apparent when you walk the floor.</p>
+
+  <!-- SVG: 7 Wastes -->
+  <div class="fig">
+    <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+      <text x="350" y="25" text-anchor="middle" font-size="15" font-weight="800" fill="#0f172a">TIMWOOD — 7 Wastes of Lean Manufacturing</text>
+      <!-- Waste items in grid -->
+      <g transform="translate(20, 45)">
+        <rect width="200" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#128663;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Transport</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">Unnecessary movement of materials</text>
+      </g>
+      <g transform="translate(240, 45)">
+        <rect width="200" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#128230;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Inventory</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">Excess stock, WIP buildup</text>
+      </g>
+      <g transform="translate(460, 45)">
+        <rect width="220" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#127939;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Motion</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">Unnecessary worker movement</text>
+      </g>
+      <g transform="translate(20, 130)">
+        <rect width="200" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#9203;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Waiting</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">Idle time, waiting for materials</text>
+      </g>
+      <g transform="translate(240, 130)">
+        <rect width="200" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#127981;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Overproduction</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">Making more than demand</text>
+      </g>
+      <g transform="translate(460, 130)">
+        <rect width="220" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="30" font-size="24">&#9881;</text>
+        <text x="50" y="28" font-size="13" font-weight="700" fill="#dc2626">Overprocessing</text>
+        <text x="50" y="48" font-size="10" fill="#64748b">More work than required</text>
+      </g>
+      <g transform="translate(180, 215)">
+        <rect width="320" height="70" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+        <text x="15" y="30" font-size="24">&#10060;</text>
+        <text x="55" y="28" font-size="13" font-weight="700" fill="#dc2626">Defects</text>
+        <text x="55" y="48" font-size="10" fill="#64748b">Rework, scrap, quality rejects</text>
+      </g>
+      <!-- Mnemonic -->
+      <rect x="180" y="295" width="320" height="22" rx="6" fill="#6366f1"/>
+      <text x="340" y="311" text-anchor="middle" font-size="11" font-weight="700" fill="white">Remember: T-I-M-W-O-O-D</text>
+    </svg>
+    <div class="fig-caption">Fig 3: The 7 wastes easily spotted during shop floor Gemba walks</div>
+  </div>
+
+  <h2>15 Areas to Observe (PSS Framework)</h2>
+  <p>PS Satish Sir's methodology defines <strong>15 specific observation areas</strong> that cover every aspect of manufacturing operations:</p>
+
+  <!-- SVG: 15 Areas Grid -->
+  <div class="fig">
+    <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#eef2ff"/>
+          <stop offset="100%" style="stop-color:#e0e7ff"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="700" height="280" rx="16" fill="url(#ag)"/>
+      <text x="350" y="28" text-anchor="middle" font-size="14" font-weight="800" fill="#312e81">15 PSS Observation Areas</text>
+      <!-- Row 1 -->
+      <g font-size="10" font-weight="600" fill="#334155">
+        <rect x="15" y="42" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="78" y="63" text-anchor="middle">House Keeping (5S)</text>
+        <rect x="150" y="42" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="213" y="63" text-anchor="middle">Safety</text>
+        <rect x="285" y="42" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="348" y="63" text-anchor="middle">Discipline</text>
+        <rect x="420" y="42" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="483" y="63" text-anchor="middle">Productivity</text>
+        <rect x="555" y="42" width="130" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="620" y="63" text-anchor="middle">Wastes (Muda)</text>
+      </g>
+      <!-- Row 2 -->
+      <g font-size="10" font-weight="600" fill="#334155">
+        <rect x="15" y="84" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="78" y="105" text-anchor="middle">Ambience</text>
+        <rect x="150" y="84" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="213" y="105" text-anchor="middle">Environment</text>
+        <rect x="285" y="84" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="348" y="105" text-anchor="middle">Material Handling</text>
+        <rect x="420" y="84" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="483" y="105" text-anchor="middle">Data Recording</text>
+        <rect x="555" y="84" width="130" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="620" y="105" text-anchor="middle">Standards</text>
+      </g>
+      <!-- Row 3 -->
+      <g font-size="10" font-weight="600" fill="#334155">
+        <rect x="15" y="126" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="78" y="147" text-anchor="middle">Machine Condition</text>
+        <rect x="150" y="126" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="213" y="147" text-anchor="middle">Gauges &amp; Fixture</text>
+        <rect x="285" y="126" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="348" y="147" text-anchor="middle">Inventory</text>
+        <rect x="420" y="126" width="125" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="483" y="147" text-anchor="middle">Review Meeting</text>
+        <rect x="555" y="126" width="130" height="32" rx="6" fill="white" stroke="#c7d2fe"/>
+        <text x="620" y="147" text-anchor="middle">Others</text>
+      </g>
+      <!-- Benefits row -->
+      <text x="350" y="190" text-anchor="middle" font-size="12" font-weight="700" fill="#312e81">Walk Frequency (PSS Recommendation)</text>
+      <g font-size="10">
+        <rect x="50" y="205" width="140" height="55" rx="8" fill="#6366f1"/>
+        <text x="120" y="225" text-anchor="middle" font-weight="700" fill="white">Daily</text>
+        <text x="120" y="245" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Supervisors, 15-20 min</text>
+        <rect x="210" y="205" width="140" height="55" rx="8" fill="#3b82f6"/>
+        <text x="280" y="225" text-anchor="middle" font-weight="700" fill="white">Weekly</text>
+        <text x="280" y="245" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Managers, 30-45 min</text>
+        <rect x="370" y="205" width="140" height="55" rx="8" fill="#10b981"/>
+        <text x="440" y="225" text-anchor="middle" font-weight="700" fill="white">Bimonthly</text>
+        <text x="440" y="245" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Plant Head, 1 hour</text>
+        <rect x="530" y="205" width="140" height="55" rx="8" fill="#f59e0b"/>
+        <text x="600" y="225" text-anchor="middle" font-weight="700" fill="white">Monthly</text>
+        <text x="600" y="245" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.8)">Leadership, 1-2 hours</text>
+      </g>
+    </svg>
+    <div class="fig-caption">Fig 4: 15 observation areas and recommended walk frequency</div>
+  </div>
+
+  <h2>The Measurable Impact</h2>
+  <p>Companies that implement structured Gemba walks consistently report significant improvements:</p>
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">40%</div><div class="stat-label">reduction in recurring safety incidents</div></div>
+    <div class="stat-box"><div class="stat-num">25%</div><div class="stat-label">improvement in 5S audit scores</div></div>
+    <div class="stat-box"><div class="stat-num">3x</div><div class="stat-label">faster action item closure rate</div></div>
+    <div class="stat-box"><div class="stat-num">50%</div><div class="stat-label">more employee-initiated suggestions</div></div>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Key Insight</div>
+    <p>The biggest impact isn't in the observations themselves — it's in the <strong>culture change</strong>. When workers see managers on the floor regularly, appreciating good work and following up on issues, trust builds and engagement soars.</p>
+  </div>
+
+  <h2>Getting Started: 5 Steps</h2>
+  <ol>
+    <li><strong>Pick one area</strong> — Start with a single production line or bay</li>
+    <li><strong>Walk daily, 15 minutes</strong> — Consistency beats duration</li>
+    <li><strong>Follow COACH</strong> — Connect first, observe second, always appreciate</li>
+    <li><strong>Record digitally</strong> — Use GembaRounds to capture, track, and follow up</li>
+    <li><strong>Review weekly</strong> — Share findings with the team, recognize contributors</li>
+  </ol>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">Common Mistake</div>
+    <p>Don't turn Gemba walks into audits. The moment workers feel "inspected" rather than "supported," they stop sharing real problems. Start with appreciation (the 'A' in COACH).</p>
+  </div>
+
+  <div class="cta">
+    <h3>Ready to digitize your Gemba walks?</h3>
+    <p>GembaRounds brings COACH framework, AI categorization, and action tracking to your shop floor.</p>
+    <a href="/">Try GembaRounds Free</a>
+  </div>
+
+</article>
+
+<footer class="blog-footer">
+  <p>&copy; 2026 GembaRounds | Based on PSS COACH Methodology by PS Satish Sir</p>
+  <p style="margin-top:0.3rem"><a href="/blog/" style="color:var(--primary);text-decoration:none">Back to Blog</a></p>
+</footer>
+
+</body>
+</html>
