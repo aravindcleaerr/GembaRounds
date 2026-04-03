@@ -2894,20 +2894,19 @@
     // ============ HELP PAGE (unified) ============
     function HelpPage() {
       const [activeTab, setActiveTab] = useState('guide');
-      const [expandedTopic, setExpandedTopic] = useState(null);
+      const [expandedFaq, setExpandedFaq] = useState(null);
 
       const tabs = [
-        { id: 'guide', icon: 'lightbulb', label: 'How to Use' },
-        { id: 'learn', icon: 'school', label: 'Gemba Methodology' },
-        { id: 'features', icon: 'star', label: 'Features & AI' },
-        { id: 'about', icon: 'info', label: 'About & Pricing' },
+        { id: 'guide', icon: 'rocket_launch', label: 'Getting Started' },
+        { id: 'pages', icon: 'menu_book', label: 'App Pages' },
+        { id: 'faq', icon: 'quiz', label: 'FAQ' },
       ];
 
       return (
         <div>
           <div className="page-header">
-            <h1 className="page-title">Help Center</h1>
-            <p className="page-subtitle">Everything you need to know about GembaRounds</p>
+            <h1 className="page-title">Help</h1>
+            <p className="page-subtitle">Learn how to use GembaRounds effectively</p>
           </div>
 
           {/* Tab Navigation */}
@@ -2922,21 +2921,20 @@
             ))}
           </div>
 
-          {/* ====== TAB: HOW TO USE ====== */}
+          {/* ====== TAB: GETTING STARTED ====== */}
           {activeTab === 'guide' && (
             <div className="fade-in">
-              {/* Quick Start Steps */}
+              {/* Quick Start */}
               <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
                 <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="rocket_launch" /> Quick Start Guide</div>
                 <div style={{ display: 'grid', gap: '0.6rem' }}>
                   {[
-                    { step: '1', icon: 'login', title: 'Sign In', desc: 'Register with your name, email, role (Manager/Supervisor/Operator), and factory' },
-                    { step: '2', icon: 'play_circle', title: 'Start a Walk', desc: 'Click the purple "Start a New Gemba Walk" card on the Home page. Set title and frequency.' },
-                    { step: '3', icon: 'school', title: 'Follow COACH', desc: 'Connect with people, Observe the process, Appreciate good work, check Conformance, Highlight improvements' },
-                    { step: '4', icon: 'add_circle', title: 'Record Observations', desc: 'For each finding: set title, describe it, pick area, tag who you met and who should act. Use Voice or AI Categorize.' },
-                    { step: '5', icon: 'camera_alt', title: 'Capture Evidence', desc: 'Upload photos or videos. Use voice dictation for hands-free description entry.' },
-                    { step: '6', icon: 'check_circle', title: 'Complete & Share', desc: 'Complete the walk to generate a summary. Share via WhatsApp or Email with stakeholders.' },
-                    { step: '7', icon: 'groups', title: 'Weekly Review', desc: 'Review all walks in Reports page. Add review notes. Track actions until closure.' },
+                    { step: '1', icon: 'play_circle', title: 'Start a Walk', desc: 'Go to Home and click the purple "Start a New Gemba Walk" card. Give it a title and pick frequency (daily/weekly/monthly).' },
+                    { step: '2', icon: 'school', title: 'Follow COACH on the Floor', desc: 'The walk page shows a COACH tracker. Connect with people, Observe the process, Appreciate good work, check Conformance, Highlight improvements.' },
+                    { step: '3', icon: 'add_circle', title: 'Record What You See', desc: 'For each observation: set a title, describe it, pick the area (Safety, 5S, Machine Condition, etc.), and tag who you met and who should act on it.' },
+                    { step: '4', icon: 'smart_toy', title: 'Use AI & Voice', desc: 'Click "AI Categorize" to auto-detect the category. Click "Voice" to dictate instead of typing. Upload photos as evidence.' },
+                    { step: '5', icon: 'check_circle', title: 'Complete & Share', desc: 'Click "Complete Walk" when done. View the summary report. Share it via WhatsApp or Email to stakeholders.' },
+                    { step: '6', icon: 'task_alt', title: 'Track Actions', desc: 'Go to Actions page to see all tagged items. Update status (Open → In Progress → Closed) as issues get resolved.' },
                   ].map((s, i) => (
                     <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.65rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
                       <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'var(--success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>{s.step}</div>
@@ -2951,14 +2949,15 @@
 
               {/* COACH Framework */}
               <div className="card" style={{ borderLeft: '4px solid var(--primary)' }}>
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="school" /> COACH Framework (PSS)</div>
+                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="school" /> COACH Framework</div>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>During a walk, the COACH tracker lights up as you complete each step:</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
                   {[
-                    { letter: 'C', word: 'Connect', text: 'Meet operating people on the shop floor. Build rapport.', color: '#6366f1' },
-                    { letter: 'O', word: 'Observe', text: 'See the actual process. Record what you find.', color: '#3b82f6' },
-                    { letter: 'A', word: 'Appreciate', text: 'Acknowledge good things people are doing.', color: '#10b981' },
-                    { letter: 'C', word: 'Conform', text: 'Check if standards and SOPs are being followed.', color: '#f59e0b' },
-                    { letter: 'H', word: 'Honing', text: 'Highlight improvements needed. Tag responsible person.', color: '#ef4444' },
+                    { letter: 'C', word: 'Connect', text: 'Fill "Person Met" to show you connected with someone', color: '#6366f1' },
+                    { letter: 'O', word: 'Observe', text: 'Add your first observation to light this up', color: '#3b82f6' },
+                    { letter: 'A', word: 'Appreciate', text: 'Record a positive observation (Good Thing)', color: '#10b981' },
+                    { letter: 'C', word: 'Conform', text: 'Pick "Adherence to Standards" as observation area', color: '#f59e0b' },
+                    { letter: 'H', word: 'Honing', text: 'Tag someone for action on an improvement', color: '#ef4444' },
                   ].map((step, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: step.color, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>{step.letter}</div>
@@ -2971,41 +2970,40 @@
                 </div>
               </div>
 
-              {/* 15 PSS Observation Areas */}
+              {/* 15 Observation Areas */}
               <div className="card">
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="grid_view" /> 15 PSS Observation Areas</div>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="grid_view" /> Observation Areas</div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Pick one of these when recording an observation:</p>
                 <div className="area-tags">
                   {OBSERVATION_AREAS.map(area => <span key={area} className="tag tag-dark">{area}</span>)}
                 </div>
               </div>
 
-              {/* Role Permissions */}
+              {/* Roles */}
               <div className="card">
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="people" /> Roles & Permissions</div>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="people" /> Who Can Do What</div>
                 <div style={{ overflow: 'auto' }}>
                   <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
                     <thead>
                       <tr style={{ background: 'var(--bg)' }}>
-                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Role</td>
-                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Start Walk</td>
-                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Review</td>
-                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Schedule</td>
-                        <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Admin</td>
+                        {['Role', 'Start Walk', 'Review', 'Schedule', 'Admin'].map(h => (
+                          <td key={h} style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>{h}</td>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {[
-                        { role: 'Admin', walk: true, review: true, schedule: true, admin: true },
-                        { role: 'Leader', walk: true, review: true, schedule: true, admin: false },
-                        { role: 'Manager', walk: true, review: true, schedule: true, admin: false },
-                        { role: 'Supervisor', walk: true, review: true, schedule: true, admin: false },
-                        { role: 'Operator', walk: false, review: false, schedule: false, admin: false },
+                        ['Admin', true, true, true, true],
+                        ['Leader', true, true, true, false],
+                        ['Manager', true, true, true, false],
+                        ['Supervisor', true, true, true, false],
+                        ['Operator', false, false, false, false],
                       ].map((r, i) => (
                         <tr key={i}>
-                          <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{r.role}</td>
-                          {['walk', 'review', 'schedule', 'admin'].map(p => (
-                            <td key={p} style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: r[p] ? 'var(--success)' : 'var(--text-muted)' }}>
-                              {r[p] ? 'Yes' : '-'}
+                          <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{r[0]}</td>
+                          {[1,2,3,4].map(j => (
+                            <td key={j} style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', color: r[j] ? 'var(--success)' : 'var(--text-muted)' }}>
+                              {r[j] ? 'Yes' : '-'}
                             </td>
                           ))}
                         </tr>
@@ -3013,220 +3011,109 @@
                     </tbody>
                   </table>
                 </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>All roles can view Reports, History, Actions, and Alerts. Operators can submit suggestions.</p>
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>All roles can view Reports, History, Actions, Alerts. Operators can submit suggestions from Home page.</p>
               </div>
 
               {/* Tips */}
               <div className="card" style={{ borderLeft: '4px solid var(--warning)' }}>
-                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="tips_and_updates" /> Pro Tips</div>
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.3rem' }}>
-                  <div>&#x2705; Walk daily, even if just 15 minutes — consistency beats duration</div>
-                  <div>&#x2705; Always start with appreciation (the A in COACH)</div>
-                  <div>&#x2705; Use voice dictation on mobile for hands-free entry</div>
-                  <div>&#x2705; Take photos as evidence — one photo saves 100 words</div>
-                  <div>&#x2705; Review and close actions weekly — accountability drives results</div>
-                  <div>&#x274C; Don't treat it as an audit — it's about improvement, not blame</div>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="tips_and_updates" /> Tips</div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.25rem' }}>
+                  <div>Use <strong>voice dictation</strong> on mobile — faster than typing</div>
+                  <div>Take <strong>photos</strong> — one photo saves 100 words</div>
+                  <div>Click <strong>AI Categorize</strong> to auto-fill category and area</div>
+                  <div>Always record at least one <strong>positive</strong> observation per walk</div>
+                  <div>Review and close actions <strong>weekly</strong> — consistency is key</div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* ====== TAB: GEMBA METHODOLOGY ====== */}
-          {activeTab === 'learn' && (
+          {/* ====== TAB: APP PAGES ====== */}
+          {activeTab === 'pages' && (
             <div className="fade-in">
-              <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.5rem' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-                  <I n="format_quote" /> "Go see, ask why, show respect"
+              {[
+                { icon: 'home', title: 'Home', desc: 'Start a new Gemba walk (managers), submit employee suggestions (operators), and see the Kaizen leaderboard.' },
+                { icon: 'directions_walk', title: 'Walk', desc: 'Active walk interface. Shows COACH progress tracker, observation form with voice/AI/photo, and list of recorded observations. Appears after starting a walk.' },
+                { icon: 'bar_chart', title: 'Reports', desc: 'Dashboard with charts (categories, positive vs negative, areas), spaghetti diagram, week-over-week trends, walk history with review and share options. Export/Import CSV here.' },
+                { icon: 'calendar_month', title: 'Schedule', desc: 'Schedule future walks with date and frequency. Set up auto-recurring walks (daily/weekly/monthly). Managers only.' },
+                { icon: 'search', title: 'History', desc: 'Search all past observations by keyword. Filter by area, category, or type. Shows repeated issues flagged automatically.' },
+                { icon: 'task_alt', title: 'Actions', desc: 'All observations with someone tagged for action. Update status: Open → In Progress → Closed. Add notes to track progress.' },
+                { icon: 'notifications', title: 'Alerts', desc: 'Notifications for overdue actions, walks pending review, and hotspot areas with repeated negative observations.' },
+                { icon: 'admin_panel_settings', title: 'Admin', desc: 'User management (view, edit roles, delete), audit trail of all system activity. Admin role only.' },
+              ].map((page, i) => (
+                <div key={i} className="card" style={{ padding: '0.85rem 1.25rem' }}>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                    <I n={page.icon} style={{ color: 'var(--primary)', marginTop: 2, flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{page.title}</div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: 2 }}>{page.desc}</div>
+                    </div>
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.85rem', opacity: 0.85, lineHeight: 1.6 }}>
-                  The essence of Gemba Walk — leave your desk, go to where work happens,
-                  understand the real situation, and work with people to improve.
+              ))}
+
+              {/* Sharing */}
+              <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="share" /> Sharing Options</div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.25rem' }}>
+                  <div><strong style={{ color: '#25D366' }}>WhatsApp</strong> — Green button on completed walks. Opens WhatsApp with summary text.</div>
+                  <div><strong style={{ color: 'var(--primary)' }}>Email</strong> — Opens your email app with walk details pre-filled.</div>
+                  <div><strong>Summary Report</strong> — Opens printable HTML page. Click Print/PDF to save.</div>
+                  <div><strong>CSV Export</strong> — Downloads all observations as spreadsheet file.</div>
                 </div>
-                <div style={{ fontSize: '0.75rem', opacity: 0.65, marginTop: '0.5rem' }}>— Taiichi Ohno, Toyota Production System</div>
               </div>
 
+              {/* Settings */}
+              <div className="card">
+                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="settings" /> Settings</div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.25rem' }}>
+                  <div><strong>Dark Mode</strong> — Moon/sun icon in top bar. Saves your preference.</div>
+                  <div><strong>Hindi</strong> — "&#x0939;&#x093F;" button in top bar toggles Hindi labels.</div>
+                  <div><strong>Logout</strong> — Click your name in top-right corner.</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ====== TAB: FAQ ====== */}
+          {activeTab === 'faq' && (
+            <div className="fade-in">
               {[
-                { id: 'what', icon: 'help', title: 'What is Gemba Walk?', content: 'Gemba is Japanese for "the actual place." In manufacturing, it means the shop floor.\n\nA Gemba Walk is when leaders go to the workplace to observe, engage with workers, and find improvement opportunities.\n\nIt is NOT an audit — it is about understanding reality, connecting with people, and building continuous improvement.' },
-                { id: 'why', icon: 'lightbulb', title: 'Why Gemba Walks Matter', content: 'Current problems:\n- Observations are random and unstructured\n- Insights not documented — lost after a day\n- No tracking of actions or closure\n- Same issues repeat month after month\n\nGemba Walks make observations systematic, documented, and actionable.' },
-                { id: 'coach', icon: 'school', title: 'COACH Framework (PSS)', content: 'C - CONNECT: Meet people on the floor. Build rapport.\nO - OBSERVE: See the actual process. Don\'t rely on reports.\nA - APPRECIATE: Acknowledge good work publicly.\nC - CONFORM: Check if standards are followed. SOPs, data recording, calibration.\nH - HONING: Highlight improvements. Tag responsible person. Set due dates.' },
-                { id: 'wastes', icon: 'delete_sweep', title: '7 Wastes (Muda) — TIMWOOD', content: '1. TRANSPORT — Unnecessary material movement\n2. INVENTORY — Excess stock, WIP buildup\n3. MOTION — Unnecessary worker movement\n4. WAITING — Idle time, material delays\n5. OVERPRODUCTION — Making more than needed\n6. OVERPROCESSING — More work than required\n7. DEFECTS — Rework, scrap, quality rejects' },
-                { id: 'freq', icon: 'calendar_month', title: 'Walk Frequency', content: 'Daily — Supervisors (15-20 min)\nWeekly — Department managers (30-45 min)\nBimonthly — Plant head (1 hour)\nMonthly — Leadership team (1-2 hours)\n\nKey: Consistency matters more than duration.' },
-                { id: 'tips', icon: 'tips_and_updates', title: 'Tips for Effective Walks', content: 'DO:\n- Go with an open mind\n- Talk to operators — ask what problems they face\n- Appreciate good work publicly\n- Take notes/photos immediately\n- Follow up on previous observations\n\nDON\'T:\n- Don\'t treat it as an audit\n- Don\'t go only when there\'s a problem\n- Don\'t skip the appreciation step\n- Don\'t make promises you can\'t keep' },
-                { id: 'review', icon: 'groups', title: 'Weekly Review Meeting', content: '1. Review all observations from the week\n2. Categorize by area and priority\n3. Identify patterns — are same issues repeating?\n4. Check action status — what\'s been closed?\n5. Recognize contributors\n6. Plan next week\'s focus areas\n7. Share summary with stakeholders via WhatsApp/Email' },
-              ].map(topic => (
-                <div key={topic.id} className="card card-hover" style={{ cursor: 'pointer' }}
-                  onClick={() => setExpandedTopic(expandedTopic === topic.id ? null : topic.id)}>
+                { q: 'I don\'t see the "Start Walk" button', a: 'Only Manager, Supervisor, Leader, and Admin roles can start walks. If you\'re an Operator, ask your manager to change your role, or use the Employee Suggestion box on the Home page.' },
+                { q: 'How do I use voice dictation?', a: 'On the Walk page, click the "Voice" button next to the description field. Speak clearly — it works best in Chrome or Edge. Click "Stop" when done.' },
+                { q: 'What does AI Categorize do?', a: 'It reads your observation description and automatically suggests: waste category (Muda/Mura/Muri/Safety/Quality), observation area (from the 15 PSS areas), and whether it\'s positive or negative.' },
+                { q: 'How do I share a walk summary?', a: 'After completing a walk, click "Summary" to view the report. Then click "WhatsApp" or "Email" buttons to share. You can also click "Print/PDF" on the summary page.' },
+                { q: 'Can I upload photos?', a: 'Yes. On the Walk page, click the upload area or camera icon. You can upload photos and videos as evidence for each observation.' },
+                { q: 'What is the COACH tracker?', a: 'It\'s the 5-circle progress bar (C-O-A-C-H) at the top of the Walk page. Each circle lights up as you complete that step: Connect (meet someone), Observe (add observation), Appreciate (positive finding), Conform (check standards), Hone (tag for action).' },
+                { q: 'How do I track actions?', a: 'When recording an observation, fill the "Person Tagged" field. That person appears in the Actions page. Update status from Open → In Progress → Closed as the issue gets resolved.' },
+                { q: 'Can operators submit observations?', a: 'Yes — use the "Employee Suggestion" box on the Home page. It doesn\'t require starting a walk.' },
+                { q: 'How do I see trends over time?', a: 'Go to Reports page and scroll to the "Week-over-Week Trends" section. It shows 8-week stacked charts and improvement trends.' },
+                { q: 'Where is the dark mode toggle?', a: 'In the top navigation bar, click the sun/moon icon next to your name.' },
+                { q: 'How do I change my role or factory?', a: 'Ask an Admin user to update your role from the Admin page, or re-register with the correct details.' },
+              ].map((faq, i) => (
+                <div key={i} className="card card-hover" style={{ cursor: 'pointer', padding: '0.85rem 1.25rem' }}
+                  onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div className="card-title"><I n={topic.icon} /> {topic.title}</div>
-                    <I n={expandedTopic === topic.id ? 'expand_less' : 'expand_more'} style={{ color: 'var(--text-muted)' }} />
+                    <div style={{ fontSize: '0.88rem', fontWeight: 700, display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <I n="help" className="mi-sm" style={{ color: 'var(--primary)' }} /> {faq.q}
+                    </div>
+                    <I n={expandedFaq === i ? 'expand_less' : 'expand_more'} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   </div>
-                  {expandedTopic === topic.id && (
-                    <div className="fade-in" style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>
-                      {topic.content}
+                  {expandedFaq === i && (
+                    <div className="fade-in" style={{ marginTop: '0.5rem', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7, paddingLeft: '1.6rem' }}>
+                      {faq.a}
                     </div>
                   )}
                 </div>
               ))}
 
-              <div className="card" style={{ textAlign: 'center', padding: '2rem' }}>
-                <I n="play_circle" style={{ fontSize: 48, color: 'var(--primary)', opacity: 0.5 }} />
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: '0.75rem' }}>PSS Talk on Gemba Walk</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Video content coming soon</div>
-              </div>
-            </div>
-          )}
-
-          {/* ====== TAB: FEATURES & AI ====== */}
-          {activeTab === 'features' && (
-            <div className="fade-in">
-              {/* AI Features */}
-              <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="smart_toy" /> Where AI is Used</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.6rem' }}>
-                  {[
-                    { icon: 'auto_fix_high', title: 'Auto-Categorization', desc: 'AI detects waste category (Muda/Mura/Muri) and observation area from description text' },
-                    { icon: 'mic', title: 'Voice-to-Text', desc: 'Browser Speech Recognition converts oral dictation into typed observations' },
-                    { icon: 'trending_up', title: 'Trend Analysis', desc: 'Identifies recurring issues, hotspot areas, and patterns across walks' },
-                    { icon: 'notifications_active', title: 'Smart Alerts', desc: 'Auto-detects overdue actions, pending reviews, and hotspot locations' },
-                    { icon: 'summarize', title: 'Walk Summary', desc: 'Auto-generated summary report with statistics and key findings' },
-                    { icon: 'psychology', title: 'Pattern Recognition', desc: 'Flags repeated issues at same location to detect systemic problems' },
-                  ].map((ai, i) => (
-                    <div key={i} style={{ display: 'flex', gap: '0.6rem', padding: '0.65rem', borderRadius: 'var(--radius-xs)', background: 'var(--purple-light)' }}>
-                      <I n={ai.icon} className="mi-lg" style={{ color: 'var(--purple)', flexShrink: 0, marginTop: 2 }} />
-                      <div>
-                        <div style={{ fontSize: '0.82rem', fontWeight: 700 }}>{ai.title}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: 2 }}>{ai.desc}</div>
-                      </div>
-                    </div>
-                  ))}
+              {/* About line */}
+              <div className="card" style={{ textAlign: 'center', padding: '1rem' }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                  <strong>GembaRounds</strong> v1.0 &middot; COACH Framework by PS Satish Sir
                 </div>
-              </div>
-
-              {/* All Features List */}
-              <div className="card">
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="featured_play_list" /> All Features</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.6rem' }}>
-                  {[
-                    { cat: 'Walk', items: ['Start/Complete walks', 'COACH progress tracker', '15 observation areas', 'Photo & video upload', 'Voice dictation', 'AI auto-categorize'] },
-                    { cat: 'Analytics', items: ['Dashboard charts', 'Spaghetti diagram', 'Trend analysis (8-week)', 'CSV export & import', 'Walk summary report', 'Data backup/restore'] },
-                    { cat: 'Team', items: ['5 user roles', 'Action tracking', 'Employee suggestions', 'Kaizen leaderboard', 'Notifications/alerts', 'Admin dashboard'] },
-                    { cat: 'Platform', items: ['Dark mode', 'Hindi language', 'PWA (installable)', 'Mobile responsive', 'WhatsApp sharing', 'Email sharing'] },
-                  ].map((group, i) => (
-                    <div key={i} style={{ padding: '0.75rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)' }}>
-                      <div style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--primary)' }}>{group.cat}</div>
-                      {group.items.map((item, j) => (
-                        <div key={j} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '0.15rem 0' }}>&#x2713; {item}</div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tech Stack */}
-              <div className="card">
-                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="code" /> Technology Stack</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-                  {['React 18', 'Node.js', 'Express', 'MongoDB Atlas', 'Chart.js', 'Vercel Serverless', 'JWT Auth', 'PWA', 'Speech API', 'AI Categorization'].map(t => (
-                    <span key={t} className="tag tag-dark">{t}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ====== TAB: ABOUT & PRICING ====== */}
-          {activeTab === 'about' && (
-            <div className="fade-in">
-              {/* Hero */}
-              <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', padding: '1.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                  <img src="/logo.svg" alt="GR" style={{ width: 64, height: 64, borderRadius: 16 }} />
-                  <div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 800 }}>GembaRounds</div>
-                    <div style={{ opacity: 0.85, fontSize: '0.85rem' }}>Digitizing Gemba Walks for Manufacturing Excellence</div>
-                    <div style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: 4 }}>Version 1.0 | COACH Framework | 15 PSS Areas | MIT License</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Where used */}
-              <div className="card" style={{ borderLeft: '4px solid var(--info)' }}>
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="factory" /> Where Can It Be Used?</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
-                  {[
-                    { icon: 'precision_manufacturing', name: 'Manufacturing' },
-                    { icon: 'engineering', name: 'Projects/EPC' },
-                    { icon: 'local_hospital', name: 'Hospitals' },
-                    { icon: 'warehouse', name: 'Warehouses' },
-                    { icon: 'storefront', name: 'Retail' },
-                    { icon: 'business', name: 'Offices' },
-                  ].map((u, i) => (
-                    <div key={i} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', fontSize: '0.82rem', fontWeight: 600 }}>
-                      <I n={u.icon} style={{ color: 'var(--info)' }} /> {u.name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Pricing */}
-              <div className="card" style={{ borderLeft: '4px solid var(--success)' }}>
-                <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="payments" /> Investment & Costs</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
-                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--success-light)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Beta (Current)</div>
-                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--success)' }}>FREE</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Up to 100 users, 512 MB</div>
-                  </div>
-                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Production</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>~$20-50/mo</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Unlimited users</div>
-                  </div>
-                  <div style={{ padding: '1rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>App Stores</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>$25 + $99/yr</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>PWA works free</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Local Server */}
-              <div className="card" style={{ borderLeft: '4px solid var(--purple)' }}>
-                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="dns" /> Deployment Options</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem' }}>
-                  {[
-                    { icon: 'cloud', title: 'Cloud', desc: 'MongoDB Atlas + Vercel' },
-                    { icon: 'computer', title: 'Local', desc: 'On-premise MongoDB + Node.js' },
-                    { icon: 'security', title: 'Hybrid', desc: 'Local server + cloud backup' },
-                  ].map((opt, i) => (
-                    <div key={i} style={{ padding: '0.5rem', borderRadius: 'var(--radius-xs)', background: 'var(--bg)', display: 'flex', gap: '0.4rem', alignItems: 'center', fontSize: '0.8rem' }}>
-                      <I n={opt.icon} style={{ color: 'var(--purple)' }} />
-                      <div><strong>{opt.title}</strong> — {opt.desc}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Local Setup */}
-              <div className="card">
-                <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="terminal" /> Local Setup (3 Steps)</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', display: 'grid', gap: '0.4rem' }}>
-                  <div><strong>1.</strong> Install Node.js (v18+) and MongoDB</div>
-                  <div><strong>2.</strong> <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>git clone https://github.com/aravindcleaerr/GembaRounds.git && npm install</code></div>
-                  <div><strong>3.</strong> Set <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>MONGO_URI</code> in .env, run <code style={{ background: 'var(--bg)', padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.75rem' }}>node src/server/index.js</code></div>
-                </div>
-              </div>
-
-              {/* Credits */}
-              <div className="card" style={{ textAlign: 'center', padding: '1.25rem' }}>
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.35rem' }}>Credits</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Methodology: <strong>PS Satish Sir</strong> (COACH Framework)</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Development: <strong>Aravind & Team</strong></div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>&copy; {new Date().getFullYear()} GembaRounds &middot; MIT License</div>
-                <div style={{ marginTop: '0.5rem' }}>
-                  <button className="btn btn-ghost btn-sm no-print" onClick={() => window.print()}>
-                    <I n="print" className="mi-sm" /> Print / PDF
-                  </button>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                  &copy; {new Date().getFullYear()} &middot; <a href="/blog/" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Blog</a>
                 </div>
               </div>
             </div>
