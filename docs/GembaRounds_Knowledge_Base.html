@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GembaRounds Knowledge Base — Complete Reference</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  @page { margin: 1.8cm 2.2cm; size: A4; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; color: #1e293b; line-height: 1.7; font-size: 10.5pt; background: white; }
+
+  .page-break { page-break-before: always; }
+  .avoid-break { page-break-inside: avoid; }
+
+  /* ===== COVER ===== */
+  .cover { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 92vh; text-align: center; page-break-after: always; }
+  .cover-logo { width: 110px; height: 110px; border-radius: 28px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-size: 44px; font-weight: 900; margin-bottom: 2rem; box-shadow: 0 16px 48px rgba(99,102,241,0.3); }
+  .cover h1 { font-size: 34pt; font-weight: 900; background: linear-gradient(135deg, #1e293b, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.4rem; letter-spacing: -0.03em; }
+  .cover h2 { font-size: 15pt; font-weight: 400; color: #64748b; margin-bottom: 1.5rem; }
+  .cover-line { width: 80px; height: 4px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 2px; margin: 1.5rem auto; }
+  .cover-meta { font-size: 9.5pt; color: #94a3b8; line-height: 1.8; }
+  .cover-badge { display: inline-block; background: #eef2ff; color: #4f46e5; padding: 0.35rem 1rem; border-radius: 100px; font-size: 9pt; font-weight: 700; margin-top: 1.5rem; }
+
+  /* ===== TOC ===== */
+  .toc { page-break-after: always; }
+  .toc h2 { font-size: 18pt; font-weight: 800; color: #0f172a; margin-bottom: 1.5rem; border-bottom: 3px solid #6366f1; padding-bottom: 0.5rem; }
+  .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.45rem 0; border-bottom: 1px dotted #e2e8f0; font-size: 10.5pt; }
+  .toc-item:hover { background: #f8fafc; }
+  .toc-num { color: #6366f1; font-weight: 700; min-width: 2rem; }
+  .toc-title { flex: 1; color: #334155; font-weight: 600; }
+  .toc-page { color: #94a3b8; font-size: 9.5pt; }
+  .toc-section { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-top: 1rem; margin-bottom: 0.3rem; }
+
+  /* ===== SECTIONS ===== */
+  h2 { font-size: 17pt; font-weight: 800; color: #0f172a; margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #6366f1; letter-spacing: -0.02em; }
+  h3 { font-size: 12pt; font-weight: 700; color: #1e293b; margin: 1.5rem 0 0.6rem; }
+  h4 { font-size: 10.5pt; font-weight: 700; color: #334155; margin: 1rem 0 0.4rem; }
+  p { margin-bottom: 0.8rem; }
+  ul, ol { margin: 0.5rem 0 1rem 1.4rem; }
+  li { margin-bottom: 0.35rem; }
+  strong { color: #0f172a; }
+
+  blockquote { border-left: 4px solid #6366f1; padding: 0.8rem 1.2rem; margin: 1rem 0; background: #f8fafc; border-radius: 0 8px 8px 0; font-style: italic; color: #64748b; font-size: 11pt; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.2rem; font-size: 9.5pt; page-break-inside: avoid; }
+  th { background: #0f172a; color: white; padding: 0.5rem 0.7rem; text-align: left; font-weight: 700; font-size: 9pt; }
+  td { padding: 0.45rem 0.7rem; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) { background: #f8fafc; }
+  tr:hover { background: #eef2ff; }
+
+  /* Callout boxes */
+  .callout { padding: 1rem 1.2rem; border-radius: 10px; margin: 1rem 0; page-break-inside: avoid; }
+  .callout-primary { background: #eef2ff; border-left: 4px solid #6366f1; }
+  .callout-success { background: #ecfdf5; border-left: 4px solid #10b981; }
+  .callout-warning { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .callout-danger { background: #fef2f2; border-left: 4px solid #ef4444; }
+  .callout-title { font-weight: 700; font-size: 10pt; margin-bottom: 0.3rem; }
+
+  /* Feature cards */
+  .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.8rem 0; }
+  .feature-card { padding: 0.7rem 0.9rem; border-radius: 8px; background: #f8fafc; border: 1px solid #e2e8f0; page-break-inside: avoid; }
+  .feature-card h4 { margin: 0 0 0.25rem; font-size: 10pt; color: #4f46e5; }
+  .feature-card p { margin: 0; font-size: 9pt; color: #64748b; }
+
+  /* COACH steps */
+  .coach-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin: 1rem 0; }
+  .coach-step { text-align: center; padding: 0.8rem 0.4rem; border-radius: 10px; page-break-inside: avoid; }
+  .coach-letter { width: 36px; height: 36px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16pt; margin: 0 auto 0.4rem; }
+  .coach-word { font-size: 10pt; font-weight: 700; }
+  .coach-desc { font-size: 8pt; color: #64748b; margin-top: 0.2rem; line-height: 1.4; }
+
+  /* Stat cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: 1rem 0; }
+  .stat-card { text-align: center; padding: 0.8rem; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; }
+  .stat-num { font-size: 20pt; font-weight: 900; color: #6366f1; }
+  .stat-label { font-size: 8pt; color: #64748b; margin-top: 0.15rem; }
+
+  /* Section number */
+  .sec-num { display: inline-block; width: 28px; height: 28px; border-radius: 50%; background: #6366f1; color: white; text-align: center; line-height: 28px; font-weight: 800; font-size: 12pt; margin-right: 0.5rem; vertical-align: middle; }
+
+  /* Footer */
+  .doc-footer { text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 2px solid #e2e8f0; font-size: 8.5pt; color: #94a3b8; }
+
+  /* Print button */
+  .print-btn { position: fixed; top: 1rem; right: 1rem; padding: 0.5rem 1.2rem; background: #6366f1; color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 10pt; font-weight: 700; cursor: pointer; z-index: 100; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+  .print-btn:hover { background: #4f46e5; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+  <div class="cover-logo">GR</div>
+  <h1>GembaRounds</h1>
+  <h2>Complete Knowledge Base</h2>
+  <div class="cover-line"></div>
+  <p style="font-size: 11pt; color: #64748b; max-width: 480px;">
+    Comprehensive reference for the AI-powered Gemba Walk platform<br>
+    based on the PSS COACH methodology
+  </p>
+  <div class="cover-badge">Version 1.0 &mdash; April 2026</div>
+  <div class="cover-meta" style="margin-top: 2.5rem;">
+    <strong style="color: #64748b;">Methodology:</strong> PS Satish (COACH Framework)<br>
+    <strong style="color: #64748b;">Development:</strong> Aravind &amp; Team<br>
+    <strong style="color: #64748b;">Live App:</strong> gembarounds.vercel.app<br>
+    <strong style="color: #64748b;">License:</strong> MIT
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+
+  <div class="toc-section">Part I &mdash; Gemba Walk Fundamentals</div>
+  <div class="toc-item"><span class="toc-num">1</span><span class="toc-title">What is Gemba Walk?</span></div>
+  <div class="toc-item"><span class="toc-num">2</span><span class="toc-title">Purpose &amp; Benefits of Gemba Walks</span></div>
+  <div class="toc-item"><span class="toc-num">3</span><span class="toc-title">COACH Framework (PSS Methodology)</span></div>
+  <div class="toc-item"><span class="toc-num">4</span><span class="toc-title">15 PSS Observation Areas (Detailed)</span></div>
+  <div class="toc-item"><span class="toc-num">5</span><span class="toc-title">7 Wastes of Lean (Muda) &mdash; TIMWOOD</span></div>
+  <div class="toc-item"><span class="toc-num">6</span><span class="toc-title">Walk Frequency &amp; Duration Guide</span></div>
+  <div class="toc-item"><span class="toc-num">7</span><span class="toc-title">Best Practices &amp; Common Mistakes</span></div>
+  <div class="toc-item"><span class="toc-num">8</span><span class="toc-title">Weekly Review Meeting Process</span></div>
+
+  <div class="toc-section">Part II &mdash; GembaRounds Platform</div>
+  <div class="toc-item"><span class="toc-num">9</span><span class="toc-title">Product Overview &amp; Vision</span></div>
+  <div class="toc-item"><span class="toc-num">10</span><span class="toc-title">Complete Feature List (40+)</span></div>
+  <div class="toc-item"><span class="toc-num">11</span><span class="toc-title">AI &amp; Automation Features</span></div>
+  <div class="toc-item"><span class="toc-num">12</span><span class="toc-title">User Roles &amp; Permissions</span></div>
+  <div class="toc-item"><span class="toc-num">13</span><span class="toc-title">Technology Architecture</span></div>
+
+  <div class="toc-section">Part III &mdash; Business &amp; Deployment</div>
+  <div class="toc-item"><span class="toc-num">14</span><span class="toc-title">Target Industries &amp; Use Cases</span></div>
+  <div class="toc-item"><span class="toc-num">15</span><span class="toc-title">Competitor Analysis</span></div>
+  <div class="toc-item"><span class="toc-num">16</span><span class="toc-title">Investment &amp; Pricing Model</span></div>
+  <div class="toc-item"><span class="toc-num">17</span><span class="toc-title">Deployment Options (Cloud / Local / Hybrid)</span></div>
+  <div class="toc-item"><span class="toc-num">18</span><span class="toc-title">Adoption Strategy &amp; Change Management</span></div>
+  <div class="toc-item"><span class="toc-num">19</span><span class="toc-title">Go-To-Market Plan</span></div>
+  <div class="toc-item"><span class="toc-num">20</span><span class="toc-title">Future Roadmap</span></div>
+
+  <div class="toc-section">Appendix</div>
+  <div class="toc-item"><span class="toc-num">A</span><span class="toc-title">API Reference</span></div>
+  <div class="toc-item"><span class="toc-num">B</span><span class="toc-title">Sample Observation Examples</span></div>
+  <div class="toc-item"><span class="toc-num">C</span><span class="toc-title">Glossary</span></div>
+</div>
+
+<!-- ==================== PART I: FUNDAMENTALS ==================== -->
+
+<div class="page-break"></div>
+<p style="font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 0.5rem;">Part I &mdash; Gemba Walk Fundamentals</p>
+
+<h2><span class="sec-num">1</span> What is Gemba Walk?</h2>
+
+<p><strong>Gemba</strong> (&#29694;&#22580;) is a Japanese term meaning "the actual place" &mdash; the real location where work happens and value is created. In manufacturing, this is the <strong>shop floor</strong>.</p>
+
+<p>A <strong>Gemba Walk</strong> is a structured management practice where leaders physically go to the workplace to:</p>
+<ul>
+  <li><strong>Observe</strong> actual processes as they happen (not from reports)</li>
+  <li><strong>Engage</strong> with workers who do the work every day</li>
+  <li><strong>Identify</strong> opportunities for improvement, waste, and safety hazards</li>
+  <li><strong>Appreciate</strong> good practices and recognize effort</li>
+  <li><strong>Act</strong> on findings by assigning accountability and tracking closure</li>
+</ul>
+
+<blockquote>"Go see, ask why, show respect." &mdash; Taiichi Ohno, Father of the Toyota Production System</blockquote>
+
+<div class="callout callout-warning">
+  <div class="callout-title">Important Distinction</div>
+  <p>A Gemba Walk is <strong>NOT</strong> an audit, inspection, or blame exercise. It is about understanding reality, connecting with people, and building a culture of continuous improvement. The moment workers feel "inspected" rather than "supported," they stop sharing real problems.</p>
+</div>
+
+<h3>Origin &amp; History</h3>
+<p>Gemba Walks originated at <strong>Toyota Motor Corporation</strong> in Japan as part of the Toyota Production System (TPS) in the 1950s-70s. Taiichi Ohno, the architect of TPS, insisted that managers could not understand problems by sitting in offices reading reports &mdash; they had to go to the <em>genba</em> (the actual place) and see for themselves.</p>
+<p>The practice spread globally through Lean Manufacturing and is now considered a cornerstone of operational excellence in manufacturing, healthcare, logistics, and service industries.</p>
+
+<h3>The Problem Gemba Walks Solve</h3>
+
+<div class="callout callout-danger">
+  <div class="callout-title">Current State in Most Factories</div>
+  <p><strong>73% of manufacturing issues go unreported.</strong> Managers spend 80% of their time in offices, making decisions based on second-hand information. The shop floor remains invisible.</p>
+</div>
+
+<table>
+  <tr><th>Problem</th><th>Consequence</th><th>Gemba Walk Solution</th></tr>
+  <tr><td>Observations are random, unstructured</td><td>Critical issues missed</td><td>COACH framework provides structure</td></tr>
+  <tr><td>Insights not documented</td><td>Lost after a day</td><td>Digital recording with photos, voice</td></tr>
+  <tr><td>No systematic tracking</td><td>Actions never close</td><td>Action tracker with status updates</td></tr>
+  <tr><td>Accountability unclear</td><td>Issues repeat endlessly</td><td>Person tagging with due dates</td></tr>
+  <tr><td>No data for trends</td><td>Can't identify patterns</td><td>AI analytics, spaghetti diagrams</td></tr>
+</table>
+
+<!-- Section 2 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">2</span> Purpose &amp; Benefits of Gemba Walks</h2>
+
+<h3>Purpose (as defined by PSS)</h3>
+<ol type="a">
+  <li><strong>Connect with operating people</strong> &mdash; Build relationships on the floor</li>
+  <li><strong>Appreciate good things</strong> &mdash; Recognize effort and best practices</li>
+  <li><strong>Check if standards are being followed</strong> &mdash; SOPs, 5S, safety protocols</li>
+  <li><strong>See opportunities for improvement</strong> &mdash; Identify waste, hazards, inefficiencies</li>
+</ol>
+
+<h3>Benefits</h3>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="stat-num">40%</div><div class="stat-label">Reduction in recurring<br>safety incidents</div></div>
+  <div class="stat-card"><div class="stat-num">25%</div><div class="stat-label">Improvement in<br>5S audit scores</div></div>
+  <div class="stat-card"><div class="stat-num">3x</div><div class="stat-label">Faster action<br>closure rate</div></div>
+  <div class="stat-card"><div class="stat-num">50%</div><div class="stat-label">More employee<br>suggestions</div></div>
+</div>
+
+<table>
+  <tr><th>#</th><th>Benefit</th><th>How</th></tr>
+  <tr><td>1</td><td>Systematic observation tracking</td><td>Digital records replace paper notes that get lost</td></tr>
+  <tr><td>2</td><td>Sustained improvements</td><td>Follow-up and trend tracking prevent regression</td></tr>
+  <tr><td>3</td><td>Not relying on memory</td><td>Photos, voice notes, and AI categorization capture everything</td></tr>
+  <tr><td>4</td><td>Making people accountable</td><td>Person tagging with action status tracking</td></tr>
+  <tr><td>5</td><td>Recording insights</td><td>Searchable history across all walks and time periods</td></tr>
+  <tr><td>6</td><td>Documentation for audits</td><td>Summary reports, CSV exports, printable PDFs</td></tr>
+  <tr><td>7</td><td>Monitoring project progress</td><td>Week-over-week trend analysis and dashboards</td></tr>
+  <tr><td>8</td><td>Easy mobile access</td><td>PWA works on any phone browser, no install needed</td></tr>
+  <tr><td>9</td><td>Employee involvement</td><td>Operators can submit suggestions directly</td></tr>
+  <tr><td>10</td><td>Recognition of contribution</td><td>Kaizen points leaderboard gamifies improvement</td></tr>
+  <tr><td>11</td><td>Enhanced personal productivity</td><td>Voice dictation + AI reduces manual data entry</td></tr>
+  <tr><td>12</td><td>Making Gemba Walk a habit</td><td>Recurring walk scheduler ensures consistency</td></tr>
+  <tr><td>13</td><td>Past history for repeated issues</td><td>Pattern recognition flags systemic problems</td></tr>
+</table>
+
+<!-- Section 3 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">3</span> COACH Framework (PSS Methodology)</h2>
+
+<p>The <strong>COACH</strong> framework, developed by <strong>PS Satish</strong>, provides a structured, repeatable approach to Gemba walks. Each letter represents a critical step that ensures walks are comprehensive and people-centered.</p>
+
+<div class="coach-grid">
+  <div class="coach-step" style="background: #eef2ff;">
+    <div class="coach-letter" style="background: #6366f1;">C</div>
+    <div class="coach-word" style="color: #6366f1;">Connect</div>
+    <div class="coach-desc">Meet operating people on the floor. Build rapport and trust.</div>
+  </div>
+  <div class="coach-step" style="background: #eff6ff;">
+    <div class="coach-letter" style="background: #3b82f6;">O</div>
+    <div class="coach-word" style="color: #3b82f6;">Observe</div>
+    <div class="coach-desc">See the actual process. Don't rely on reports.</div>
+  </div>
+  <div class="coach-step" style="background: #ecfdf5;">
+    <div class="coach-letter" style="background: #10b981;">A</div>
+    <div class="coach-word" style="color: #10b981;">Appreciate</div>
+    <div class="coach-desc">Acknowledge good work. Positive reinforcement.</div>
+  </div>
+  <div class="coach-step" style="background: #fffbeb;">
+    <div class="coach-letter" style="background: #f59e0b;">C</div>
+    <div class="coach-word" style="color: #f59e0b;">Conform</div>
+    <div class="coach-desc">Check if standards and SOPs are followed.</div>
+  </div>
+  <div class="coach-step" style="background: #fef2f2;">
+    <div class="coach-letter" style="background: #ef4444;">H</div>
+    <div class="coach-word" style="color: #ef4444;">Honing</div>
+    <div class="coach-desc">Highlight improvements. Tag for action.</div>
+  </div>
+</div>
+
+<h3>Detailed COACH Guide</h3>
+
+<table>
+  <tr><th>Step</th><th>What to Do</th><th>What to Record</th><th>In GembaRounds</th></tr>
+  <tr>
+    <td><strong style="color:#6366f1;">C &mdash; Connect</strong></td>
+    <td>Greet workers by name. Ask how they are. Inquire about challenges they face. Listen actively. Build trust through regular presence.</td>
+    <td>"Person Met" field</td>
+    <td>COACH tracker lights up "C" when Person Met is filled</td>
+  </tr>
+  <tr>
+    <td><strong style="color:#3b82f6;">O &mdash; Observe</strong></td>
+    <td>Walk the floor with fresh eyes. Look at the process flow, material movement, machine conditions. Watch for safety hazards, cleanliness, organization. Don't rely on reports.</td>
+    <td>Observation title + description</td>
+    <td>COACH tracker lights up "O" when first observation recorded</td>
+  </tr>
+  <tr>
+    <td><strong style="color:#10b981;">A &mdash; Appreciate</strong></td>
+    <td>Actively look for good things. Clean workstation? Good 5S? Properly displayed SOP? Say it out loud. Write it down. This is the most important step &mdash; it builds the trust needed for the other steps to work.</td>
+    <td>Positive observations (Good Thing toggle)</td>
+    <td>COACH tracker lights up "A" when a positive observation is added</td>
+  </tr>
+  <tr>
+    <td><strong style="color:#f59e0b;">C &mdash; Conform</strong></td>
+    <td>Check standards adherence: Are SOPs displayed at eye level? Are log sheets filled? Are gauges calibrated? Is FIFO followed? Are safety guards in place?</td>
+    <td>Area: "Adherence to Standards"</td>
+    <td>COACH tracker lights up "C" when observation area is Standards</td>
+  </tr>
+  <tr>
+    <td><strong style="color:#ef4444;">H &mdash; Honing</strong></td>
+    <td>For every improvement needed: clearly define the issue, tag the responsible person, set expectation for resolution. Follow up in the next walk or weekly review.</td>
+    <td>"Person Tagged" + negative observation</td>
+    <td>COACH tracker lights up "H" when both conditions met</td>
+  </tr>
+</table>
+
+<div class="callout callout-success">
+  <div class="callout-title">Key Insight from PSS</div>
+  <p>The order matters. Always <strong>Connect and Appreciate before Conforming and Honing</strong>. If you start with criticism, you lose trust. If you start with connection and appreciation, people are open to improvement feedback.</p>
+</div>
+
+<!-- Section 4 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">4</span> 15 PSS Observation Areas (Detailed)</h2>
+
+<table>
+  <tr><th>#</th><th>Area</th><th>What to Look For</th><th>Example Observations</th></tr>
+  <tr><td>1</td><td><strong>House Keeping (5S)</strong></td><td>Sort, Set in order, Shine, Standardize, Sustain</td><td>Shadow board complete, floor markings clear, bins labeled</td></tr>
+  <tr><td>2</td><td><strong>Safety</strong></td><td>PPE usage, guards, fire extinguishers, first aid</td><td>Safety guard missing on press, no goggles at grinding</td></tr>
+  <tr><td>3</td><td><strong>Discipline</strong></td><td>Attendance, punctuality, following rules</td><td>Workers on phone during operation, late starts after break</td></tr>
+  <tr><td>4</td><td><strong>Productivity</strong></td><td>Output vs target, machine utilization, OEE</td><td>CNC idle for 2 hours waiting for program, low cycle count</td></tr>
+  <tr><td>5</td><td><strong>Wastes (Muda)</strong></td><td>Transport, Inventory, Motion, Waiting, Over-production, Over-processing, Defects</td><td>Operators walking 50m for tools, WIP piled at bottleneck</td></tr>
+  <tr><td>6</td><td><strong>Ambience</strong></td><td>Lighting, temperature, ventilation, noise</td><td>Poor lighting at inspection bench, no ventilation at welding</td></tr>
+  <tr><td>7</td><td><strong>Environment Impact</strong></td><td>Emissions, effluent, waste disposal, hazmat</td><td>Oil spillage near drain, no containment for coolant</td></tr>
+  <tr><td>8</td><td><strong>Material Handling</strong></td><td>Storage method, labeling, damage prevention</td><td>Finished parts on floor without protection, no bin labels</td></tr>
+  <tr><td>9</td><td><strong>Data Recording</strong></td><td>Log sheets, production data, quality records</td><td>Temperature log blank for 3 days, no rejection tracking</td></tr>
+  <tr><td>10</td><td><strong>Adherence to Standards</strong></td><td>SOPs displayed, work instructions followed</td><td>SOP revision outdated, operator not following sequence</td></tr>
+  <tr><td>11</td><td><strong>Machine Condition</strong></td><td>Maintenance status, leaks, vibration, noise</td><td>Hydraulic leak under lathe, abnormal sound from spindle</td></tr>
+  <tr><td>12</td><td><strong>Gauges &amp; Fixture</strong></td><td>Calibration status, condition, availability</td><td>Calibration sticker expired, micrometer dropped and dented</td></tr>
+  <tr><td>13</td><td><strong>Inventory</strong></td><td>FIFO, stock levels, Kanban, dead stock</td><td>FIFO violated in stores, Kanban cards missing from bins</td></tr>
+  <tr><td>14</td><td><strong>Review Meeting</strong></td><td>MIS data, action follow-up, KPIs</td><td>Last month's actions still open, no MIS board updated</td></tr>
+  <tr><td>15</td><td><strong>Others</strong></td><td>Anything noteworthy not in above categories</td><td>New employee not trained, visitor without safety induction</td></tr>
+</table>
+
+<!-- Section 5 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">5</span> 7 Wastes of Lean (Muda) &mdash; TIMWOOD</h2>
+
+<p>The 7 wastes (Muda) are the foundation of Lean Manufacturing. They represent activities that consume resources but add no value for the customer. Gemba walks are the most effective way to spot them.</p>
+
+<table>
+  <tr><th>Letter</th><th>Waste</th><th>Definition</th><th>What to Look For</th><th>Impact</th></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">T</td><td><strong>Transport</strong></td><td>Unnecessary movement of materials</td><td>Materials traveling long distances, criss-crossing the floor, double-handling</td><td>Time, damage risk, cost</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">I</td><td><strong>Inventory</strong></td><td>Excess stock beyond what's needed</td><td>Piles of WIP, overflowing bins, raw material sitting unused for weeks</td><td>Cash tied up, space, obsolescence</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">M</td><td><strong>Motion</strong></td><td>Unnecessary movement by workers</td><td>Operators walking far for tools, bending, reaching, searching for items</td><td>Fatigue, time, ergonomic injury</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">W</td><td><strong>Waiting</strong></td><td>Idle time while waiting for something</td><td>Workers standing idle, machines waiting for material/programs/approval</td><td>Lost productivity, cost</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">O</td><td><strong>Over-production</strong></td><td>Making more than customer demand</td><td>Producing ahead of schedule, batch sizes larger than needed</td><td>Inventory cost, space, rework risk</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">O</td><td><strong>Over-processing</strong></td><td>Doing more work than the customer requires</td><td>Extra inspections, polishing unseen surfaces, unnecessary tight tolerances</td><td>Time, cost, no value added</td></tr>
+  <tr><td style="font-weight:900;color:#6366f1;">D</td><td><strong>Defects</strong></td><td>Products that don't meet specification</td><td>Rejection bins, rework stations, customer complaint boards</td><td>Cost, delivery, reputation</td></tr>
+</table>
+
+<div class="callout callout-primary">
+  <div class="callout-title">Mnemonic: TIMWOOD</div>
+  <p>Transport &bull; Inventory &bull; Motion &bull; Waiting &bull; Overproduction &bull; Overprocessing &bull; Defects</p>
+  <p style="margin-top:0.3rem;">Some practitioners add an 8th waste: <strong>Non-Utilized Talent</strong> (TIMWOODS) &mdash; underusing people's skills, knowledge, and creativity.</p>
+</div>
+
+<h3>Additional Waste Classifications</h3>
+<table>
+  <tr><th>Type</th><th>Japanese</th><th>Meaning</th><th>Example</th></tr>
+  <tr><td><strong>Muda</strong></td><td>&#28961;&#39364;</td><td>Waste (non-value-adding activity)</td><td>Waiting for material, rework</td></tr>
+  <tr><td><strong>Mura</strong></td><td>&#26001;</td><td>Unevenness (variation in process)</td><td>One shift producing 100, another 60</td></tr>
+  <tr><td><strong>Muri</strong></td><td>&#28961;&#29702;</td><td>Overburden (unreasonable stress)</td><td>Machine running above rated capacity</td></tr>
+</table>
+
+<!-- Section 6 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">6</span> Walk Frequency &amp; Duration Guide</h2>
+
+<table>
+  <tr><th>Level</th><th>Who Should Walk</th><th>Frequency</th><th>Duration</th><th>Focus</th></tr>
+  <tr><td><strong>Shop Floor</strong></td><td>Supervisors, Team Leaders</td><td>Daily</td><td>15-20 min</td><td>5S, safety, machine status, immediate issues</td></tr>
+  <tr><td><strong>Department</strong></td><td>Managers, HODs</td><td>Weekly</td><td>30-45 min</td><td>Process flow, standards, action follow-up, personnel</td></tr>
+  <tr><td><strong>Plant</strong></td><td>Plant Head, VPs, GMs</td><td>Bimonthly</td><td>1 hour</td><td>Strategic improvements, cross-department issues, culture</td></tr>
+  <tr><td><strong>Leadership</strong></td><td>MD, CEO, Board Members</td><td>Monthly</td><td>1-2 hours</td><td>Organization-level practices, employee engagement, vision</td></tr>
+</table>
+
+<div class="callout callout-success">
+  <div class="callout-title">Golden Rule</div>
+  <p><strong>Consistency is more important than duration.</strong> A 15-minute daily walk creates more lasting impact than a 2-hour walk done once a month. The key is to make Gemba walks a non-negotiable habit.</p>
+</div>
+
+<h3>Scheduling Best Practices</h3>
+<ul>
+  <li>Block Gemba walk time in your calendar &mdash; treat it like a meeting</li>
+  <li>Vary the time of day &mdash; morning, mid-shift, and end-of-day reveal different issues</li>
+  <li>Rotate areas &mdash; don't always walk the same route</li>
+  <li>Use GembaRounds' recurring scheduler to auto-create walks</li>
+  <li>Never cancel a Gemba walk for a meeting &mdash; the floor IS the meeting</li>
+</ul>
+
+<!-- Section 7 -->
+<h2><span class="sec-num">7</span> Best Practices &amp; Common Mistakes</h2>
+
+<h3>Best Practices (DO)</h3>
+<table>
+  <tr><th>#</th><th>Practice</th><th>Why</th></tr>
+  <tr><td>1</td><td>Go with an open mind &mdash; observe, don't judge</td><td>Judging shuts down communication</td></tr>
+  <tr><td>2</td><td>Talk to operators &mdash; ask "what problems do you face?"</td><td>Workers know the real issues better than anyone</td></tr>
+  <tr><td>3</td><td>Appreciate good work publicly and immediately</td><td>Positive reinforcement is the strongest behavior modifier</td></tr>
+  <tr><td>4</td><td>Take notes/photos immediately</td><td>Memory fades within hours; evidence supports action</td></tr>
+  <tr><td>5</td><td>Follow up on previous observations</td><td>Shows that you take findings seriously; builds credibility</td></tr>
+  <tr><td>6</td><td>Vary your route every time</td><td>Different paths reveal different issues</td></tr>
+  <tr><td>7</td><td>Walk at different times (morning, mid-shift, late)</td><td>Issues vary by time of day and shift</td></tr>
+  <tr><td>8</td><td>Include operators in solutions</td><td>They have the best ideas for their own processes</td></tr>
+</table>
+
+<h3>Common Mistakes (DON'T)</h3>
+<table>
+  <tr><th>#</th><th>Mistake</th><th>Consequence</th></tr>
+  <tr><td>1</td><td>Treating it as an audit or inspection</td><td>Workers hide problems instead of sharing</td></tr>
+  <tr><td>2</td><td>Going only when there's a crisis</td><td>Walk becomes associated with punishment</td></tr>
+  <tr><td>3</td><td>Skipping the appreciation step</td><td>Workers feel only negative things are noticed</td></tr>
+  <tr><td>4</td><td>Making promises you can't keep</td><td>Trust erodes; workers stop engaging</td></tr>
+  <tr><td>5</td><td>Spending all time in one area</td><td>Other areas feel neglected; issues missed</td></tr>
+  <tr><td>6</td><td>Jumping to solutions on the spot</td><td>Quick fixes often don't address root cause</td></tr>
+  <tr><td>7</td><td>Not following up on actions</td><td>Walk becomes a ritual with no impact</td></tr>
+  <tr><td>8</td><td>Delegating walks to junior staff only</td><td>Loses the "management goes to the floor" principle</td></tr>
+</table>
+
+<!-- Section 8 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">8</span> Weekly Review Meeting Process</h2>
+
+<p>The weekly review transforms individual walk observations into organizational improvements. It's where patterns emerge, accountability is established, and culture is reinforced.</p>
+
+<h3>7-Step Review Process</h3>
+<table>
+  <tr><th>Step</th><th>Action</th><th>Duration</th><th>GembaRounds Feature</th></tr>
+  <tr><td>1</td><td><strong>Review all observations</strong> from the past week</td><td>10 min</td><td>Reports page &rarr; Walk History</td></tr>
+  <tr><td>2</td><td><strong>Categorize by area and priority</strong></td><td>5 min</td><td>Charts: by PSS area, by category</td></tr>
+  <tr><td>3</td><td><strong>Identify patterns</strong> &mdash; are same issues repeating?</td><td>5 min</td><td>History search + trend analysis</td></tr>
+  <tr><td>4</td><td><strong>Check action status</strong> &mdash; what's been closed?</td><td>10 min</td><td>Actions page: Open/In Progress/Closed</td></tr>
+  <tr><td>5</td><td><strong>Recognize contributions</strong></td><td>5 min</td><td>Kaizen leaderboard</td></tr>
+  <tr><td>6</td><td><strong>Plan next week's focus areas</strong></td><td>5 min</td><td>Schedule page</td></tr>
+  <tr><td>7</td><td><strong>Share summary with stakeholders</strong></td><td>5 min</td><td>WhatsApp/Email share buttons</td></tr>
+</table>
+
+<div class="callout callout-warning">
+  <div class="callout-title">What to Capture</div>
+  <p><strong>Observations:</strong> Title, description, area, location, person met, person tagged, date<br>
+  <strong>Ways to capture:</strong> Writing, oral dictation, photo, video<br>
+  <strong>Discussion:</strong> Once a week to sustain and improve shop floor activities</p>
+</div>
+
+<!-- ==================== PART II: PLATFORM ==================== -->
+
+<div class="page-break"></div>
+<p style="font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 0.5rem;">Part II &mdash; GembaRounds Platform</p>
+
+<h2><span class="sec-num">9</span> Product Overview &amp; Vision</h2>
+
+<p><strong>GembaRounds</strong> is an AI-powered digital platform that transforms traditional paper-based Gemba walks into a structured, data-driven, accountable process. It is built specifically for Indian manufacturing SMEs, based on the <strong>COACH framework</strong> by PS Satish.</p>
+
+<h3>Vision</h3>
+<p>Make Gemba walks a digital habit for every manufacturing leader &mdash; simple enough for a supervisor with a smartphone, powerful enough for a multi-factory enterprise.</p>
+
+<h3>Key Differentiators</h3>
+<ul>
+  <li><strong>COACH framework built-in</strong> &mdash; not a generic checklist tool</li>
+  <li><strong>15 PSS observation areas</strong> &mdash; pre-configured for manufacturing</li>
+  <li><strong>AI auto-categorization</strong> &mdash; detects waste type from plain text</li>
+  <li><strong>Voice-first design</strong> &mdash; speak observations, hands-free on the floor</li>
+  <li><strong>Indian manufacturing focus</strong> &mdash; Hindi language, local context</li>
+  <li><strong>Free forever tier</strong> &mdash; no barrier to start</li>
+</ul>
+
+<h3>Live Application</h3>
+<table>
+  <tr><td><strong>URL</strong></td><td>https://gembarounds.vercel.app</td></tr>
+  <tr><td><strong>GitHub</strong></td><td>https://github.com/aravindcleaerr/GembaRounds</td></tr>
+  <tr><td><strong>License</strong></td><td>MIT (open source)</td></tr>
+</table>
+
+<!-- Section 10 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">10</span> Complete Feature List (40+)</h2>
+
+<h3>Walk Management</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>Start &amp; Complete Walks</h4><p>Create walks with title, walker name, and frequency (daily/weekly/bimonthly/monthly/adhoc)</p></div>
+  <div class="feature-card"><h4>COACH Progress Tracker</h4><p>Interactive 5-step visual tracker that lights up as you complete each COACH step during a walk</p></div>
+  <div class="feature-card"><h4>15 Observation Areas</h4><p>Pre-configured PSS areas covering all aspects of manufacturing operations</p></div>
+  <div class="feature-card"><h4>Positive/Negative Toggle</h4><p>Record "Good Things" and "Improvements" separately for balanced observations</p></div>
+  <div class="feature-card"><h4>Person Met &amp; Tagged</h4><p>Track who you connected with and who should take action on findings</p></div>
+  <div class="feature-card"><h4>Photo &amp; Video Upload</h4><p>Capture visual evidence directly from your phone camera or gallery</p></div>
+  <div class="feature-card"><h4>Voice Dictation</h4><p>Speak observations hands-free using browser Speech Recognition (Chrome/Edge)</p></div>
+  <div class="feature-card"><h4>10-Questions Framework</h4><p>Interactive Gemba Moonwalker checklist for structured inquiry during walks</p></div>
+</div>
+
+<h3>AI &amp; Automation</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>AI Auto-Categorization</h4><p>Analyzes description text to suggest waste category (Muda/Mura/Muri), observation area, and type</p></div>
+  <div class="feature-card"><h4>Smart Alerts</h4><p>Auto-detects overdue actions, walks pending review, and hotspot locations with repeated issues</p></div>
+  <div class="feature-card"><h4>Pattern Recognition</h4><p>Identifies repeated issues at the same location to flag systemic problems</p></div>
+  <div class="feature-card"><h4>Trend Analysis</h4><p>8-week stacked charts showing positive vs negative trends and improvement rates</p></div>
+</div>
+
+<h3>Analytics &amp; Reports</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>Dashboard Charts</h4><p>Doughnut charts (categories, positive/negative), bar charts (PSS areas), stat cards</p></div>
+  <div class="feature-card"><h4>Spaghetti Diagram</h4><p>SVG circular layout showing walk paths between locations with frequency heatmap</p></div>
+  <div class="feature-card"><h4>Walk Summary Report</h4><p>Printable HTML summary with stats, tables, action items. Print to PDF.</p></div>
+  <div class="feature-card"><h4>CSV Export &amp; Import</h4><p>Download all observations as CSV. Bulk import past observations from CSV files.</p></div>
+  <div class="feature-card"><h4>Data Backup &amp; Restore</h4><p>Full JSON export/import of all walks, observations, and users</p></div>
+  <div class="feature-card"><h4>IoT Data Display</h4><p>Simulated machine/sensor data route for future IoT integration</p></div>
+</div>
+
+<h3>Team &amp; Accountability</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>5 User Roles</h4><p>Admin, Leader, Manager, Supervisor, Operator &mdash; each with appropriate permissions</p></div>
+  <div class="feature-card"><h4>Action Tracking</h4><p>Open &rarr; In Progress &rarr; Closed workflow with notes for every tagged observation</p></div>
+  <div class="feature-card"><h4>Employee Suggestions</h4><p>Operators can submit observations directly without starting a walk</p></div>
+  <div class="feature-card"><h4>Kaizen Leaderboard</h4><p>Points-based gamification recognizing contributions across all roles</p></div>
+  <div class="feature-card"><h4>Admin Dashboard</h4><p>User management (list, edit roles, delete), audit trail of all system activity</p></div>
+  <div class="feature-card"><h4>Walk Review</h4><p>Manager/leader review with notes, reviewed-by tracking, and date stamps</p></div>
+</div>
+
+<h3>Platform &amp; Communication</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>Dark Mode</h4><p>Toggle + automatic system preference detection. Saved in localStorage.</p></div>
+  <div class="feature-card"><h4>Hindi Language</h4><p>~170 translated UI elements. Toggle with &#x0939;&#x093F;/EN button in header.</p></div>
+  <div class="feature-card"><h4>PWA</h4><p>Progressive Web App &mdash; installable on phone home screen, service worker for offline caching</p></div>
+  <div class="feature-card"><h4>Mobile Responsive</h4><p>Bottom navigation on mobile, sidebar on desktop. Touch-optimized forms.</p></div>
+  <div class="feature-card"><h4>WhatsApp Sharing</h4><p>Share walk summaries via WhatsApp with pre-formatted message and link</p></div>
+  <div class="feature-card"><h4>Email Sharing</h4><p>Opens email client with walk details and summary link pre-filled</p></div>
+  <div class="feature-card"><h4>Multi-Factory</h4><p>Factory/plant field on users, walks, and observations for multi-site operations</p></div>
+  <div class="feature-card"><h4>Recurring Scheduler</h4><p>Auto-create walks on daily/weekly/bimonthly/monthly schedule using cron</p></div>
+</div>
+
+<h3>Security</h3>
+<div class="feature-grid">
+  <div class="feature-card"><h4>JWT Authentication</h4><p>Secure token-based auth with bcrypt password hashing. 7-day expiry.</p></div>
+  <div class="feature-card"><h4>Rate Limiting</h4><p>Auth: 10 requests/min. API: 60 requests/min. Prevents abuse.</p></div>
+  <div class="feature-card"><h4>Input Sanitization</h4><p>XSS protection on all text inputs. HTML entities escaped.</p></div>
+  <div class="feature-card"><h4>Error Boundaries</h4><p>React error boundaries prevent full app crashes from component errors</p></div>
+</div>
+
+<!-- Section 11 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">11</span> AI &amp; Automation Features</h2>
+
+<table>
+  <tr><th>Feature</th><th>How It Works</th><th>User Action</th><th>Result</th></tr>
+  <tr><td><strong>Auto-Categorization</strong></td><td>Rule-based NLP analyzes description keywords to detect waste patterns</td><td>Click "AI Categorize" button</td><td>Category, area, and type auto-filled</td></tr>
+  <tr><td><strong>Voice Dictation</strong></td><td>Browser Web Speech API converts spoken words to text in real-time</td><td>Click "Voice" button, speak</td><td>Description field auto-populated</td></tr>
+  <tr><td><strong>Trend Analysis</strong></td><td>Aggregates 8 weeks of data into stacked bar + line charts</td><td>Visit Reports page</td><td>Visual trends with improvement rate</td></tr>
+  <tr><td><strong>Smart Alerts</strong></td><td>Checks action due dates, review status, and location frequency</td><td>Visit Alerts page</td><td>Overdue, pending, and hotspot notifications</td></tr>
+  <tr><td><strong>Pattern Recognition</strong></td><td>Groups observations by location across walks to detect repetition</td><td>Search in History</td><td>"Repeated Issue" flags on locations</td></tr>
+  <tr><td><strong>Walk Summary</strong></td><td>Server generates HTML report with stats, tables, charts</td><td>Click "Summary" on completed walk</td><td>Printable report page</td></tr>
+</table>
+
+<!-- Section 12 -->
+<h2><span class="sec-num">12</span> User Roles &amp; Permissions</h2>
+
+<table>
+  <tr><th>Role</th><th>Start Walk</th><th>Record Obs.</th><th>Review</th><th>Schedule</th><th>View Reports</th><th>Admin Panel</th><th>Suggestions</th></tr>
+  <tr><td><strong>Admin</strong></td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td></tr>
+  <tr><td><strong>Leader</strong></td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#10b981;">Yes</td></tr>
+  <tr><td><strong>Manager</strong></td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#10b981;">Yes</td></tr>
+  <tr><td><strong>Supervisor</strong></td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#10b981;">Yes</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#10b981;">Yes</td></tr>
+  <tr><td><strong>Operator</strong></td><td style="color:#94a3b8;">&mdash;</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#10b981;">Yes</td><td style="color:#94a3b8;">&mdash;</td><td style="color:#10b981;">Yes</td></tr>
+</table>
+
+<!-- Section 13 -->
+<h2><span class="sec-num">13</span> Technology Architecture</h2>
+
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+  <tr><td><strong>Frontend</strong></td><td>React 18 (CDN, no build step)</td><td>Single-page application UI</td></tr>
+  <tr><td><strong>Styling</strong></td><td>CSS Variables, Inter font, Material Icons</td><td>Theming (dark/light), responsive design</td></tr>
+  <tr><td><strong>Charts</strong></td><td>Chart.js 4.4</td><td>Doughnut, bar, line charts</td></tr>
+  <tr><td><strong>Backend</strong></td><td>Node.js + Express</td><td>REST API, file uploads, auth</td></tr>
+  <tr><td><strong>Serverless</strong></td><td>Vercel Functions</td><td>Auto-scaling, zero-ops hosting</td></tr>
+  <tr><td><strong>Database</strong></td><td>MongoDB Atlas (Mongoose ODM)</td><td>Document store for walks, observations, users</td></tr>
+  <tr><td><strong>Authentication</strong></td><td>JWT + bcrypt</td><td>Stateless auth with hashed passwords</td></tr>
+  <tr><td><strong>File Upload</strong></td><td>Multer middleware</td><td>Photo/video upload handling</td></tr>
+  <tr><td><strong>PWA</strong></td><td>Service Worker v3 + manifest.json</td><td>Offline caching, installability</td></tr>
+  <tr><td><strong>Speech</strong></td><td>Web Speech API</td><td>Voice-to-text dictation</td></tr>
+  <tr><td><strong>AI</strong></td><td>Rule-based keyword analysis</td><td>Auto-categorization of observations</td></tr>
+</table>
+
+<!-- ==================== PART III: BUSINESS ==================== -->
+
+<div class="page-break"></div>
+<p style="font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 0.5rem;">Part III &mdash; Business &amp; Deployment</p>
+
+<h2><span class="sec-num">14</span> Target Industries &amp; Use Cases</h2>
+
+<table>
+  <tr><th>Industry</th><th>Use Case</th><th>Key Observation Areas</th><th>Typical User</th></tr>
+  <tr><td><strong>Manufacturing</strong></td><td>Shop floor walks, CNC bays, assembly lines</td><td>5S, Safety, Machine Condition, Wastes</td><td>Production Manager, Supervisor</td></tr>
+  <tr><td><strong>Projects / EPC</strong></td><td>Construction site audits, progress checks</td><td>Safety, Standards, Material Handling</td><td>Project Manager, Site Engineer</td></tr>
+  <tr><td><strong>Hospitals</strong></td><td>Ward rounds, safety audits, hygiene checks</td><td>Safety, Discipline, Ambience, Standards</td><td>Medical Officer, Nursing Superintendent</td></tr>
+  <tr><td><strong>Warehouses</strong></td><td>Storage audits, inventory checks, logistics</td><td>5S, Inventory, Material Handling, Safety</td><td>Warehouse Manager, Logistics Lead</td></tr>
+  <tr><td><strong>Retail</strong></td><td>Store audits, customer experience, display</td><td>Ambience, Standards, 5S, Others</td><td>Area Manager, Store Supervisor</td></tr>
+  <tr><td><strong>Offices</strong></td><td>Workspace audits, process checks, compliance</td><td>5S, Ambience, Data Recording</td><td>Admin Manager, HR</td></tr>
+</table>
+
+<!-- Section 15 -->
+<h2><span class="sec-num">15</span> Competitor Analysis</h2>
+
+<h3>Direct Competitors (Gemba Walk Software)</h3>
+<table>
+  <tr><th>#</th><th>Product</th><th>Type</th><th>Pricing</th><th>Target Market</th></tr>
+  <tr><td>1</td><td><strong>SafetyCulture (iAuditor)</strong></td><td>Mobile inspections &amp; audits platform</td><td>$19-33/user/mo</td><td>Global enterprise</td></tr>
+  <tr><td>2</td><td><strong>KaiNexus</strong></td><td>Full CI suite (Gemba Walk is one module)</td><td>$10K+/year</td><td>North America, enterprise</td></tr>
+  <tr><td>3</td><td><strong>Tulip</strong></td><td>No-code manufacturing platform</td><td>$40/user/mo</td><td>Western enterprise</td></tr>
+  <tr><td>4</td><td><strong>Tervene</strong></td><td>Connected worker &amp; digital audits</td><td>Enterprise pricing</td><td>North America</td></tr>
+  <tr><td>5</td><td><strong>Praxie</strong></td><td>AI-powered Gemba walk app</td><td>Contact for pricing</td><td>Enterprise</td></tr>
+  <tr><td>6</td><td><strong>Rever</strong></td><td>Operator idea capture platform</td><td>Contact for pricing</td><td>Manufacturing</td></tr>
+  <tr><td>7</td><td><strong>Fabrico</strong></td><td>OEE + real-time walk tool</td><td>Contact for pricing</td><td>Manufacturing</td></tr>
+  <tr><td>8</td><td><strong>Gemba-Walk.com</strong></td><td>Dedicated Gemba walk tool</td><td>Unknown</td><td>Europe</td></tr>
+  <tr><td>9</td><td><strong>Factorise</strong></td><td>Shop floor Gemba module</td><td>Unknown</td><td>Manufacturing</td></tr>
+  <tr><td>10</td><td><strong>Gemba Concepts</strong></td><td>Lean consulting firm (not software)</td><td>Consulting fees</td><td>India, 500+ clients</td></tr>
+</table>
+
+<h3>Adjacent Competitors (Generic Inspection/Audit Tools)</h3>
+<table>
+  <tr><th>#</th><th>Product</th><th>Type</th></tr>
+  <tr><td>11</td><td><strong>Process Street</strong></td><td>Workflow checklists with Slack/Zapier integrations</td></tr>
+  <tr><td>12</td><td><strong>eAuditor</strong></td><td>Custom inspection app builder</td></tr>
+  <tr><td>13</td><td><strong>L2L</strong></td><td>Connected worker platform, no-code shop floor apps</td></tr>
+  <tr><td>14</td><td><strong>Workerbase</strong></td><td>Digital factory worker platform with IoT</td></tr>
+  <tr><td>15</td><td><strong>Poka.io</strong></td><td>Connected worker + digital Gemba walks</td></tr>
+  <tr><td>16</td><td><strong>Augmentir</strong></td><td>AI-powered connected worker platform</td></tr>
+  <tr><td>17</td><td><strong>Fabriq</strong></td><td>Gemba boards + visual management</td></tr>
+  <tr><td>18</td><td><strong>Axonator</strong></td><td>Gemba walk checklist app</td></tr>
+  <tr><td>19</td><td><strong>Fulcrum</strong></td><td>Mobile GIS-enabled forms for field observations</td></tr>
+  <tr><td>20</td><td><strong>GoCanvas / ProntoForms</strong></td><td>Digital forms builders for audits</td></tr>
+  <tr><td>21</td><td><strong>Stickfish</strong></td><td>Digital Gemba walk efficiency tool</td></tr>
+  <tr><td>22</td><td><strong>Alpha Software</strong></td><td>Gemba walk app builder</td></tr>
+</table>
+
+<h3>Feature Comparison vs Top Competitors</h3>
+<table>
+  <tr><th>Feature</th><th style="color:#10b981;">GembaRounds</th><th>SafetyCulture</th><th>KaiNexus</th><th>Tulip</th><th>Praxie</th><th>Tervene</th></tr>
+  <tr><td>PSS COACH Framework</td><td style="color:#10b981;font-weight:700;">Built-in</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+  <tr><td>15 Observation Areas</td><td style="color:#10b981;font-weight:700;">Pre-configured</td><td>Generic</td><td>Generic</td><td>Build your own</td><td>Generic</td><td>Custom</td></tr>
+  <tr><td>AI Auto-categorization</td><td style="color:#10b981;font-weight:700;">Yes (Muda/Mura/Muri)</td><td>Limited</td><td>No</td><td>No</td><td>Yes</td><td>No</td></tr>
+  <tr><td>Voice Dictation</td><td style="color:#10b981;font-weight:700;">Free, built-in</td><td>Paid plans</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Kaizen Gamification</td><td style="color:#10b981;font-weight:700;">Yes (leaderboard)</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Hindi Language</td><td style="color:#10b981;font-weight:700;">Yes (170 keys)</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Indian SME Focus</td><td style="color:#10b981;font-weight:700;">Yes</td><td>Western</td><td>Western</td><td>Western</td><td>Western</td><td>Western</td></tr>
+  <tr><td>Open Source</td><td style="color:#10b981;font-weight:700;">Yes (MIT)</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>On-premise Deploy</td><td style="color:#10b981;font-weight:700;">Yes</td><td>No</td><td>No</td><td>Yes ($$$)</td><td>No</td><td>No</td></tr>
+  <tr><td>WhatsApp Sharing</td><td style="color:#10b981;font-weight:700;">Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Spaghetti Diagram</td><td style="color:#10b981;font-weight:700;">Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Employee Suggestions</td><td style="color:#10b981;font-weight:700;">Yes</td><td>Limited</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+  <tr><td>Pricing</td><td style="color:#10b981;font-weight:700;">Free / Rs 120/user</td><td>$19-33/user/mo</td><td>$10K+/yr</td><td>$40/user/mo</td><td>Enterprise</td><td>Enterprise</td></tr>
+</table>
+
+<div class="callout callout-success">
+  <div class="callout-title">GembaRounds Unique Differentiators (What NO Competitor Has)</div>
+  <p>1. <strong>COACH framework</strong> built into every walk as an interactive tracker<br>
+  2. <strong>15 PSS observation areas</strong> pre-configured for manufacturing<br>
+  3. <strong>AI auto-categorization</strong> detecting Muda/Mura/Muri from plain text<br>
+  4. <strong>Free forever + open source (MIT)</strong> &mdash; every competitor is paid/closed<br>
+  5. <strong>Hindi language</strong> support (170 translated UI elements)<br>
+  6. <strong>Indian SME focus</strong> &mdash; all others target Western enterprises<br>
+  7. <strong>Kaizen gamification</strong> with points and leaderboard<br>
+  8. <strong>WhatsApp sharing</strong> &mdash; critical for Indian manufacturing communication<br>
+  9. <strong>Voice dictation built-in free</strong> &mdash; others charge or don't offer</p>
+</div>
+
+<h3>Competitive Positioning</h3>
+<p><strong>GembaRounds is the only purpose-built, AI-native, affordable Gemba Walk application targeting Indian manufacturing SMEs.</strong></p>
+<ul>
+  <li><strong>vs SafetyCulture/Tulip/Tervene:</strong> 10-50x cheaper, purpose-built for Gemba (not generic audits), COACH framework, Hindi</li>
+  <li><strong>vs KaiNexus:</strong> 100x cheaper, walk-focused depth vs CI breadth, open source</li>
+  <li><strong>vs Praxie:</strong> Similar AI approach but free/open vs enterprise-only</li>
+  <li><strong>vs Gemba Concepts:</strong> Not a competitor &mdash; potential partner (consultants can recommend GembaRounds to clients)</li>
+  <li><strong>vs Paper/WhatsApp:</strong> Structured data, searchable history, AI analytics, accountability tracking</li>
+</ul>
+
+<!-- Section 16 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">16</span> Investment &amp; Pricing Model</h2>
+
+<h3>Pricing Tiers</h3>
+<table>
+  <tr><th>Tier</th><th>Price</th><th>Users</th><th>Storage</th><th>Key Features</th></tr>
+  <tr><td><strong>Free (Beta)</strong></td><td>FREE forever</td><td>Up to 10</td><td>512 MB</td><td>All core features, CSV export</td></tr>
+  <tr><td><strong>Starter</strong></td><td>Rs 2,999/mo</td><td>Up to 25</td><td>5 GB</td><td>+ Email sharing, priority support</td></tr>
+  <tr><td><strong>Professional</strong></td><td>Rs 7,999/mo</td><td>Up to 100</td><td>25 GB</td><td>+ Multi-factory, admin dashboard, audit trail</td></tr>
+  <tr><td><strong>Enterprise</strong></td><td>Custom</td><td>Unlimited</td><td>Unlimited</td><td>+ On-premise, SSO, custom integrations, dedicated support</td></tr>
+</table>
+
+<h3>Infrastructure Cost Breakdown</h3>
+<table>
+  <tr><th>Component</th><th>Free Tier</th><th>Production</th></tr>
+  <tr><td>MongoDB Atlas</td><td>M0 (free)</td><td>M10 (~$57/mo)</td></tr>
+  <tr><td>Vercel Hosting</td><td>Free</td><td>Pro ($20/mo)</td></tr>
+  <tr><td>Domain + SSL</td><td>N/A</td><td>$2/mo</td></tr>
+  <tr><td>Email (SendGrid)</td><td>N/A</td><td>$15/mo</td></tr>
+  <tr><td><strong>Total</strong></td><td><strong>$0</strong></td><td><strong>~$95/mo (~Rs 8,000)</strong></td></tr>
+</table>
+
+<h3>App Store Costs (Optional)</h3>
+<table>
+  <tr><td>Google Play Store</td><td>$25 one-time registration</td></tr>
+  <tr><td>Apple App Store</td><td>$99/year developer program</td></tr>
+  <tr><td>Note</td><td>PWA (Progressive Web App) works free without app stores</td></tr>
+</table>
+
+<!-- Section 17 -->
+<h2><span class="sec-num">17</span> Deployment Options</h2>
+
+<table>
+  <tr><th>Option</th><th>Infrastructure</th><th>Data Location</th><th>Maintenance</th><th>Best For</th></tr>
+  <tr><td><strong>Cloud (Current)</strong></td><td>MongoDB Atlas + Vercel</td><td>Cloud servers</td><td>Zero (auto-managed)</td><td>Quick start, SaaS model</td></tr>
+  <tr><td><strong>On-Premise</strong></td><td>Local MongoDB + Node.js</td><td>Company servers</td><td>IT team needed</td><td>Data sovereignty requirements</td></tr>
+  <tr><td><strong>Hybrid</strong></td><td>Local primary + cloud backup</td><td>Local + cloud</td><td>Moderate</td><td>Best of both worlds</td></tr>
+</table>
+
+<h3>On-Premise Installation (3 Steps)</h3>
+<ol>
+  <li><strong>Install prerequisites:</strong> Node.js v18+ and MongoDB Community Server</li>
+  <li><strong>Clone and install:</strong> <code>git clone https://github.com/aravindcleaerr/GembaRounds.git &amp;&amp; npm install</code></li>
+  <li><strong>Configure and run:</strong> Set <code>MONGO_URI=mongodb://localhost:27017/gembarounds</code> in <code>.env</code>, then run <code>node src/server/index.js</code></li>
+</ol>
+
+<!-- Section 18 -->
+<div class="page-break"></div>
+<h2><span class="sec-num">18</span> Adoption Strategy &amp; Change Management</h2>
+
+<table>
+  <tr><th>Challenge</th><th>Root Cause</th><th>Solution</th><th>Timeline</th></tr>
+  <tr><td>Resistance to change from paper</td><td>Comfort with existing process</td><td>Start with one team pilot, show quick wins, then expand</td><td>Week 1-2</td></tr>
+  <tr><td>Managers too busy to use</td><td>Perceived time burden</td><td>Voice dictation makes it faster than paper. Under 2 min per observation</td><td>Day 1</td></tr>
+  <tr><td>Operators afraid of being reported</td><td>Historical blame culture</td><td>Start with appreciation (COACH-A). Record positive observations first</td><td>Week 1-4</td></tr>
+  <tr><td>Data entry fatigue</td><td>Too many fields</td><td>AI auto-categorize, voice input, photo capture reduce manual entry to minimum</td><td>Day 1</td></tr>
+  <tr><td>IT infrastructure concerns</td><td>Server, installation fears</td><td>Works on any phone browser. No app install needed (PWA). Cloud-hosted.</td><td>Day 1</td></tr>
+  <tr><td>Sustaining beyond initial enthusiasm</td><td>No accountability loop</td><td>Recurring scheduler, alerts for missed walks, weekly review ritual</td><td>Month 1+</td></tr>
+</table>
+
+<h3>Recommended Rollout Plan</h3>
+<ol>
+  <li><strong>Week 1:</strong> Register users, demo the app, do first walk together as a group</li>
+  <li><strong>Week 2-3:</strong> One manager does daily walks, team reviews weekly</li>
+  <li><strong>Week 4:</strong> Add more walkers, operators start submitting suggestions</li>
+  <li><strong>Month 2:</strong> Expand to other departments/lines</li>
+  <li><strong>Month 3:</strong> Review trends, present improvement data to leadership</li>
+</ol>
+
+<!-- Section 19 -->
+<h2><span class="sec-num">19</span> Go-To-Market Plan</h2>
+
+<h3>Phase 1: Beta (Current &mdash; Q2 2026)</h3>
+<ul>
+  <li>Free tier for early adopters via PSS network</li>
+  <li>Target: 10-20 manufacturing units</li>
+  <li>Goal: Validate product-market fit, gather feedback</li>
+</ul>
+
+<h3>Phase 2: Launch (Q3 2026)</h3>
+<ul>
+  <li>Freemium model with paid Starter and Professional tiers</li>
+  <li>Target: 50-100 companies</li>
+  <li>Channels: Industry events, MSME associations, consultant referrals, LinkedIn</li>
+</ul>
+
+<h3>Phase 3: Scale (Q4 2026 &mdash; 2027)</h3>
+<ul>
+  <li>Full SaaS product with enterprise tier</li>
+  <li>Target: 500+ companies</li>
+  <li>Channels: Digital marketing, channel partners, Play Store/App Store</li>
+</ul>
+
+<!-- Section 20 -->
+<h2><span class="sec-num">20</span> Future Roadmap</h2>
+
+<table>
+  <tr><th>Priority</th><th>Feature</th><th>Description</th><th>Target</th></tr>
+  <tr><td>P1</td><td>Native Mobile App</td><td>Capacitor wrapper for Play Store &amp; App Store</td><td>Q3 2026</td></tr>
+  <tr><td>P1</td><td>SSO Integration</td><td>Google / Microsoft login for enterprise</td><td>Q3 2026</td></tr>
+  <tr><td>P2</td><td>ERP Integration</td><td>API connectors for Tally, SAP Business One</td><td>Q4 2026</td></tr>
+  <tr><td>P2</td><td>AI Trend Prediction</td><td>ML-based forecasting of problem areas</td><td>Q4 2026</td></tr>
+  <tr><td>P2</td><td>Full Offline Mode</td><td>Work offline, auto-sync when back online</td><td>Q4 2026</td></tr>
+  <tr><td>P3</td><td>Custom Report Builder</td><td>Drag-and-drop report template designer</td><td>2027</td></tr>
+  <tr><td>P3</td><td>Real-time Notifications</td><td>WebSocket push alerts to mobile</td><td>2027</td></tr>
+  <tr><td>P3</td><td>SME Diagnostic Tool</td><td>New product: AI assessment for manufacturing SMEs (PSS #15)</td><td>2027</td></tr>
+</table>
+
+<!-- ==================== APPENDIX ==================== -->
+
+<div class="page-break"></div>
+<p style="font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 0.5rem;">Appendix</p>
+
+<h2><span class="sec-num">A</span> API Reference</h2>
+
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+  <tr><td>POST</td><td>/api/auth/register</td><td>Register new user</td></tr>
+  <tr><td>POST</td><td>/api/auth/login</td><td>Login and get JWT token</td></tr>
+  <tr><td>GET</td><td>/api/auth/users</td><td>List all users (admin)</td></tr>
+  <tr><td>PUT</td><td>/api/auth/users/:id</td><td>Update user role</td></tr>
+  <tr><td>DELETE</td><td>/api/auth/users/:id</td><td>Delete user</td></tr>
+  <tr><td>POST</td><td>/api/walks/start-walk</td><td>Start new Gemba walk</td></tr>
+  <tr><td>POST</td><td>/api/walks/submit-observation</td><td>Record observation</td></tr>
+  <tr><td>POST</td><td>/api/walks/complete/:id</td><td>Complete a walk</td></tr>
+  <tr><td>POST</td><td>/api/walks/review/:id</td><td>Add review to walk</td></tr>
+  <tr><td>GET</td><td>/api/walks/all</td><td>List all walks</td></tr>
+  <tr><td>GET</td><td>/api/walks/stats</td><td>Dashboard statistics</td></tr>
+  <tr><td>GET</td><td>/api/walks/search?q=</td><td>Search observations</td></tr>
+  <tr><td>GET</td><td>/api/walks/actions</td><td>List action items</td></tr>
+  <tr><td>PUT</td><td>/api/walks/actions/:id</td><td>Update action status</td></tr>
+  <tr><td>GET</td><td>/api/walks/summary/:id</td><td>Walk summary (HTML)</td></tr>
+  <tr><td>GET</td><td>/api/walks/export/csv</td><td>Export CSV</td></tr>
+  <tr><td>POST</td><td>/api/walks/import</td><td>Bulk CSV import</td></tr>
+  <tr><td>GET</td><td>/api/walks/trends</td><td>Week-over-week trends</td></tr>
+  <tr><td>GET</td><td>/api/walks/notifications</td><td>Alerts and notifications</td></tr>
+  <tr><td>GET</td><td>/api/walks/backup</td><td>Full data backup (JSON)</td></tr>
+  <tr><td>POST</td><td>/api/walks/restore</td><td>Restore from backup</td></tr>
+  <tr><td>GET</td><td>/api/walks/audit</td><td>Audit trail</td></tr>
+  <tr><td>POST</td><td>/api/walks/schedule</td><td>Schedule future walk</td></tr>
+  <tr><td>POST</td><td>/api/walks/recurring</td><td>Set recurring walk</td></tr>
+  <tr><td>POST</td><td>/api/walks/employee-suggestion</td><td>Submit suggestion</td></tr>
+  <tr><td>GET</td><td>/api/walks/leaderboard</td><td>Kaizen leaderboard</td></tr>
+</table>
+
+<!-- Appendix B -->
+<div class="page-break"></div>
+<h2><span class="sec-num">B</span> Sample Observation Examples</h2>
+
+<h3>Positive Observations (Good Things)</h3>
+<table>
+  <tr><th>Title</th><th>Area</th><th>Location</th><th>Description</th></tr>
+  <tr><td>Excellent 5S at CNC Bay 3</td><td>House Keeping (5S)</td><td>CNC Bay 3</td><td>Workstation clean, tools organized, shadow board complete. Operator Sunil maintains excellent housekeeping.</td></tr>
+  <tr><td>Proper SOP display at assembly</td><td>Adherence to Standards</td><td>Assembly Line 2</td><td>All SOPs clearly displayed at eye level with proper revision control. Good adherence to work instructions.</td></tr>
+  <tr><td>Good Kanban implementation</td><td>Inventory</td><td>Paint Shop</td><td>Paint shop has implemented 2-bin Kanban system successfully. No stockouts in last 2 weeks.</td></tr>
+</table>
+
+<h3>Negative Observations (Improvements)</h3>
+<table>
+  <tr><th>Title</th><th>Area</th><th>Category</th><th>Location</th><th>Tagged</th><th>Description</th></tr>
+  <tr><td>Safety guard missing on press</td><td>Safety</td><td>Safety</td><td>Press Shop</td><td>Maintenance Head</td><td>Press machine #4 safety guard not properly latched. Hazard for operator during operation.</td></tr>
+  <tr><td>Waiting waste at grinding</td><td>Wastes</td><td>Muda</td><td>Grinding Section</td><td>Production Supervisor</td><td>Operators waiting 15 minutes between batches. Material not arriving from previous station.</td></tr>
+  <tr><td>Gauge calibration overdue</td><td>Gauges &amp; Fixture</td><td>Quality</td><td>Incoming Inspection</td><td>Quality Head</td><td>3 dial gauges have expired calibration stickers. Last calibrated 8 months ago.</td></tr>
+  <tr><td>Oil leak near lathe L-07</td><td>Machine Condition</td><td>Safety</td><td>Lathe Section</td><td>Maintenance Head</td><td>Hydraulic oil leak under lathe. Environmental hazard and slip risk.</td></tr>
+  <tr><td>FIFO not followed in stores</td><td>Inventory</td><td>Muda</td><td>Raw Material Store</td><td>Store In-charge</td><td>Newer batches placed in front of older ones. Risk of using expired material.</td></tr>
+</table>
+
+<!-- Appendix C -->
+<h2><span class="sec-num">C</span> Glossary</h2>
+
+<table>
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td><strong>Gemba</strong></td><td>Japanese for "the actual place" &mdash; the shop floor</td></tr>
+  <tr><td><strong>COACH</strong></td><td>Connect, Observe, Appreciate, Conform, Honing &mdash; PSS framework</td></tr>
+  <tr><td><strong>Muda</strong></td><td>Waste &mdash; non-value-adding activity</td></tr>
+  <tr><td><strong>Mura</strong></td><td>Unevenness &mdash; variation in process</td></tr>
+  <tr><td><strong>Muri</strong></td><td>Overburden &mdash; unreasonable stress on people/machines</td></tr>
+  <tr><td><strong>5S</strong></td><td>Sort, Set in order, Shine, Standardize, Sustain</td></tr>
+  <tr><td><strong>Kaizen</strong></td><td>Continuous improvement through small, incremental changes</td></tr>
+  <tr><td><strong>SOP</strong></td><td>Standard Operating Procedure</td></tr>
+  <tr><td><strong>FIFO</strong></td><td>First In, First Out &mdash; inventory management principle</td></tr>
+  <tr><td><strong>Kanban</strong></td><td>Visual signaling system for inventory replenishment</td></tr>
+  <tr><td><strong>OEE</strong></td><td>Overall Equipment Effectiveness (Availability x Performance x Quality)</td></tr>
+  <tr><td><strong>WIP</strong></td><td>Work In Progress &mdash; partially completed goods</td></tr>
+  <tr><td><strong>TPS</strong></td><td>Toyota Production System</td></tr>
+  <tr><td><strong>PPE</strong></td><td>Personal Protective Equipment</td></tr>
+  <tr><td><strong>PWA</strong></td><td>Progressive Web App &mdash; website that works like a native app</td></tr>
+  <tr><td><strong>JWT</strong></td><td>JSON Web Token &mdash; secure authentication mechanism</td></tr>
+  <tr><td><strong>TIMWOOD</strong></td><td>Mnemonic for 7 wastes: Transport, Inventory, Motion, Waiting, Overproduction, Overprocessing, Defects</td></tr>
+</table>
+
+<!-- ==================== FOOTER ==================== -->
+
+<div class="doc-footer" style="margin-top: 4rem;">
+  <p style="font-size: 10pt; font-weight: 700; color: #64748b;">GembaRounds Knowledge Base</p>
+  <p>Version 1.0 &bull; April 2026</p>
+  <p style="margin-top: 0.5rem;">Methodology: <strong>PS Satish</strong> (COACH Framework) &bull; Development: <strong>Aravind &amp; Team</strong></p>
+  <p>&copy; 2026 GembaRounds &bull; MIT License</p>
+  <p style="margin-top: 0.5rem; font-size: 8pt;">This document is for internal reference, presentations, and stakeholder discussions.</p>
+</div>
+
+</body>
+</html>

@@ -29,7 +29,7 @@ Gemba Walks solve these by making observations systematic, documented, and actio
 
 ## 2. COACH Framework (PSS Methodology)
 
-Developed by PS Satish Sir:
+Developed by PS Satish:
 
 | Step | Action | Details |
 |------|--------|---------|
@@ -132,18 +132,49 @@ Developed by PS Satish Sir:
 
 ---
 
-## 9. Competitor Comparison
+## 9. Competitor Landscape (22 Competitors Identified)
 
-| Feature | GembaRounds | iAuditor (SafetyCulture) | Tulip |
-|---------|-------------|--------------------------|-------|
-| PSS COACH Framework | Built-in | Not available | Not available |
-| 15 Observation Areas | Pre-configured | Generic checklists | Generic |
-| AI Auto-categorization | Yes | Limited/No | No |
-| Voice Dictation | Built-in | Some paid plans | No |
-| Kaizen Points | Yes | No | No |
-| Pricing | Free / Low cost | $19-33/user/month | $40/user/month |
-| Indian Manufacturing Focus | Yes | Western-centric | Western-centric |
-| SME-focused | Yes | Enterprise-focused | Enterprise-focused |
+### Direct Competitors
+| # | Product | Type | Pricing | Target |
+|---|---------|------|---------|--------|
+| 1 | SafetyCulture (iAuditor) | Mobile inspections & audits | $19-33/user/mo | Global enterprise |
+| 2 | KaiNexus | Full CI suite | $10K+/year | North America |
+| 3 | Tulip | No-code manufacturing platform | $40/user/mo | Western enterprise |
+| 4 | Tervene | Connected worker platform | Enterprise | North America |
+| 5 | Praxie | AI-powered Gemba walk | Enterprise | Enterprise |
+| 6 | Rever | Operator idea capture | Contact sales | Manufacturing |
+| 7 | Fabrico | OEE + walk tool | Contact sales | Manufacturing |
+| 8 | Gemba-Walk.com | Dedicated Gemba walk tool | Unknown | Europe |
+| 9 | Factorise | Shop floor Gemba module | Unknown | Manufacturing |
+| 10 | Gemba Concepts | Lean consulting (not software) | Consulting fees | India |
+
+### Adjacent Competitors
+Process Street, eAuditor, L2L, Workerbase, Poka.io, Augmentir, Fabriq, Axonator, Fulcrum, GoCanvas, ProntoForms, Stickfish, Alpha Software
+
+### Feature Comparison
+| Feature | GembaRounds | SafetyCulture | KaiNexus | Tulip | Praxie |
+|---------|-------------|---------------|----------|-------|--------|
+| COACH Framework | **Built-in** | No | No | No | No |
+| 15 PSS Areas | **Pre-configured** | Generic | Generic | Build own | Generic |
+| AI Categorization | **Yes (Muda/Mura/Muri)** | Limited | No | No | Yes |
+| Voice Dictation | **Free, built-in** | Paid plans | No | No | No |
+| Kaizen Gamification | **Yes** | No | No | No | No |
+| Hindi Language | **Yes (170 keys)** | No | No | No | No |
+| Indian SME Focus | **Yes** | Western | Western | Western | Western |
+| Open Source | **Yes (MIT)** | No | No | No | No |
+| WhatsApp Sharing | **Yes** | No | No | No | No |
+| Pricing | **Free / Rs 120/user** | $19-33/user/mo | $10K+/yr | $40/user/mo | Enterprise |
+
+### GembaRounds Unique Differentiators
+1. COACH framework built-in (no competitor has this)
+2. 15 PSS observation areas pre-configured
+3. AI auto-categorization (Muda/Mura/Muri detection)
+4. Free forever + open source (MIT)
+5. Hindi language support
+6. Indian SME focus
+7. Kaizen gamification with leaderboard
+8. WhatsApp sharing (critical for Indian manufacturing)
+9. Voice dictation built-in free
 
 ---
 
@@ -251,7 +282,7 @@ Developed by PS Satish Sir:
 
 ## 15. Credits
 
-- **Methodology:** PS Satish Sir (COACH Framework)
+- **Methodology:** PS Satish (COACH Framework)
 - **Development:** Aravind & Team with AI assistance
 - **License:** MIT License
 - **Copyright:** 2026 GembaRounds
