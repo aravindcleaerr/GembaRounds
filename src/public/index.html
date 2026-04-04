@@ -1796,7 +1796,19 @@
                     {obs.personMet && <span><I n="person" className="mi-sm" /> {obs.personMet}</span>}
                     {obs.personTagged && <span><I n="assignment_ind" className="mi-sm" /> {obs.personTagged}</span>}
                   </div>
-                  <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.3rem' }}>
+                    <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                    <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', padding: '0.15rem 0.4rem', fontSize: '0.72rem' }}
+                      onClick={async () => {
+                        if (!confirm('Delete this observation?')) return;
+                        try {
+                          await fetch(`/api/walks/observation/${obs._id}`, { method: 'DELETE' });
+                          fetchWalkData();
+                        } catch { alert('Failed to delete'); }
+                      }}>
+                      <I n="delete" className="mi-sm" /> Delete
+                    </button>
+                  </div>
                 </div>
               ))
             )}
@@ -2282,6 +2294,16 @@
                     {walk.status === 'completed' && !walk.reviewDate && (
                       <button className="btn btn-warning btn-sm" onClick={() => setSelectedWalk(walk._id)}>Review</button>
                     )}
+                    <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', padding: '0.3rem 0.5rem' }}
+                      onClick={async () => {
+                        if (!confirm(`Delete walk "${walk.title}" and all its ${walk.observations?.length || 0} observations? This cannot be undone.`)) return;
+                        try {
+                          await fetch(`/api/walks/${walk._id}`, { method: 'DELETE' });
+                          fetchData();
+                        } catch { alert('Failed to delete'); }
+                      }}>
+                      <I n="delete" className="mi-sm" />
+                    </button>
                   </div>
                 </div>
                 {selectedWalk === walk._id && (
@@ -2761,7 +2783,19 @@
                     {obs.personMet && <span><I n="person" className="mi-sm" /> {obs.personMet}</span>}
                     {obs.personTagged && <span><I n="assignment_ind" className="mi-sm" /> {obs.personTagged}</span>}
                   </div>
-                  <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.3rem' }}>
+                    <div className="obs-time">{new Date(obs.timestamp).toLocaleString()}</div>
+                    <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', padding: '0.15rem 0.4rem', fontSize: '0.72rem' }}
+                      onClick={async () => {
+                        if (!confirm('Delete this observation?')) return;
+                        try {
+                          await fetch(`/api/walks/observation/${obs._id}`, { method: 'DELETE' });
+                          handleSearch();
+                        } catch { alert('Failed to delete'); }
+                      }}>
+                      <I n="delete" className="mi-sm" /> Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

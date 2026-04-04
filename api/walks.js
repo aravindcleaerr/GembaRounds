@@ -95,6 +95,52 @@ app.post('/api/walks/review/:walkId', async (req, res) => {
   } catch (e) { res.status(500).json({ error: 'Failed to add review' }); }
 });
 
+// ===== EDIT WALK =====
+app.put('/api/walks/:walkId', async (req, res) => {
+  try {
+    const { title, walker, frequency, description } = req.body;
+    const walk = await Walk.findByIdAndUpdate(req.params.walkId, { title, walker, frequency, description }, { new: true }).populate('observations');
+    if (!walk) return res.status(404).json({ error: 'Walk not found' });
+    res.json({ walk, message: 'Walk updated' });
+  } catch (e) { res.status(500).json({ error: 'Failed to update walk' }); }
+});
+
+// ===== DELETE WALK =====
+app.delete('/api/walks/:walkId', async (req, res) => {
+  try {
+    const walk = await Walk.findById(req.params.walkId);
+    if (!walk) return res.status(404).json({ error: 'Walk not found' });
+    // Delete all observations belonging to this walk
+    await Observation.deleteMany({ _id: { $in: walk.observations } });
+    await Walk.findByIdAndDelete(req.params.walkId);
+    res.json({ message: 'Walk and its observations deleted' });
+  } catch (e) { res.status(500).json({ error: 'Failed to delete walk' }); }
+});
+
+// ===== EDIT OBSERVATION =====
+app.put('/api/walks/observation/:obsId', async (req, res) => {
+  try {
+    const updates = req.body;
+    const obs = await Observation.findByIdAndUpdate(req.params.obsId, updates, { new: true });
+    if (!obs) return res.status(404).json({ error: 'Observation not found' });
+    res.json({ observation: obs, message: 'Observation updated' });
+  } catch (e) { res.status(500).json({ error: 'Failed to update observation' }); }
+});
+
+// ===== DELETE OBSERVATION =====
+app.delete('/api/walks/observation/:obsId', async (req, res) => {
+  try {
+    const obs = await Observation.findById(req.params.obsId);
+    if (!obs) return res.status(404).json({ error: 'Observation not found' });
+    // Remove from walk's observations array
+    if (obs.walk) {
+      await Walk.findByIdAndUpdate(obs.walk, { $pull: { observations: obs._id } });
+    }
+    await Observation.findByIdAndDelete(req.params.obsId);
+    res.json({ message: 'Observation deleted' });
+  } catch (e) { res.status(500).json({ error: 'Failed to delete observation' }); }
+});
+
 // ===== WALK REPORT =====
 app.get('/api/walks/walk-reports/:walkId', async (req, res) => {
   try {
