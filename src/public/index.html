@@ -1526,21 +1526,15 @@
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
         recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-IN';
-        const ref = { base: newObs.description, finalParts: [] };
+        const ref = { base: newObs.description };
         recognition.onresult = (event) => {
-          // Only process new results from resultIndex
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (event.results[i].isFinal) {
-              ref.finalParts.push(event.results[i][0].transcript.trim());
-            }
+          let finals = '', interim = '';
+          for (let i = 0; i < event.results.length; i++) {
+            const text = event.results[i][0].transcript;
+            if (event.results[i].isFinal) finals += text;
+            else interim += text;
           }
-          // Get current interim (last non-final result)
-          let interim = '';
-          const last = event.results[event.results.length - 1];
-          if (last && !last.isFinal) interim = last[0].transcript;
-          // Build: base text + all finals so far + current interim
-          const full = [ref.base, ...ref.finalParts, interim].filter(Boolean).join(' ');
-          setNewObs(prev => ({ ...prev, description: full.trim() }));
+          setNewObs(prev => ({ ...prev, description: [ref.base, finals, interim].filter(Boolean).join(' ').trim() }));
         };
         recognition.onerror = () => setIsRecording(false);
         recognition.onend = () => setIsRecording(false);
