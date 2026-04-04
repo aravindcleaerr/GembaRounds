@@ -1017,7 +1017,7 @@
       'Tips for Effective Walks': 'प्रभावी वॉक के लिए सुझाव',
       'Weekly Review Meeting': 'साप्ताहिक समीक्षा बैठक',
       'PSS Talk on Gemba Walk': 'गेम्बा वॉक पर पीएसएस वार्ता',
-      'Video content coming soon — PS Satish Sir explaining COACH methodology': 'वीडियो सामग्री जल्द आ रही है — पीएस सतीश सर COACH पद्धति समझाते हुए',
+      'Video content coming soon — PS Satish explaining COACH methodology': 'वीडियो सामग्री जल्द आ रही है — पीएस सतीश सर COACH पद्धति समझाते हुए',
 
       // ── About Page ────────────────────────────────────────────────
       'About GembaRounds': 'गेम्बा राउंड्स के बारे में',
@@ -1475,15 +1475,12 @@
         if (isRecording) { if (window._gembaRecognition) window._gembaRecognition.stop(); setIsRecording(false); return; }
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-IN';
-        let finalTranscript = newObs.description;
+        recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
+        // Store the starting text so we append only new speech
+        const startText = newObs.description;
         recognition.onresult = (event) => {
-          let interim = '';
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (event.results[i].isFinal) finalTranscript += ' ' + event.results[i][0].transcript;
-            else interim += event.results[i][0].transcript;
-          }
-          setNewObs(prev => ({ ...prev, description: finalTranscript.trim() + (interim ? ' ' + interim : '') }));
+          const transcript = event.results[0][0].transcript;
+          setNewObs(prev => ({ ...prev, description: (startText ? startText + ' ' : '') + transcript }));
         };
         recognition.onerror = () => setIsRecording(false);
         recognition.onend = () => setIsRecording(false);
@@ -2904,9 +2901,14 @@
 
       return (
         <div>
-          <div className="page-header">
-            <h1 className="page-title">Help</h1>
-            <p className="page-subtitle">Learn how to use GembaRounds effectively</p>
+          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div>
+              <h1 className="page-title">Help</h1>
+              <p className="page-subtitle">Learn how to use GembaRounds effectively</p>
+            </div>
+            <a href="/blog/" target="_blank" className="btn btn-primary btn-sm" style={{ textDecoration: 'none' }}>
+              <I n="article" className="mi-sm" /> Read our Blog
+            </a>
           </div>
 
           {/* Tab Navigation */}
@@ -3110,7 +3112,7 @@
               {/* About line */}
               <div className="card" style={{ textAlign: 'center', padding: '1rem' }}>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  <strong>GembaRounds</strong> v1.0 &middot; COACH Framework by PS Satish Sir
+                  <strong>GembaRounds</strong> v1.0 &middot; COACH Framework by PS Satish
                 </div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
                   &copy; {new Date().getFullYear()} &middot; <a href="/blog/" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Blog</a>
