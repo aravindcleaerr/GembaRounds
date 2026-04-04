@@ -1174,7 +1174,8 @@
     // ============ MAIN APP ============
     function App() {
       const [currentView, setCurrentView] = useState('home');
-      const [currentWalkId, setCurrentWalkId] = useState(null);
+      const [currentWalkId, setCurrentWalkId] = useState(() => localStorage.getItem('gemba_walkId') || null);
+      const [activeWalks, setActiveWalks] = useState([]);
       const [user, setUser] = useState(null);
       const [theme, setTheme] = useState(() => {
         const saved = localStorage.getItem('gemba_theme');
@@ -1188,6 +1189,28 @@
         localStorage.setItem('gemba_theme', theme);
       }, [theme]);
       useEffect(() => { localStorage.setItem('gemba_lang', lang); }, [lang]);
+      useEffect(() => {
+        if (currentWalkId) localStorage.setItem('gemba_walkId', currentWalkId);
+        else localStorage.removeItem('gemba_walkId');
+      }, [currentWalkId]);
+
+      // Fetch active (in-progress/draft) walks on load
+      const fetchActiveWalks = async () => {
+        try {
+          const res = await fetch('/api/walks/all');
+          const data = await res.json();
+          const active = (data.walks || []).filter(w => w.status !== 'completed');
+          setActiveWalks(active);
+          // Auto-restore walk if we had one saved
+          if (currentWalkId && active.some(w => w._id === currentWalkId)) {
+            // Walk still active, keep it
+          } else if (currentWalkId) {
+            // Saved walk was completed or deleted, clear it
+            setCurrentWalkId(null);
+          }
+        } catch {}
+      };
+      useEffect(() => { if (user) fetchActiveWalks(); }, [user]);
 
       useEffect(() => {
         const mq = window.matchMedia('(prefers-color-scheme: dark)');
@@ -1223,7 +1246,13 @@
           const data = await response.json();
           setCurrentWalkId(data.walkId);
           setCurrentView('walk');
+          fetchActiveWalks();
         } catch { alert('Failed to start walk'); }
+      };
+
+      const resumeWalk = (walkId) => {
+        setCurrentWalkId(walkId);
+        setCurrentView('walk');
       };
 
       const isManager = ['admin', 'leader', 'manager', 'supervisor'].includes(user.role);
@@ -1294,7 +1323,7 @@
           {/* Main Content */}
           <div className="main-wrapper">
             <main className="main-content fade-in" key={currentView}>
-              {currentView === 'home' && <HomePage onStartWalk={startNewWalk} isManager={isManager} user={user} onNavigate={setCurrentView} />}
+              {currentView === 'home' && <HomePage onStartWalk={startNewWalk} isManager={isManager} user={user} onNavigate={setCurrentView} activeWalks={activeWalks} onResumeWalk={resumeWalk} />}
               {currentView === 'walk' && <WalkInterface walkId={currentWalkId} />}
               {currentView === 'reports' && <ReportsPage />}
               {currentView === 'schedule' && <SchedulePage />}
@@ -1320,7 +1349,7 @@
     }
 
     // ============ HOME PAGE ============
-    function HomePage({ onStartWalk, isManager, user, onNavigate }) {
+    function HomePage({ onStartWalk, isManager, user, onNavigate, activeWalks, onResumeWalk }) {
       const [showForm, setShowForm] = useState(false);
       const [walkData, setWalkData] = useState({ title: '', walker: '', description: '', frequency: 'adhoc' });
 
@@ -1335,6 +1364,27 @@
             <h1 className="page-title">Welcome, {user.name.split(' ')[0]}</h1>
             <p className="page-subtitle">Go to Gemba. Connect, Appreciate, Check Standards, Improve.</p>
           </div>
+
+          {/* Active Walks - Resume */}
+          {activeWalks && activeWalks.length > 0 && (
+            <div className="card" style={{ borderLeft: '4px solid var(--warning)', marginBottom: '0.75rem' }}>
+              <div className="card-title" style={{ marginBottom: '0.5rem' }}><I n="pending_actions" /> Active Walks</div>
+              {activeWalks.map(walk => (
+                <div key={walk._id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid var(--border)', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <div>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 700 }}>{walk.title}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      {walk.walker && <>{walk.walker} &middot; </>}
+                      {walk.observations?.length || 0} observations &middot; {new Date(walk.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <button className="btn btn-warning btn-sm" onClick={() => onResumeWalk(walk._id)}>
+                    <I n="play_arrow" className="mi-sm" /> Continue
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Quick Start - Hero Card */}
           {isManager && !showForm && (
