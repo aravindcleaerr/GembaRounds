@@ -1525,12 +1525,18 @@
         if (isRecording) { if (window._gembaRecognition) window._gembaRecognition.stop(); setIsRecording(false); return; }
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
-        // Store the starting text so we append only new speech
-        const startText = newObs.description;
+        recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-IN';
+        // Use a mutable object to track text across events without stale closure
+        const ref = { base: newObs.description, finals: '' };
         recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          setNewObs(prev => ({ ...prev, description: (startText ? startText + ' ' : '') + transcript }));
+          let finals = '', interim = '';
+          for (let i = 0; i < event.results.length; i++) {
+            if (event.results[i].isFinal) finals += event.results[i][0].transcript + ' ';
+            else interim += event.results[i][0].transcript;
+          }
+          ref.finals = finals.trim();
+          const full = [ref.base, ref.finals, interim].filter(Boolean).join(' ');
+          setNewObs(prev => ({ ...prev, description: full.trim() }));
         };
         recognition.onerror = () => setIsRecording(false);
         recognition.onend = () => setIsRecording(false);
