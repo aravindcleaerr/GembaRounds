@@ -1297,14 +1297,18 @@
           {/* Desktop Side Nav */}
           <aside className="sidenav">
             <div className="sidenav-section">Navigation</div>
-            {navItems.map(n => (
-              <button key={n.id}
-                className={`sidenav-item ${currentView === n.id ? 'active' : ''}`}
-                onClick={() => setCurrentView(n.id)}
-              >
-                <I n={n.icon} /> {t(n.label, lang)}
-              </button>
-            ))}
+            {navItems.map(n => {
+              const walkObs = n.id === 'walk' && currentWalkId ? (activeWalks.find(w => w._id === currentWalkId)?.observations?.length || 0) : 0;
+              return (
+                <button key={n.id}
+                  className={`sidenav-item ${currentView === n.id ? 'active' : ''}`}
+                  onClick={() => setCurrentView(n.id)}
+                >
+                  <I n={n.icon} /> {t(n.label, lang)}
+                  {walkObs > 0 && <span style={{ marginLeft: 'auto', background: 'var(--primary)', color: 'white', borderRadius: 100, padding: '0.1rem 0.45rem', fontSize: '0.68rem', fontWeight: 700 }}>{walkObs}</span>}
+                </button>
+              );
+            })}
           </aside>
 
           {/* Mobile Bottom Nav */}
@@ -1352,6 +1356,11 @@
     function HomePage({ onStartWalk, isManager, user, onNavigate, activeWalks, onResumeWalk }) {
       const [showForm, setShowForm] = useState(false);
       const [walkData, setWalkData] = useState({ title: '', walker: '', description: '', frequency: 'adhoc' });
+      const [homeStats, setHomeStats] = useState(null);
+
+      useEffect(() => {
+        fetch('/api/walks/stats').then(r => r.json()).then(setHomeStats).catch(() => {});
+      }, []);
 
       const handleStart = () => {
         const title = walkData.title || 'Gemba Walk ' + new Date().toLocaleDateString();
@@ -1364,6 +1373,25 @@
             <h1 className="page-title">Welcome, {user.name.split(' ')[0]}</h1>
             <p className="page-subtitle">Go to Gemba. Connect, Appreciate, Check Standards, Improve.</p>
           </div>
+
+          {/* Quick Stats Dashboard */}
+          {homeStats && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '0.5rem', marginBottom: '1rem' }}>
+              {[
+                { v: homeStats.totalWalks, l: 'Walks', icon: 'directions_walk', c: 'var(--primary)' },
+                { v: homeStats.totalObservations, l: 'Observations', icon: 'visibility', c: 'var(--info)' },
+                { v: homeStats.byType?.positive || 0, l: 'Good', icon: 'thumb_up', c: 'var(--success)' },
+                { v: homeStats.byType?.negative || 0, l: 'To Fix', icon: 'build', c: 'var(--danger)' },
+                { v: activeWalks?.length || 0, l: 'Active', icon: 'pending_actions', c: 'var(--warning)' },
+              ].map((s, i) => (
+                <div key={i} style={{ textAlign: 'center', padding: '0.6rem 0.3rem', borderRadius: 'var(--radius-sm)', background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <I n={s.icon} style={{ color: s.c, fontSize: 18 }} />
+                  <div style={{ fontSize: '1.2rem', fontWeight: 800, color: s.c }}>{s.v}</div>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Active Walks - Resume */}
           {activeWalks && activeWalks.length > 0 && (
@@ -1461,6 +1489,30 @@
           <EmployeeSuggestionBox />
           <KaizenLeaderboard />
         </div>
+      );
+    }
+
+    // ============ WALK TIMER ============
+    function WalkTimer({ startTime }) {
+      const [elapsed, setElapsed] = useState('');
+      useEffect(() => {
+        if (!startTime) return;
+        const update = () => {
+          const diff = Math.floor((Date.now() - new Date(startTime).getTime()) / 1000);
+          const h = Math.floor(diff / 3600);
+          const m = Math.floor((diff % 3600) / 60);
+          const s = diff % 60;
+          setElapsed(h > 0 ? `${h}h ${m}m` : `${m}m ${s}s`);
+        };
+        update();
+        const id = setInterval(update, 1000);
+        return () => clearInterval(id);
+      }, [startTime]);
+      if (!elapsed) return null;
+      return (
+        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+          <I n="timer" className="mi-sm" /> {elapsed}
+        </span>
       );
     }
 
@@ -1663,7 +1715,27 @@
           {/* Observation Form */}
           {walkInfo?.status !== 'completed' && (
             <div className="card card-accent-left">
-              <div className="card-title" style={{ marginBottom: '0.85rem' }}><I n="add_circle" /> Record Observation</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
+                <div className="card-title" style={{ marginBottom: 0 }}><I n="add_circle" /> Record Observation</div>
+                <WalkTimer startTime={walkInfo?.createdAt} />
+              </div>
+
+              {/* Quick Templates */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.75rem' }}>
+                {[
+                  { label: 'Safety Hazard', icon: 'warning', type: 'negative', area: 'Safety', cat: 'Safety', color: '#ef4444' },
+                  { label: '5S Issue', icon: 'cleaning_services', type: 'negative', area: 'House Keeping (5S)', cat: 'Other', color: '#f59e0b' },
+                  { label: 'Machine Problem', icon: 'build', type: 'negative', area: 'Machine Condition', cat: 'Other', color: '#3b82f6' },
+                  { label: 'Good Practice', icon: 'thumb_up', type: 'positive', area: 'Adherence to Standards', cat: 'Quality', color: '#10b981' },
+                  { label: 'Waiting Waste', icon: 'hourglass_empty', type: 'negative', area: 'Wastes', cat: 'Muda', color: '#8b5cf6' },
+                  { label: 'Quality Issue', icon: 'bug_report', type: 'negative', area: 'Gauges and Fixture', cat: 'Quality', color: '#ec4899' },
+                ].map((tpl, i) => (
+                  <button key={i} className="btn btn-ghost btn-sm" style={{ fontSize: '0.72rem', padding: '0.25rem 0.5rem', border: `1px solid ${tpl.color}30`, color: tpl.color }}
+                    onClick={() => setNewObs(prev => ({ ...prev, observationType: tpl.type, observationArea: tpl.area, category: tpl.cat, title: tpl.label }))}>
+                    <I n={tpl.icon} className="mi-sm" /> {tpl.label}
+                  </button>
+                ))}
+              </div>
 
               <div className="toggle-group">
                 <button className={`toggle-btn ${newObs.observationType === 'positive' ? 'active-pos' : ''}`}
@@ -2038,6 +2110,88 @@
       );
     }
 
+    // ============ WALK COMPARISON ============
+    function WalkComparison({ walks }) {
+      const [walkA, setWalkA] = useState('');
+      const [walkB, setWalkB] = useState('');
+
+      const completedWalks = (walks || []).filter(w => w.status === 'completed' && w.observations?.length > 0);
+      if (completedWalks.length < 2) return null;
+
+      const getStats = (walk) => {
+        const obs = walk.observations || [];
+        const pos = obs.filter(o => o.observationType === 'positive').length;
+        const neg = obs.filter(o => o.observationType === 'negative').length;
+        const areas = {};
+        obs.forEach(o => { areas[o.observationArea || 'Others'] = (areas[o.observationArea || 'Others'] || 0) + 1; });
+        const actions = obs.filter(o => o.personTagged).length;
+        return { total: obs.length, pos, neg, areas, actions };
+      };
+
+      const wA = completedWalks.find(w => w._id === walkA);
+      const wB = completedWalks.find(w => w._id === walkB);
+      const sA = wA ? getStats(wA) : null;
+      const sB = wB ? getStats(wB) : null;
+
+      return (
+        <div className="card">
+          <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="compare" /> Compare Walks</div>
+          <div className="form-row" style={{ marginBottom: '0.75rem' }}>
+            <div className="form-group">
+              <label className="form-label">Walk A</label>
+              <select className="form-select" value={walkA} onChange={e => setWalkA(e.target.value)}>
+                <option value="">Select walk...</option>
+                {completedWalks.map(w => <option key={w._id} value={w._id}>{w.title} ({new Date(w.createdAt).toLocaleDateString()})</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Walk B</label>
+              <select className="form-select" value={walkB} onChange={e => setWalkB(e.target.value)}>
+                <option value="">Select walk...</option>
+                {completedWalks.map(w => <option key={w._id} value={w._id}>{w.title} ({new Date(w.createdAt).toLocaleDateString()})</option>)}
+              </select>
+            </div>
+          </div>
+          {sA && sB && (
+            <div style={{ overflow: 'auto' }}>
+              <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg)' }}>
+                    <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Metric</td>
+                    <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)', color: 'var(--primary)' }}>{wA.title}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)', color: 'var(--info)' }}>{wB.title}</td>
+                    <td style={{ padding: '0.4rem 0.6rem', fontWeight: 700, borderBottom: '2px solid var(--border)' }}>Change</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { m: 'Total Observations', a: sA.total, b: sB.total },
+                    { m: 'Good Things', a: sA.pos, b: sB.pos },
+                    { m: 'Improvements', a: sA.neg, b: sB.neg },
+                    { m: 'Action Items', a: sA.actions, b: sB.actions },
+                    { m: 'Positive %', a: sA.total ? Math.round(sA.pos / sA.total * 100) : 0, b: sB.total ? Math.round(sB.pos / sB.total * 100) : 0, pct: true },
+                  ].map((row, i) => {
+                    const diff = row.b - row.a;
+                    const better = row.m === 'Improvements' ? diff < 0 : diff > 0;
+                    return (
+                      <tr key={i}>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 600 }}>{row.m}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)' }}>{row.a}{row.pct ? '%' : ''}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)' }}>{row.b}{row.pct ? '%' : ''}</td>
+                        <td style={{ padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', fontWeight: 700, color: diff === 0 ? 'var(--text-muted)' : better ? 'var(--success)' : 'var(--danger)' }}>
+                          {diff === 0 ? '—' : `${diff > 0 ? '+' : ''}${diff}${row.pct ? '%' : ''}`}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     // ============ SPAGHETTI DIAGRAM ============
     function SpaghettiDiagram({ walks }) {
       const locations = {};
@@ -2257,6 +2411,9 @@
 
           {/* Spaghetti Diagram - Location Heatmap */}
           <SpaghettiDiagram walks={walks} />
+
+          {/* Walk Comparison */}
+          <WalkComparison walks={walks} />
 
           <div className="card">
             <div className="card-title" style={{ marginBottom: '0.75rem' }}><I n="history" /> Walk History</div>
@@ -3197,15 +3354,6 @@
                 </div>
               ))}
 
-              {/* About line */}
-              <div className="card" style={{ textAlign: 'center', padding: '1rem' }}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  <strong>GembaRounds</strong> v1.0 &middot; COACH Framework by PS Satish
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  &copy; {new Date().getFullYear()} &middot; <a href="/blog/" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Blog</a>
-                </div>
-              </div>
             </div>
           )}
         </div>
